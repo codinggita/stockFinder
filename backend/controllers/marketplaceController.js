@@ -111,3 +111,26 @@ exports.getProductById = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+exports.getStoreById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const store = await Store.findById(id);
+    if (!store) {
+      return res.status(404).json({ success: false, message: 'Store not found' });
+    }
+    res.status(200).json({ success: true, store });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getStoreProducts = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const products = await Product.find({ store: id });
+    res.status(200).json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

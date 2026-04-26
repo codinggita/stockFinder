@@ -36,30 +36,51 @@ const seedData = async () => {
     const storesData = [
       {
         _id: new mongoose.Types.ObjectId('662a00000000000000000001'),
-        name: 'Nexus Premium Store',
-        location: 'Bandra, Mumbai',
-        coordinates: { coordinates: [72.8258, 19.0596] },
+        name: 'Alpha One Electronics',
+        location: 'Vastrapur, Ahmedabad',
+        fullAddress: 'Alpha One Mall, Lake Vastrapur, Ahmedabad, Gujarat 380054',
+        coordinates: { coordinates: [72.5244, 23.0396] },
         status: 'Open Now',
         isOpen: true,
-        image: '/images/luxe_storefront.png'
+        image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=800',
+        category: 'Electronics',
+        rating: 4.8,
+        reviewsCount: 1250,
+        ownerName: 'Rajesh Patel',
+        ownerPhone: '+91 98765 43210',
+        description: 'Ahmedabad\'s premier destination for high-end electronics and smart home solutions. We feature the latest in tech with expert consultation.'
       },
       {
         _id: new mongoose.Types.ObjectId('662a00000000000000000002'),
-        name: 'Luxe Boutique BKC',
-        location: 'BKC, Mumbai',
-        coordinates: { coordinates: [72.8633, 19.0622] },
+        name: 'Surat Heritage Textiles',
+        location: 'Dumas Road, Surat',
+        fullAddress: 'V R Surat Mall, Dumas Road, Magdalla, Surat, Gujarat 395007',
+        coordinates: { coordinates: [72.7483, 21.1396] },
         status: 'Open Now',
         isOpen: true,
-        image: null
+        image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&q=80&w=800',
+        category: 'Fashion',
+        rating: 4.7,
+        reviewsCount: 850,
+        ownerName: 'Anjali Shah',
+        ownerPhone: '+91 91234 56789',
+        description: 'Exclusive collection of traditional and modern Gujarati textiles. Specializing in silk and hand-embroidered fabrics.'
       },
       {
         _id: new mongoose.Types.ObjectId('662a00000000000000000003'),
-        name: 'South Bombay Footwear',
-        location: 'Colaba, Mumbai',
-        coordinates: { coordinates: [72.8333, 18.9218] },
+        name: 'Rajkot Royal Jewels',
+        location: 'Kalavad Road, Rajkot',
+        fullAddress: 'Royal Arcade, Kalavad Road, Rajkot, Gujarat 360001',
+        coordinates: { coordinates: [70.7748, 22.2856] },
         status: 'Closing Soon',
         isOpen: true,
-        image: null
+        image: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=800',
+        category: 'Jewelry',
+        rating: 4.9,
+        reviewsCount: 420,
+        ownerName: 'Deepak Mehta',
+        ownerPhone: '+91 99887 76655',
+        description: 'Legacy jewelry brand known for exquisite craftsmanship and authentic designs since 1950.'
       }
     ];
 
@@ -68,10 +89,10 @@ const seedData = async () => {
     // THE TITANIUM WATCH SET (Ensuring 100% consistency between Marketplace and Detail)
     const titaniumWatchMain = 'https://res.cloudinary.com/dojjfvya3/image/upload/v1777090892/Screenshot_2026-04-25_090754_ytz7e6.png';
     const titaniumWatchGallery = [
-      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777090892/Screenshot_2026-04-25_090754_ytz7e6.png', // Front
-      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777090892/Screenshot_2026-04-25_090739_wn3azf.png', // Side/Angle
-      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777091821/Screenshot_2026-04-25_090846_qbjdhp.png', // Detail Side
-      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777091885/Screenshot_2026-04-25_090907_xdgftk.png'  // Detail Face
+      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777090892/Screenshot_2026-04-25_090754_ytz7e6.png',
+      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777090892/Screenshot_2026-04-25_090739_wn3azf.png',
+      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777091821/Screenshot_2026-04-25_090846_qbjdhp.png',
+      'https://res.cloudinary.com/dojjfvya3/image/upload/v1777091885/Screenshot_2026-04-25_090907_xdgftk.png'
     ];
 
     await Product.insertMany([
