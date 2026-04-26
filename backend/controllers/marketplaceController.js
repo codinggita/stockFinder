@@ -85,3 +85,29 @@ exports.search = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+exports.getProductById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id).populate('store');
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    
+    // Also find other stores that have this same product (matching by name/category for now)
+    const otherStores = await Product.find({ 
+      name: product.name, 
+      _id: { $ne: product._id } 
+    }).populate('store');
+
+    res.status(200).json({ 
+      success: true, 
+      product,
+      inventory: [
+        { store: product.store, price: product.price, status: product.status },
+        ...otherStores.map(p => ({ store: p.store, price: p.price, status: p.status }))
+      ]
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
