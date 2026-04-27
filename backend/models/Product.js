@@ -10,6 +10,8 @@ const productSchema = new mongoose.Schema({
   status: { type: String, enum: ['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'], default: 'IN_STOCK' },
   image: { type: String },
   images: [{ type: String }],
+  sizes: [{ type: String }], // e.g., ["8", "9", "10"] or ["S", "M", "L"]
+  sizeType: { type: String }, // e.g., "UK", "US", "Standard"
   technicalSpecs: [
     {
       label: { type: String },
