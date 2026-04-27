@@ -31,41 +31,19 @@ const ProductCard = ({ product }) => {
       onClick={() => navigate(`/product/${product._id}`)}
       className="bg-[#111827]/40 backdrop-blur-md border border-white/5 rounded-[2rem] overflow-hidden transition-all hover:border-primary/40 group cursor-pointer flex flex-col h-full shadow-2xl"
     >
-      <div className="relative aspect-square p-4 flex items-center justify-center">
-        
-        {/* Background Pedestal - CIRCULAR MASKING */}
-        <div className="absolute inset-0 flex items-center justify-center p-6">
-            <div className="w-full h-full rounded-full bg-[#1e293b]/40 border border-white/5 shadow-[inset_0_0_40px_rgba(0,0,0,0.6)] flex items-center justify-center relative overflow-hidden">
-                <div className="w-[88%] h-[88%] rounded-full bg-gradient-to-br from-[#1e293b] to-[#020617] border border-white/10 shadow-2xl relative overflow-hidden flex items-center justify-center">
-                    
-                    {/* Inner lighting and texture */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
-                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/10 via-transparent to-black/20"></div>
+      <div className="relative aspect-square overflow-hidden bg-[#0f172a]">
+        <motion.img 
+          src={product.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800'} 
+          alt={product.name} 
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.6 }}
+          className="w-full h-full object-cover transition-transform" 
+        />
 
-                    {/* THE PRODUCT IMAGE - Masked to the circle if necessary */}
-                    {product.image ? (
-                        <motion.img 
-                            src={product.image} 
-                            alt={product.name} 
-                            whileHover={{ scale: 1.15, rotate: 2 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="w-full h-full object-cover rounded-full mix-blend-lighten opacity-90 group-hover:opacity-100" 
-                        />
-                    ) : (
-                        <div className="text-center opacity-20 px-4">
-                            <p className="text-[10px] font-black text-gray-400 tracking-[0.3em] uppercase leading-tight">
-                                {product.name.split(' ')[0]}
-                            </p>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-
-        {/* Stock Badge - Overlaid */}
-        <div className={`absolute top-6 right-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-2xl border border-white/10 ${badge.bg}`}>
-          <span className={`w-2 h-2 rounded-full ${badge.dot} shadow-[0_0_10px_rgba(34,197,94,0.4)]`}></span>
-          <span className={`text-[9px] font-black tracking-[0.1em] ${badge.color}`}>{badge.label}</span>
+        {/* Stock Badge */}
+        <div className={`absolute top-4 right-4 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 ${badge.bg}`}>
+          <span className={`w-2 h-2 rounded-full ${badge.dot}`}></span>
+          <span className={`text-[9px] font-black tracking-widest ${badge.color}`}>{badge.label}</span>
         </div>
       </div>
 

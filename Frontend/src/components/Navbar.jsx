@@ -27,10 +27,10 @@ const Navbar = () => {
               <Link to="/marketplace" className="text-white border-b-2 border-primary pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
                 Marketplace
               </Link>
-              <Link to="#" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
+              <Link to="/stores" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
                 Stores
               </Link>
-              <Link to="#" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
+              <Link to="/stores" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
                 Categories
               </Link>
             </div>
