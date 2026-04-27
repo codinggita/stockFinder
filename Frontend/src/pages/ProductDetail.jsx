@@ -25,6 +25,10 @@ const ProductDetail = () => {
         setInventory(response.data.inventory);
         // Ensure the main image from the marketplace is the first one shown
         setActiveImage(response.data.product.image);
+        // Set default size if available
+        if (response.data.product.sizes && response.data.product.sizes.length > 0) {
+          setSelectedSize(response.data.product.sizes[0]);
+        }
       } catch (err) {
         console.error('Failed to fetch product:', err);
       } finally {
@@ -180,20 +184,24 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Size Selector */}
-                    <div className="space-y-4 flex-1">
-                        <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Available Size (UK)</span>
-                        <div className="grid grid-cols-4 gap-2">
-                            {[8, 9, 10, 11].map(size => (
-                                <button 
-                                  key={size}
-                                  onClick={() => setSelectedSize(size)}
-                                  className={`py-3 rounded-xl text-xs font-black transition-all border ${selectedSize === size ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/30'}`}
-                                >
-                                    {size}
-                                </button>
-                            ))}
+                    {product.sizes && product.sizes.length > 0 && (
+                        <div className="space-y-4 flex-1">
+                            <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
+                                Available Size {product.sizeType ? `(${product.sizeType})` : ''}
+                            </span>
+                            <div className="grid grid-cols-4 gap-2">
+                                {product.sizes.map(size => (
+                                    <button 
+                                      key={size}
+                                      onClick={() => setSelectedSize(size)}
+                                      className={`py-3 rounded-xl text-xs font-black transition-all border ${selectedSize === size ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/30'}`}
+                                    >
+                                        {size}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className="flex gap-4">

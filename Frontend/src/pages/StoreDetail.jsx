@@ -55,11 +55,11 @@ const StoreDetail = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
         {/* Breadcrumb / Back Button */}
         <button 
-          onClick={() => navigate('/marketplace')}
+          onClick={() => navigate('/stores')}
           className="flex items-center gap-2 text-gray-500 hover:text-white mb-10 transition-colors group"
         >
           <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to Marketplace</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to All Stores</span>
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
