@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import StoreCard from '../components/StoreCard';
@@ -75,9 +76,9 @@ const Marketplace = () => {
               </h2>
               <p className="text-[13px] text-gray-500 mt-1 font-medium">Curated outlets within 10KM of your location</p>
             </div>
-            <a href="#" className="text-[11px] font-black text-gray-400 hover:text-white uppercase tracking-[0.2em] flex items-center transition-all group">
+            <Link to="/stores" className="text-[11px] font-black text-gray-400 hover:text-white uppercase tracking-[0.2em] flex items-center transition-all group">
               View All Stores <span className="ml-2 text-base group-hover:translate-x-1 transition-transform">→</span>
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -96,20 +97,20 @@ const Marketplace = () => {
           <div className="flex justify-between items-end mb-10">
             <div>
               <h2 className="text-xl font-bold text-white flex items-center gap-3">
-                <span className="text-primary text-2xl">📍</span> Nearby Stores
+                <span className="text-primary text-2xl">💎</span> Premium Inventory
               </h2>
-              <p className="text-[13px] text-gray-500 mt-1 font-medium">Curated outlets within 10KM of your location</p>
+              <p className="text-[13px] text-gray-500 mt-1 font-medium">Real-time stock availability across all locations</p>
             </div>
-            <a href="#" className="text-[11px] font-black text-gray-400 hover:text-white uppercase tracking-[0.2em] flex items-center transition-all group">
-              View All Product <span className="ml-2 text-sm group-hover:translate-x-1 transition-transform">→</span>
-            </a>
+            <Link to="/products" className="text-[11px] font-black text-gray-400 hover:text-white uppercase tracking-[0.2em] flex items-center transition-all group">
+              View All Products <span className="ml-2 text-sm group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {productsStatus === 'loading' ? (
                [1, 2, 3, 4].map(i => <div key={i} className="aspect-square bg-white/5 rounded-3xl animate-pulse"></div>)
             ) : (
-              displayProducts.map((product) => (
+              displayProducts.slice(0, 4).map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))
             )}
