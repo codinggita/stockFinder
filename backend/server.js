@@ -331,7 +331,7 @@ const seedData = async () => {
         name: 'Nike Air Force 1 \'07',
         category: 'Clothe',
         price: 9695,
-        description: 'The radiance lives on in the Nike Air Force 1 \'07, the b-ball icon that puts a fresh spin on what you know best: crisp leather, bold colors and the perfect amount of flash to make you shine. Originally designed for performance hoops, the Air cushioning delivers lasting comfort while the padded ankle and tongue add to the soft ride.',
+        description: 'The radiance lives on in the Nike Air Force 1 \'07 shoes, the b-ball icon that puts a fresh spin on what you know best: crisp leather, bold colors and the perfect amount of flash to make you shine. Originally designed for performance hoops, these shoes deliver lasting comfort while the padded ankle and tongue add to the soft ride.',
         rating: 4.9,
         reviewsCount: 4500,
         status: 'IN_STOCK',
