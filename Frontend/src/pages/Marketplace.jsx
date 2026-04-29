@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -9,9 +9,17 @@ import { fetchNearbyStores } from '../redux/storeSlice';
 import { fetchProducts } from '../redux/productSlice';
 import { clearSearch } from '../redux/searchSlice';
 import { motion, AnimatePresence } from 'framer-motion';
+import Button from '../components/Button';
 
 const Marketplace = () => {
   const dispatch = useDispatch();
+  const [storePage, setStorePage] = useState(1);
+  const [productPage, setProductPage] = useState(1);
+
+
+
+  const STORE_ITEMS_PER_PAGE = 6;
+  const PRODUCT_ITEMS_PER_PAGE = 8;
   const { items: stores, status: storesStatus } = useSelector((state) => state.stores);
   const { items: products, status: productsStatus } = useSelector((state) => state.products);
   const { results: searchResults, status: searchStatus, query } = useSelector((state) => state.search);
@@ -22,10 +30,12 @@ const Marketplace = () => {
   }, [dispatch]);
 
   const isSearching = searchStatus === 'succeeded' && query;
-  
-  const displayStores = isSearching ? searchResults?.stores || [] : stores;
-  const displayProducts = isSearching ? searchResults?.products || [] : products;
-
+  const totalStores = isSearching ? (searchResults?.stores?.length || 0) : stores.length;
+  const totalProducts = isSearching ? (searchResults?.products?.length || 0) : products.length;
+  const displayStores = isSearching ? (searchResults?.stores || []).slice(0, storePage * STORE_ITEMS_PER_PAGE) : stores.slice(0, storePage * STORE_ITEMS_PER_PAGE);
+  const displayProducts = isSearching ? (searchResults?.products || []).slice(0, productPage * PRODUCT_ITEMS_PER_PAGE) : products.slice(0, productPage * PRODUCT_ITEMS_PER_PAGE);
+  const hasMoreStores = storePage * STORE_ITEMS_PER_PAGE < totalStores;
+  const hasMoreProducts = productPage * PRODUCT_ITEMS_PER_PAGE < totalProducts;
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col font-sans selection:bg-primary/40">
       <Navbar />
@@ -125,6 +135,13 @@ const Marketplace = () => {
               </div>
             )}
           </div>
+          {hasMoreStores && (
+            <div className="flex justify-center mt-6">
+              <Button onClick={() => setStorePage(prev => prev + 1)}>
+                View More Stores
+              </Button>
+            </div>
+          )}
         </section>
 
         {/* Products Section */}
@@ -158,6 +175,13 @@ const Marketplace = () => {
               </div>
             )}
           </div>
+          {hasMoreProducts && (
+            <div className="flex justify-center mt-6">
+              <Button onClick={() => setProductPage(prev => prev + 1)}>
+                View More Products
+              </Button>
+            </div>
+          )}
         </section>
 
       </main>
