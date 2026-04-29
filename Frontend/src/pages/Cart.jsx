@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Minus, Plus, Trash2, ShieldCheck, Lock, Tag, ShoppingBag } from 'lucide-react';
-import { removeFromCart, updateQuantity, clearCart, addToCart } from '../redux/cartSlice';
+import { removeFromCart, updateQuantity, clearCart, addToCart, applyNegotiatedPrices } from '../redux/cartSlice';
 import { fetchProducts } from '../redux/productSlice';
 import Navbar from '../components/Navbar';
 import toast from 'react-hot-toast';
@@ -26,6 +26,9 @@ const Cart = () => {
     if (allProducts.length === 0 && productsStatus !== 'loading') {
       dispatch(fetchProducts());
     }
+
+    // Apply any accepted negotiations to the cart items
+    dispatch(applyNegotiatedPrices());
 
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     const timer = setTimeout(() => {
@@ -169,6 +172,11 @@ const Cart = () => {
                             {/* Price */}
                             <div className="text-right flex-shrink-0 ml-4">
                               <p className="text-white font-black text-lg tracking-tight">{formatPrice(item.price)}</p>
+                              {item.isNegotiated && (
+                                <span className="text-[9px] font-black text-primary uppercase tracking-widest bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 mt-1 block">
+                                  Negotiated
+                                </span>
+                              )}
                             </div>
                           </div>
 

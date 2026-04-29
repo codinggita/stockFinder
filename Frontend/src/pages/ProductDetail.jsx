@@ -219,7 +219,10 @@ const ProductDetail = () => {
                         <ShoppingBag size={18} />
                         Add to Cart
                     </button>
-                    <button className="flex-1 border-2 border-yellow-500/50 hover:border-yellow-500 text-yellow-500 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]">
+                    <button 
+                      onClick={() => navigate(`/negotiate/${id}`)}
+                      className="flex-1 border-2 border-yellow-500/50 hover:border-yellow-500 text-yellow-500 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                    >
                         <Zap size={18} />
                         Negotiate Price
                     </button>
