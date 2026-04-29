@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Star, MapPin, Zap, Wind, ShoppingBag, Music, Sun, Minus, Plus, ShieldCheck } from 'lucide-react';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
+import { addToCart } from '../redux/cartSlice';
+import toast from 'react-hot-toast';
 
 const iconMap = { Zap, Wind, ShoppingBag, Music, Sun };
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -205,7 +209,13 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="flex gap-4">
-                    <button className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]">
+                    <button
+                      onClick={() => {
+                        dispatch(addToCart({ ...product, quantity }));
+                        toast.success(`${product.name} added to cart!`);
+                      }}
+                      className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                    >
                         <ShoppingBag size={18} />
                         Add to Cart
                     </button>

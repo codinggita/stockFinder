@@ -13,7 +13,7 @@ const AllProducts = () => {
   const { items: products, status } = useSelector((state) => state.products);
   
   // Filter States
-  const [priceRange, setPriceRange] = useState(500000);
+  const [priceRange, setPriceRange] = useState(150000);
   const [maxDistance, setMaxDistance] = useState('Anywhere');
   const [availability, setAvailability] = useState(['In Stock']);
   const [viewMode, setViewMode] = useState('grid');
@@ -71,7 +71,7 @@ const AllProducts = () => {
                 <input 
                   type="range" 
                   min="0" 
-                  max="500000" 
+                  max="150000" 
                   step="5000"
                   value={priceRange}
                   onChange={(e) => setPriceRange(Number(e.target.value))}
@@ -193,7 +193,7 @@ const AllProducts = () => {
                 <p className="text-gray-500 font-black uppercase tracking-widest text-sm">No premium items matched your criteria</p>
                 <button 
                   onClick={() => {
-                    setPriceRange(500000);
+                    setPriceRange(150000);
                     setMaxDistance('Anywhere');
                     setAvailability(['In Stock']);
                     handleApplyFilters();

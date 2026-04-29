@@ -5,6 +5,8 @@ import * as yup from 'yup';
 import { Mail, ShieldCheck } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCredentials } from '../redux/authSlice';
 
 import AuthLayout from '../components/AuthLayout';
 import InputField from '../components/InputField';
@@ -21,6 +23,7 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [role, setRole] = useState('customer');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   const { register, handleSubmit, formState: { errors, isValid } } = useForm({
     resolver: yupResolver(schema),
@@ -37,8 +40,10 @@ const SignIn = () => {
       });
       
       if (response.data.success) {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        dispatch(setCredentials({
+          user: response.data.user,
+          token: response.data.token
+        }));
         toast.success(`Access Authorized.`);
         navigate('/marketplace');
       }

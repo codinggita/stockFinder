@@ -135,13 +135,6 @@ const Marketplace = () => {
               </div>
             )}
           </div>
-          {hasMoreStores && (
-            <div className="flex justify-center mt-6">
-              <Button onClick={() => setStorePage(prev => prev + 1)}>
-                View More Stores
-              </Button>
-            </div>
-          )}
         </section>
 
         {/* Products Section */}
@@ -175,13 +168,6 @@ const Marketplace = () => {
               </div>
             )}
           </div>
-          {hasMoreProducts && (
-            <div className="flex justify-center mt-6">
-              <Button onClick={() => setProductPage(prev => prev + 1)}>
-                View More Products
-              </Button>
-            </div>
-          )}
         </section>
 
       </main>
