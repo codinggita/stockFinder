@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const negotiationRoutes = require('./routes/negotiationRoutes');
 const Store = require('./models/Store');
 const Product = require('./models/Product');
 
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/negotiations', negotiationRoutes);
 
 const seedData = async () => {
   try {
