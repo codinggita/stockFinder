@@ -8,10 +8,16 @@ import ProductDetail from './pages/ProductDetail';
 import StoreDetail from './pages/StoreDetail';
 import AllStores from './pages/AllStores';
 import AllProducts from './pages/AllProducts';
+import Cart from './pages/Cart';
+import Negotiation from './pages/Negotiation';
+import CartInitializer from './components/CartInitializer';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
+      <CartInitializer />
       <Toaster position="top-right" toastOptions={{
         style: {
           background: '#1f2937',
@@ -27,6 +33,8 @@ function App() {
         <Route path="/products" element={<AllProducts />} />
         <Route path="/store/:id" element={<StoreDetail />} />
         <Route path="/stores" element={<AllStores />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/negotiate/:productId" element={<Negotiation />} />
         <Route path="/" element={<Navigate to="/marketplace" />} />
       </Routes>
     </BrowserRouter>
