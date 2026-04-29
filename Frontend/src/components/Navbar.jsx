@@ -2,13 +2,16 @@ import React from 'react';
 import { ShoppingCart, Bell, LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
     dispatch(logout());
@@ -26,13 +29,22 @@ const Navbar = () => {
             </h1>
 
             <div className="hidden md:flex space-x-8">
-              <Link to="/marketplace" className="text-white border-b-2 border-primary pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
+              <Link 
+                to="/marketplace" 
+                className={`${isActive('/marketplace') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+              >
                 Marketplace
               </Link>
-              <Link to="/stores" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
+              <Link 
+                to="/stores" 
+                className={`${isActive('/stores') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+              >
                 Stores
               </Link>
-              <Link to="/products" className="text-gray-400 hover:text-white pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all">
+              <Link 
+                to="/products" 
+                className={`${isActive('/products') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+              >
                 Products
               </Link>
             </div>

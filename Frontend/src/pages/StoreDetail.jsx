@@ -198,7 +198,10 @@ const StoreDetail = () => {
                 </div>
 
                 <div className="pt-6">
-                    <button className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.25em] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]">
+                    <button 
+                      onClick={() => navigate('/stores', { state: { selectedStoreId: store._id } })}
+                      className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.25em] shadow-[0_20px_50px_rgba(37,99,235,0.3)] flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                    >
                         <Navigation size={18} />
                         Get Directions
                     </button>

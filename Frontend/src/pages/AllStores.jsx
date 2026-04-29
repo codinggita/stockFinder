@@ -1,102 +1,303 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Search, Filter, MapPin } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ArrowLeft, MapPin, Star, 
+  ChevronRight, Plus, Minus, Crosshair 
+} from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import Navbar from '../components/Navbar';
-import StoreCard from '../components/StoreCard';
 import { fetchNearbyStores } from '../redux/storeSlice';
+
+// Custom Marker Icon - More Premium
+const storeIcon = new L.DivIcon({
+  className: 'custom-marker',
+  html: `
+    <div class="relative group">
+      <div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-all duration-500 animate-pulse"></div>
+      <div class="relative w-8 h-8 bg-[#0f172a] border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+        <div class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,1)]"></div>
+      </div>
+    </div>
+  `,
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16],
+});
+
+// Map Controller Component
+const MapController = ({ center, zoom }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom, { animate: true, duration: 1.5, easeLinearity: 0.25 });
+  }, [center, zoom, map]);
+  return null;
+};
+
+// Custom Marker Component
+const StoreMarker = ({ store, isSelected, onClick }) => {
+  const markerRef = useRef(null);
+
+  useEffect(() => {
+    if (isSelected && markerRef.current) {
+      markerRef.current.openPopup();
+    }
+  }, [isSelected]);
+
+  return (
+    <Marker 
+      ref={markerRef}
+      position={[store.coordinates.coordinates[1], store.coordinates.coordinates[0]]}
+      icon={storeIcon}
+      eventHandlers={{ click: onClick }}
+    >
+      <Popup className="premium-popup" closeButton={false}>
+        <div className="p-5 space-y-4 min-w-[240px]">
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+              <p className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Official Partner</p>
+            </div>
+            <h4 className="font-black text-lg tracking-tighter leading-none">{store.name}</h4>
+          </div>
+          <p className="text-[10px] text-gray-400 leading-relaxed font-medium">{store.location || store.fullAddress || 'Gujarat, India'}</p>
+          <div className="pt-3 border-t border-white/5 flex flex-col gap-3">
+            <div className="flex justify-between items-center text-[10px] font-black">
+              <span className="text-gray-500 uppercase tracking-widest">Available Now</span>
+              <span className="text-green-400">0.8 KM</span>
+            </div>
+            <button 
+              onClick={() => window.location.href = `/store/${store._id}`}
+              className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest rounded-lg transition-all"
+            >
+              View Store Details
+            </button>
+          </div>
+        </div>
+      </Popup>
+    </Marker>
+  );
+};
 
 const AllStores = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { items: stores, status } = useSelector((state) => state.stores);
+  const [activeFilter, setActiveFilter] = useState('All Stores');
+  const [mapCenter, setMapCenter] = useState([23.0225, 72.5714]);
+  const [mapZoom, setMapZoom] = useState(13);
+  const [selectedStoreId, setSelectedStoreId] = useState(null);
+
+  const filters = ['All Stores', 'Flagship', 'Boutique', 'Express'];
 
   useEffect(() => {
-    // Re-fetch stores if needed or ensure they are loaded
     if (stores.length === 0) {
       dispatch(fetchNearbyStores({ lat: 23.0225, lng: 72.5714 }));
     }
   }, [dispatch, stores.length]);
 
+  // Handle store focus from external navigation (e.g. Get Directions)
+  useEffect(() => {
+    if (location.state?.selectedStoreId && stores.length > 0) {
+      const store = stores.find(s => s._id === location.state.selectedStoreId);
+      if (store) {
+        handleStoreClick(store);
+      }
+    }
+  }, [location.state, stores]);
+
+  const handleStoreClick = (store) => {
+    setSelectedStoreId(store._id);
+    if (store.coordinates?.coordinates) {
+      setMapCenter([store.coordinates.coordinates[1], store.coordinates.coordinates[0]]);
+      setMapZoom(16);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#020617] text-white font-sans selection:bg-primary/40">
+    <div className="h-screen bg-[#020617] text-white font-sans flex flex-col overflow-hidden selection:bg-primary/30">
       <Navbar />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
-          <div className="space-y-4">
-            <button 
-              onClick={() => navigate('/marketplace')}
-              className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors group mb-2"
-            >
-              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Back to Marketplace</span>
-            </button>
-            <h1 className="text-5xl font-black tracking-tighter leading-none">Gujarat Retail Network</h1>
-            <p className="text-gray-500 font-medium flex items-center gap-2">
-              <MapPin size={16} className="text-primary" />
-              Exploring {stores.length} premium locations across the state
-            </p>
+      <div className="flex-1 flex pt-16 overflow-hidden">
+        {/* Sidebar */}
+        <aside className="w-full md:w-[320px] bg-gradient-to-b from-[#020617] to-[#01040f] border-r border-white/5 flex flex-col z-20 relative">
+          <div className="p-5 pb-1 space-y-4 relative z-10">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => navigate('/marketplace')}
+                className="w-7 h-7 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all group"
+              >
+                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+              </button>
+              <div className="space-y-0">
+                <p className="text-[7px] font-black text-primary uppercase tracking-[0.3em] opacity-60">Intelligence</p>
+                <h1 className="text-2xl font-black tracking-tighter leading-none">Nearby Outlets</h1>
+              </div>
+            </div>
+
+            <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide snap-x">
+              {filters.map(filter => (
+                <button
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`px-3 py-1.5 rounded-lg text-[7px] font-black uppercase tracking-[0.2em] transition-all duration-500 whitespace-nowrap snap-start border ${
+                    activeFilter === filter 
+                      ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
+                      : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-white border-white/5'
+                  }`}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Search/Filter Bar */}
-          <div className="w-full md:w-96 flex gap-3">
-             <div className="flex-1 relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary transition-colors" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="Search by city or name..." 
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-primary/50 transition-all placeholder:text-gray-600"
-                />
+          {/* Cards Area */}
+          <div className="flex-1 overflow-y-auto px-4 pb-10 space-y-3 scrollbar-hide perspective-1000">
+            <AnimatePresence>
+              {status === 'loading' ? (
+                Array(3).fill(0).map((_, i) => (
+                  <div key={i} className="h-40 bg-white/5 border border-white/5 rounded-xl animate-pulse"></div>
+                ))
+              ) : (
+                stores.map((store, index) => (
+                  <motion.div
+                    key={store._id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
+                    onClick={() => handleStoreClick(store)}
+                    className={`group relative bg-[#0f172a]/40 backdrop-blur-3xl border rounded-xl overflow-hidden transition-all duration-500 cursor-pointer flex flex-col ${
+                      selectedStoreId === store._id ? 'border-primary ring-1 ring-primary/20 shadow-xl scale-[1.01]' : 'border-white/5 hover:border-white/15'
+                    }`}
+                  >
+                    <div className="relative h-28 overflow-hidden bg-black">
+                      <img 
+                        src={store.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} 
+                        alt={store.name} 
+                        className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-[3000ms]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/10 to-transparent"></div>
+                      
+                      <div className="absolute top-2 left-2">
+                        <span className="px-2 py-0.5 bg-black/60 border border-white/10 text-green-400 text-[6px] font-black tracking-[0.2em] rounded-full uppercase flex items-center gap-1 backdrop-blur-xl">
+                          <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
+                          Live
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-4 pt-2 space-y-3">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-lg font-black tracking-tighter truncate group-hover:text-primary transition-colors">{store.name}</h3>
+                          <div className="flex items-center gap-1 mt-0.5">
+                             <Star size={8} className="text-yellow-500 fill-yellow-500 opacity-80" />
+                             <span className="text-[7px] font-black text-gray-600 uppercase tracking-widest">Partnered</span>
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-base font-black tracking-tighter leading-none text-primary">0.8<span className="text-[8px] ml-0.5">KM</span></p>
+                        </div>
+                      </div>
+
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/store/${store._id}`);
+                        }}
+                        className={`w-full py-2.5 rounded-lg font-black text-[8px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 ${
+                          selectedStoreId === store._id 
+                            ? 'bg-primary text-white shadow-primary/20' 
+                            : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                        }`}
+                      >
+                        Enter Space 
+                        <ChevronRight size={10} className="group-hover/btn:translate-x-1 transition-transform" />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+
+          <div className="p-6 border-t border-white/5 bg-[#020617] flex justify-between items-center text-[9px] font-black uppercase tracking-[0.4em] text-gray-700">
+             <div className="flex gap-6">
+                <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span> Active</span>
+                <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-yellow-500"></span> Limited</span>
              </div>
-             <button className="bg-white/5 border border-white/10 p-4 rounded-2xl text-gray-400 hover:text-white hover:border-primary/30 transition-all">
-                <Filter size={20} />
+             <span>© 2024 Luxe</span>
+          </div>
+        </aside>
+
+        {/* Map */}
+        <section className="flex-1 relative bg-[#020617]">
+          <MapContainer center={mapCenter} zoom={mapZoom} zoomControl={false} className="w-full h-full">
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              attribution='&copy; LUXE RETAIL INTELLIGENCE'
+            />
+            <MapController center={mapCenter} zoom={mapZoom} />
+            
+            {stores.map(store => (
+              store.coordinates?.coordinates && (
+                <StoreMarker 
+                  key={store._id} 
+                  store={store} 
+                  isSelected={selectedStoreId === store._id}
+                  onClick={() => handleStoreClick(store)}
+                />
+              )
+            ))}
+          </MapContainer>
+
+          {/* Floating UI Elements */}
+          <div className="absolute top-8 right-8 flex flex-col gap-5 z-[1000]">
+             <div className="flex flex-col bg-[#0f172a]/90 backdrop-blur-2xl border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl">
+                <button onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))} className="p-5 hover:bg-white/5 transition-colors border-b border-white/10 text-gray-400 hover:text-white">
+                   <Plus size={20} />
+                </button>
+                <button onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))} className="p-5 hover:bg-white/5 transition-colors text-gray-400 hover:text-white">
+                   <Minus size={20} />
+                </button>
+             </div>
+             <button 
+               onClick={() => {
+                 setMapCenter([23.0225, 72.5714]);
+                 setMapZoom(13);
+                 setSelectedStoreId(null);
+               }}
+               className="p-5 bg-primary shadow-[0_20px_50px_rgba(59,130,246,0.3)] border border-primary rounded-[2rem] hover:scale-110 transition-all flex items-center justify-center text-white"
+             >
+                <Crosshair size={22} />
              </button>
           </div>
-        </div>
+        </section>
+      </div>
 
-        {/* Grid Section */}
-        {status === 'loading' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-[400px] bg-white/5 rounded-[2.5rem] animate-pulse"></div>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {stores.map((store, index) => (
-              <motion.div
-                key={store._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <StoreCard store={store} />
-              </motion.div>
-            ))}
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!status === 'loading' && stores.length === 0 && (
-          <div className="py-40 text-center space-y-6">
-            <div className="inline-flex p-8 bg-white/5 rounded-full text-gray-700">
-               <Search size={48} />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-white">No stores found</h3>
-              <p className="text-gray-500 max-w-xs mx-auto">Try adjusting your search or filters to explore other locations in Gujarat.</p>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* Footer Branding */}
-      <footer className="border-t border-white/5 bg-[#020617] py-12 text-center">
-         <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.5em]">RETAILBRIDGE INTELLIGENCE SYSTEM • STATEWIDE VIEW</p>
-      </footer>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .leaflet-container { background: #020617 !important; }
+        .premium-popup .leaflet-popup-content-wrapper {
+          background: rgba(15, 23, 42, 0.9) !important;
+          backdrop-filter: blur(20px) !important;
+          color: white !important;
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 2.5rem;
+          padding: 0 !important;
+          box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8) !important;
+        }
+        .premium-popup .leaflet-popup-content { margin: 0 !important; width: auto !important; }
+        .premium-popup .leaflet-popup-tip { background: rgba(15, 23, 42, 0.9) !important; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-marker { background: none !important; border: none !important; }
+        .perspective-1000 { perspective: 1000px; }
+      `}} />
     </div>
   );
 };

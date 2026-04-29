@@ -9,6 +9,7 @@ import { fetchNearbyStores } from '../redux/storeSlice';
 import { fetchProducts } from '../redux/productSlice';
 import { clearSearch } from '../redux/searchSlice';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import Button from '../components/Button';
 
 const Marketplace = () => {
@@ -135,6 +136,18 @@ const Marketplace = () => {
               </div>
             )}
           </div>
+
+          {/* New View More Button */}
+          {!isSearching && (
+            <div className="mt-12 flex justify-center">
+               <Link 
+                 to="/stores"
+                 className="px-12 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-white transition-all transform hover:scale-105 active:scale-95 flex items-center gap-4"
+               >
+                 Explore 48+ More Stores <ArrowRight size={16} className="text-primary" />
+               </Link>
+            </div>
+          )}
         </section>
 
         {/* Products Section */}
