@@ -7,7 +7,7 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   rating: { type: Number, default: 5 },
   reviewsCount: { type: Number, default: 0 },
-  status: { type: String, enum: ['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK'], default: 'IN_STOCK' },
+  status: { type: String, enum: ['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK', 'PRE_ORDER', 'EXCLUSIVE'], default: 'IN_STOCK' },
   image: { type: String },
   images: [{ type: String }],
   sizes: [{ type: String }], // e.g., ["8", "9", "10"] or ["S", "M", "L"]

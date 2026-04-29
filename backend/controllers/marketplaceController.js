@@ -85,11 +85,63 @@ exports.getNearbyStores = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const { category, search } = req.query;
+    const { category, search, minPrice, maxPrice, status, lat, lng, radius } = req.query;
     let query = {};
+    
     if (category) query.category = category;
     if (search) query.name = { $regex: search, $options: 'i' };
-    const products = await Product.find(query).populate('store');
+    
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+    
+    if (status) {
+      const statusArray = Array.isArray(status) ? status : [status];
+      const dbStatusMap = {
+        'In Stock': ['IN_STOCK', 'LOW_STOCK'],
+        'Pre-order': ['PRE_ORDER'],
+        'Exclusive Access': ['EXCLUSIVE']
+      };
+      
+      let targetStatuses = [];
+      statusArray.forEach(s => {
+        if (dbStatusMap[s]) targetStatuses.push(...dbStatusMap[s]);
+        else targetStatuses.push(s);
+      });
+      
+      if (targetStatuses.length > 0) {
+        query.status = { $in: targetStatuses };
+      }
+    }
+
+    let products = await Product.find(query).populate('store');
+    
+    // Calculate distances and filter if radius is provided
+    if (lat && lng) {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+      
+      products = products.map(product => {
+        const p = product.toObject();
+        if (p.store && p.store.coordinates && p.store.coordinates.coordinates) {
+          p.distance = getDistance(userLat, userLng, p.store.coordinates.coordinates[1], p.store.coordinates.coordinates[0]);
+        } else {
+          p.distance = null;
+        }
+        return p;
+      });
+
+      if (radius && radius !== 'Anywhere') {
+        const maxRadius = parseInt(radius.replace(/[^0-9]/g, '')) || Infinity;
+        products = products.filter(p => p.distance !== null && parseFloat(p.distance) <= maxRadius);
+      }
+      
+      // Sort by distance if provided
+      products.sort((a, b) => (parseFloat(a.distance) || Infinity) - (parseFloat(b.distance) || Infinity));
+    }
+
     res.status(200).json({ success: true, products });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
