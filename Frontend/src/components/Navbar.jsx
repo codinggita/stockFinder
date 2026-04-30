@@ -3,6 +3,7 @@ import { ShoppingCart, Bell, LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { clearMyStore } from '../redux/storeSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearMyStore());
     navigate('/login');
   };
 
