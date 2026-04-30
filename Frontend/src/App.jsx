@@ -11,6 +11,8 @@ import AllProducts from './pages/AllProducts';
 import Cart from './pages/Cart';
 import Negotiation from './pages/Negotiation';
 import RetailerDashboard from './pages/RetailerDashboard';
+import CreateStore from './pages/CreateStore';
+import AddProduct from './pages/AddProduct';
 import CartInitializer from './components/CartInitializer';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -31,6 +33,8 @@ function App() {
         <Route path="/login" element={<SignIn />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/dashboard" element={<RetailerDashboard />} />
+        <Route path="/dashboard/create-store" element={<CreateStore />} />
+        <Route path="/dashboard/add-product" element={<AddProduct />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<AllProducts />} />
         <Route path="/store/:id" element={<StoreDetail />} />
