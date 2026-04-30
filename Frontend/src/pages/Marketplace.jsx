@@ -14,6 +14,7 @@ import Button from '../components/Button';
 
 const Marketplace = () => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [storePage, setStorePage] = useState(1);
   const [productPage, setProductPage] = useState(1);
 
@@ -40,6 +41,23 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-[#020617] flex flex-col font-sans selection:bg-primary/40">
       <Navbar />
+      
+      {/* Retailer Dashboard Link Banner */}
+      {user?.role === 'retailer' && (
+        <div className="fixed top-16 left-0 right-0 z-40 bg-primary/10 border-b border-primary/20 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
+            <p className="text-[10px] font-black uppercase tracking-widest text-primary">
+              Logged in as Retailer Partner
+            </p>
+            <Link 
+              to="/dashboard" 
+              className="text-[10px] font-black uppercase tracking-widest bg-primary text-white px-4 py-1 rounded-full hover:bg-primary/80 transition-all"
+            >
+              Go to Dashboard &rarr;
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative pt-48 pb-32 px-4 sm:px-6 lg:px-8">

@@ -45,7 +45,12 @@ const SignIn = () => {
           token: response.data.token
         }));
         toast.success(`Access Authorized.`);
-        navigate('/marketplace');
+        
+        if (response.data.user.role === 'retailer') {
+          navigate('/dashboard');
+        } else {
+          navigate('/marketplace');
+        }
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Invalid credentials');

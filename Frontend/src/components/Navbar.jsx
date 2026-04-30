@@ -11,11 +11,21 @@ const Navbar = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const user = useSelector((state) => state.auth.user);
+
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
+  };
+
+  const getInitials = (name) => {
+    if (!name || typeof name !== 'string') return '??';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 0 || parts[0] === '') return '??';
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   };
 
   return (
@@ -24,29 +34,48 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
 
           <div className="flex items-center gap-10">
-            <h1 className="text-white text-lg font-bold tracking-[0.2em] uppercase cursor-pointer" onClick={() => navigate('/marketplace')}>
+            <h1 className="text-white text-lg font-bold tracking-[0.2em] uppercase cursor-pointer" onClick={() => navigate(user?.role === 'retailer' ? '/dashboard' : '/marketplace')}>
               LUXE RETAIL
             </h1>
 
             <div className="hidden md:flex space-x-8">
-              <Link 
-                to="/marketplace" 
-                className={`${isActive('/marketplace') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
-              >
-                Marketplace
-              </Link>
-              <Link 
-                to="/stores" 
-                className={`${isActive('/stores') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
-              >
-                Stores
-              </Link>
-              <Link 
-                to="/products" 
-                className={`${isActive('/products') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
-              >
-                Products
-              </Link>
+              {user?.role === 'retailer' ? (
+                <>
+                  <Link 
+                    to="/dashboard" 
+                    className={`${isActive('/dashboard') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link 
+                    to="/marketplace" 
+                    className={`${isActive('/marketplace') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+                  >
+                    View Marketplace
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/marketplace" 
+                    className={`${isActive('/marketplace') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+                  >
+                    Marketplace
+                  </Link>
+                  <Link 
+                    to="/stores" 
+                    className={`${isActive('/stores') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+                  >
+                    Stores
+                  </Link>
+                  <Link 
+                    to="/products" 
+                    className={`${isActive('/products') ? 'text-white border-b-2 border-primary' : 'text-gray-400 hover:text-white'} pb-5 mt-5 text-[11px] font-bold uppercase tracking-widest transition-all`}
+                  >
+                    Products
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -68,25 +97,31 @@ const Navbar = () => {
 
             {/* Account / Profile Button */}
             <button
-              className="ml-1 w-9 h-9 rounded-full bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-white/10 flex items-center justify-center overflow-hidden group hover:border-primary/50 transition-all"
-              onClick={() => navigate('/login')}
-              title="Account"
+              className="ml-1 w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden group hover:border-primary transition-all shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]"
+              onClick={() => !user && navigate('/login')}
+              title={user?.name || "Account"}
             >
-              <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100"
-                alt="Profile"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform"
-              />
+              {user ? (
+                <span className="text-[11px] font-black tracking-tighter text-white group-hover:scale-110 transition-transform">
+                  {getInitials(user.name)}
+                </span>
+              ) : (
+                <div className="w-full h-full bg-white/5 flex items-center justify-center">
+                   <ShoppingCart size={14} className="text-gray-500" />
+                </div>
+              )}
             </button>
 
             {/* Logout hidden in smaller profile menu or as separate icon */}
-            <button
-              onClick={handleLogout}
-              className="ml-2 text-gray-500 hover:text-red-400 transition-colors"
-              title="Logout"
-            >
-              <LogOut size={16} />
-            </button>
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="ml-2 text-gray-500 hover:text-red-400 transition-colors"
+                title="Logout"
+              >
+                <LogOut size={16} />
+              </button>
+            )}
           </div>
 
         </div>
