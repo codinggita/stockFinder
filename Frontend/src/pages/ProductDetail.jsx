@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Star, MapPin, Zap, Wind, ShoppingBag, Music, Sun, Minus, Plus, ShieldCheck } from 'lucide-react';
 import api from '../services/api';
@@ -20,6 +20,9 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(8);
+  
+  const { user } = useSelector(state => state.auth);
+  const { myStore } = useSelector(state => state.stores);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -149,7 +152,7 @@ const ProductDetail = () => {
                     <h3 className="text-sm font-black uppercase tracking-widest text-white">Local Inventory</h3>
                     <div className="flex items-center gap-1.5 text-blue-400 text-[10px] font-bold">
                         <MapPin size={14} />
-                        Mumbai, MH
+                        {product.store?.location || 'Ahmedabad, GJ'}
                     </div>
                 </div>
 
@@ -188,44 +191,70 @@ const ProductDetail = () => {
                     </div>
 
                     {/* Size Selector */}
-                    {product.sizes && product.sizes.length > 0 && (
+                    {product.sizeType && (product.sizeType === 'Clothing' || product.sizeType === 'Shoes' || (product.sizes && product.sizes.length > 0)) && (
                         <div className="space-y-4 flex-1">
                             <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">
                                 Available Size {product.sizeType ? `(${product.sizeType})` : ''}
                             </span>
                             <div className="grid grid-cols-4 gap-2">
-                                {product.sizes.map(size => (
-                                    <button 
-                                      key={size}
-                                      onClick={() => setSelectedSize(size)}
-                                      className={`py-3 rounded-xl text-xs font-black transition-all border ${selectedSize === size ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/30'}`}
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
+                                {(() => {
+                                    const CLOTHING_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+                                    const SHOE_SIZES = ['6', '7', '8', '9', '10', '11', '12'];
+                                    const masterSizes = product.sizeType === 'Clothing' ? CLOTHING_SIZES : product.sizeType === 'Shoes' ? SHOE_SIZES : (product.sizes || []);
+                                    
+                                    return masterSizes.map(size => {
+                                        const isAvailable = product.sizes && product.sizes.includes(size);
+                                        return (
+                                        <button 
+                                          key={size}
+                                          disabled={!isAvailable}
+                                          onClick={() => isAvailable && setSelectedSize(size)}
+                                          className={`py-3 rounded-xl text-xs font-black transition-all border 
+                                            ${!isAvailable 
+                                                ? 'bg-white/5 border-white/5 text-gray-600 cursor-not-allowed opacity-40' 
+                                                : selectedSize === size 
+                                                    ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)]' 
+                                                    : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/30'}`}
+                                        >
+                                            {size}
+                                        </button>
+                                        );
+                                    });
+                                })()}
                             </div>
                         </div>
                     )}
                 </div>
 
                 <div className="flex gap-4">
-                    <button
-                      onClick={() => {
-                        dispatch(addToCart({ ...product, quantity }));
-                        toast.success(`${product.name} added to cart!`);
-                      }}
-                      className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
-                    >
-                        <ShoppingBag size={18} />
-                        Add to Cart
-                    </button>
-                    <button 
-                      onClick={() => navigate(`/negotiate/${id}`)}
-                      className="flex-1 border-2 border-yellow-500/50 hover:border-yellow-500 text-yellow-500 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
-                    >
-                        <Zap size={18} />
-                        Negotiate Price
-                    </button>
+                    {user?.role === 'retailer' && myStore && product.store && (String(product.store._id || product.store) === String(myStore._id)) ? (
+                      <button
+                        onClick={() => navigate(`/dashboard/edit-product/${id}`)}
+                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                      >
+                          Edit Product
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            dispatch(addToCart({ ...product, quantity }));
+                            toast.success(`${product.name} added to cart!`);
+                          }}
+                          className="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                        >
+                            <ShoppingBag size={18} />
+                            Add to Cart
+                        </button>
+                        <button 
+                          onClick={() => navigate(`/negotiate/${id}`)}
+                          className="flex-1 border-2 border-yellow-500/50 hover:border-yellow-500 text-yellow-500 py-4 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
+                        >
+                            <Zap size={18} />
+                            Negotiate Price
+                        </button>
+                      </>
+                    )}
                 </div>
 
                 <div className="flex items-center justify-center gap-3 text-gray-500">

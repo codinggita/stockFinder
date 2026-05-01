@@ -40,6 +40,7 @@ const SignIn = () => {
       });
       
       if (response.data.success) {
+        dispatch({ type: 'stores/clearMyStore' }); // Clear any stale store state
         dispatch(setCredentials({
           user: response.data.user,
           token: response.data.token

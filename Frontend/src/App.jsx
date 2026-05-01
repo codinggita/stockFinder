@@ -12,7 +12,7 @@ import Cart from './pages/Cart';
 import Negotiation from './pages/Negotiation';
 import RetailerDashboard from './pages/RetailerDashboard';
 import CreateStore from './pages/CreateStore';
-import AddProduct from './pages/AddProduct';
+import EditProduct from './pages/EditProduct';
 import CartInitializer from './components/CartInitializer';
 import ScrollToTop from './components/ScrollToTop';
 
@@ -34,7 +34,7 @@ function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/dashboard" element={<RetailerDashboard />} />
         <Route path="/dashboard/create-store" element={<CreateStore />} />
-        <Route path="/dashboard/add-product" element={<AddProduct />} />
+        <Route path="/dashboard/edit-product/:id" element={<EditProduct />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/products" element={<AllProducts />} />
         <Route path="/store/:id" element={<StoreDetail />} />
