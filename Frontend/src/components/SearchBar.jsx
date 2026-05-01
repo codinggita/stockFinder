@@ -9,16 +9,12 @@ const SearchBar = () => {
   const { status, query } = useSelector((state) => state.search);
   const isLoading = status === 'loading';
 
-  // Sync local input with global query (e.g. when search is cleared)
   React.useEffect(() => {
-    if (!query) {
-      setInputValue('');
-    }
+    if (!query) setInputValue('');
   }, [query]);
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
-    
     if (inputValue.trim()) {
       dispatch(setSearchQuery(inputValue));
       dispatch(performSearch({ q: inputValue, location: 'Ahmedabad, GJ' }));
@@ -28,17 +24,17 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8">
+    <div className="w-full max-w-2xl mx-auto">
       <form onSubmit={handleSearch} className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-primary to-blue-400 rounded-full opacity-20 blur group-hover:opacity-40 transition duration-500"></div>
-        <div className="relative flex items-center bg-navy/90 border border-white/10 rounded-full overflow-hidden shadow-2xl backdrop-blur-sm">
-          <div className="pl-6 text-gray-400">
-            <Search size={20} />
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-primary rounded-[2rem] opacity-0 blur-xl group-focus-within:opacity-20 transition duration-700"></div>
+        <div className="relative flex items-center bg-surface border border-borderCustom rounded-[1.8rem] overflow-hidden shadow-lg transition-all group-focus-within:border-primary/40">
+          <div className="pl-6 text-subtext group-focus-within:text-primary transition-colors">
+            <Search size={18} />
           </div>
           <input
             type="text"
-            className="w-full bg-transparent text-white placeholder-gray-500 py-4 px-4 focus:outline-none text-sm font-medium"
-            placeholder="Search products, brands, or nearby outlets..."
+            className="w-full bg-transparent text-textMain placeholder:text-subtext/60 py-5 px-5 focus:outline-none text-[13px] font-black uppercase tracking-[0.1em]"
+            placeholder="Search Registry..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
@@ -46,29 +42,21 @@ const SearchBar = () => {
             <button 
               type="submit"
               disabled={isLoading}
-              className="bg-primary hover:bg-primaryHover disabled:opacity-50 text-white px-8 py-2 rounded-full font-bold text-xs tracking-widest transition-all flex items-center gap-2"
+              className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-8 py-3.5 rounded-[1.2rem] font-black text-[10px] tracking-[0.2em] transition-all flex items-center gap-3 shadow-xl shadow-primary/20"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 size={14} className="animate-spin" />
-                  SEARCHING...
-                </>
-              ) : (
-                'SEARCH'
-              )}
+              {isLoading ? (<><Loader2 size={14} className="animate-spin" />SYNCING</>) : 'LOCATE'}
             </button>
           </div>
         </div>
       </form>
-      
-      <div className="flex items-center justify-center gap-6 mt-4 text-[10px] font-black text-gray-500 uppercase tracking-widest">
-        <div className="flex items-center gap-1.5">
-          <MapPin size={12} className="text-primary" />
-          <span>Ahmedabad, GJ</span>
+      <div className="flex items-center justify-center gap-8 mt-6 text-[9px] font-black text-subtext uppercase tracking-[0.3em]">
+        <div className="flex items-center gap-2 group cursor-default">
+          <MapPin size={12} className="text-accent group-hover:animate-bounce" />
+          <span className="text-textMain/60 group-hover:text-textMain transition-colors">Sector: Ahmedabad, GJ</span>
         </div>
-        <div className="flex items-center gap-1.5 opacity-50">
+        <div className="flex items-center gap-2 opacity-40">
           <Clock size={12} />
-          <span>Recent: Skeleton Watch</span>
+          <span>Last Query: Prime inventory</span>
         </div>
       </div>
     </div>

@@ -5,9 +5,6 @@ import { useNavigate } from 'react-router-dom';
 
 const StoreCard = ({ store }) => {
   const navigate = useNavigate();
-  const hasImage = !!store.image;
-  
-  // Default image if none provided
   const storeImage = store.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800';
 
   const handleViewDetails = () => {
@@ -16,58 +13,55 @@ const StoreCard = ({ store }) => {
 
   return (
     <motion.div 
-      whileHover={{ y: -8 }}
+      whileHover={{ y: -10 }}
       onClick={handleViewDetails}
-      className="bg-[#0f172a]/60 backdrop-blur-xl border border-white/5 rounded-3xl p-7 shadow-2xl transition-all hover:border-primary/50 group cursor-pointer flex flex-col"
+      className="bg-cardBg backdrop-blur-3xl border border-borderCustom rounded-[2.5rem] p-8 shadow-premium transition-all hover:border-accent/40 group cursor-pointer flex flex-col"
     >
       <div>
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-white font-bold text-xl leading-tight tracking-tight group-hover:text-primary transition-colors">{store.name}</h3>
-          <div className="bg-[#4ade80] text-[#020617] text-[10px] font-black px-2.5 py-1 rounded-lg tracking-tighter uppercase shadow-[0_0_15px_rgba(74,222,128,0.3)]">
+        <div className="flex justify-between items-start mb-3 px-1">
+          <h3 className="text-textMain font-black text-2xl leading-none tracking-tighter group-hover:text-accent transition-colors uppercase">{store.name}</h3>
+          <div className="bg-accent/10 border border-accent/20 text-accent text-[9px] font-black px-3 py-1.5 rounded-lg tracking-widest uppercase shadow-xl">
             {store.distance || '2.4'} KM
           </div>
         </div>
-        <p className="text-gray-500 text-sm mb-6 font-medium flex items-center gap-1.5">
-          <MapPin size={12} className="text-primary/70" />
+        <p className="text-subtext text-[10px] mb-8 font-black uppercase tracking-[0.2em] flex items-center gap-2 ml-1">
+          <MapPin size={12} className="text-accent/60" />
           {store.location}
         </p>
         
-        {/* Store Image / Interactive Graphic - Always show like first photo */}
-        <div className="relative h-52 bg-[#1e293b] rounded-2xl mb-8 flex items-center justify-center overflow-hidden border border-white/10 group">
+        {/* Store Image Container */}
+        <div className="relative h-56 bg-sectionSurface rounded-[2rem] mb-8 flex items-center justify-center overflow-hidden border border-borderCustom group/img shadow-inner">
             <motion.img 
               src={storeImage} 
               alt={store.name} 
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity" 
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+              className="w-full h-full object-cover opacity-90 dark:opacity-60 group-hover/img:opacity-100 transition-opacity" 
             />
-            {/* Gradient Overlay for Interactivity */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent opacity-60"></div>
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-100 dark:from-dark/80 transition-opacity"></div>
             
-            {/* Abstract floating element from design */}
-            <div className="absolute inset-x-6 inset-y-6 border border-white/10 rounded-xl pointer-events-none group-hover:border-primary/30 transition-colors"></div>
-            
-            {/* Center icon on hover */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white shadow-2xl">
-                  <Store size={20} />
+            {/* Center Action */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-500 transform scale-90 group-hover/img:scale-100">
+              <div className="px-6 py-2 bg-accent text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-2xl">
+                  Entry Point
               </div>
             </div>
         </div>
       </div>
 
-      <div className="mt-auto">
-        <div className="flex items-center justify-between mb-5">
-           <div className="flex items-center gap-2.5 text-[10px] uppercase font-black tracking-[0.2em]">
-             <span className={`w-2.5 h-2.5 rounded-full ${store.status === 'Closed' ? 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]' : 'bg-green-500 shadow-[0_0_12px_rgba(34,197,94,0.8)]'}`}></span>
-             <span className={store.status === 'Closed' ? 'text-red-400' : 'text-green-400'}>{store.status || 'Open Now'}</span>
-             <span className="text-gray-700">•</span>
-             <span className="text-gray-500">Stock updated 4m ago</span>
+      <div className="mt-auto px-1">
+        <div className="flex items-center justify-between mb-8">
+           <div className="flex items-center gap-3 text-[9px] uppercase font-black tracking-[0.3em]">
+             <span className={`w-2 h-2 rounded-full ${store.status === 'Closed' ? 'bg-red-500' : 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse'}`}></span>
+             <span className={store.status === 'Closed' ? 'text-red-400' : 'text-emerald-500'}>{store.status || 'Active Now'}</span>
+             <span className="text-borderCustom">/</span>
+             <span className="text-subtext">Updated Real-Time</span>
            </div>
            
            {store.rating && (
-             <div className="flex items-center gap-1 text-yellow-500 font-bold text-xs">
-                <Star size={12} fill="currentColor" />
+             <div className="flex items-center gap-1.5 text-accent font-black text-[11px] bg-accent/5 px-2 py-1 rounded-md border border-accent/10">
+                <Star size={10} fill="currentColor" />
                 <span>{store.rating}</span>
              </div>
            )}
@@ -78,10 +72,10 @@ const StoreCard = ({ store }) => {
             e.stopPropagation();
             handleViewDetails();
           }}
-          className="w-full py-4 rounded-2xl border border-white/5 bg-white/5 text-[11px] font-black tracking-[0.2em] text-gray-400 uppercase hover:text-white hover:border-primary hover:bg-primary/10 transition-all flex items-center justify-center gap-2 group"
+          className="w-full py-4 rounded-2xl border border-borderCustom bg-surface/40 text-[10px] font-black tracking-[0.3em] text-subtext uppercase hover:text-textMain hover:border-accent/50 hover:bg-accent/5 transition-all flex items-center justify-center gap-3 group/btn"
         >
-          View Details
-          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          Access Terminal
+          <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform text-accent" />
         </button>
       </div>
     </motion.div>
