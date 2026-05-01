@@ -12,13 +12,13 @@ import 'leaflet/dist/leaflet.css';
 import Navbar from '../components/Navbar';
 import { fetchNearbyStores } from '../redux/storeSlice';
 
-// Custom Marker Icon - More Premium
+// Custom Marker Icon
 const storeIcon = new L.DivIcon({
   className: 'custom-marker',
   html: `
     <div class="relative group">
       <div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-all duration-500 animate-pulse"></div>
-      <div class="relative w-8 h-8 bg-[#0f172a] border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
+      <div class="relative w-8 h-8 bg-surface border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
         <div class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,1)]"></div>
       </div>
     </div>
@@ -28,7 +28,6 @@ const storeIcon = new L.DivIcon({
   popupAnchor: [0, -16],
 });
 
-// Map Controller Component
 const MapController = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
@@ -37,14 +36,10 @@ const MapController = ({ center, zoom }) => {
   return null;
 };
 
-// Custom Marker Component
 const StoreMarker = ({ store, isSelected, onClick }) => {
   const markerRef = useRef(null);
-
   useEffect(() => {
-    if (isSelected && markerRef.current) {
-      markerRef.current.openPopup();
-    }
+    if (isSelected && markerRef.current) markerRef.current.openPopup();
   }, [isSelected]);
 
   return (
@@ -63,11 +58,11 @@ const StoreMarker = ({ store, isSelected, onClick }) => {
             </div>
             <h4 className="font-black text-lg tracking-tighter leading-none">{store.name}</h4>
           </div>
-          <p className="text-[10px] text-gray-400 leading-relaxed font-medium">{store.location || store.fullAddress || 'Gujarat, India'}</p>
-          <div className="pt-3 border-t border-white/5 flex flex-col gap-3">
+          <p className="text-[10px] text-subtext leading-relaxed font-medium">{store.location || store.fullAddress || 'Gujarat, India'}</p>
+          <div className="pt-3 border-t border-borderCustom flex flex-col gap-3">
             <div className="flex justify-between items-center text-[10px] font-black">
-              <span className="text-gray-500 uppercase tracking-widest">Available Now</span>
-              <span className="text-green-400">0.8 KM</span>
+              <span className="text-subtext uppercase tracking-widest">Available Now</span>
+              <span className="text-green-500">0.8 KM</span>
             </div>
             <button 
               onClick={() => window.location.href = `/store/${store._id}`}
@@ -91,6 +86,7 @@ const AllStores = () => {
   const [mapCenter, setMapCenter] = useState([23.0225, 72.5714]);
   const [mapZoom, setMapZoom] = useState(13);
   const [selectedStoreId, setSelectedStoreId] = useState(null);
+  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
 
   const filters = ['All Stores', 'Flagship', 'Boutique', 'Express'];
 
@@ -100,13 +96,19 @@ const AllStores = () => {
     }
   }, [dispatch, stores.length]);
 
-  // Handle store focus from external navigation (e.g. Get Directions)
+  // Watch for theme changes to swap map tiles
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
+
   useEffect(() => {
     if (location.state?.selectedStoreId && stores.length > 0) {
       const store = stores.find(s => s._id === location.state.selectedStoreId);
-      if (store) {
-        handleStoreClick(store);
-      }
+      if (store) handleStoreClick(store);
     }
   }, [location.state, stores]);
 
@@ -118,18 +120,22 @@ const AllStores = () => {
     }
   };
 
+  const tileUrl = isDark
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
   return (
-    <div className="h-screen bg-[#020617] text-white font-sans flex flex-col overflow-hidden selection:bg-primary/30">
+    <div className="h-screen bg-background text-textMain font-sans flex flex-col overflow-hidden selection:bg-primary/30">
       <Navbar />
 
       <div className="flex-1 flex pt-16 overflow-hidden">
         {/* Sidebar */}
-        <aside className="w-full md:w-[320px] bg-gradient-to-b from-[#020617] to-[#01040f] border-r border-white/5 flex flex-col z-20 relative">
+        <aside className="w-full md:w-[320px] bg-background border-r border-borderCustom flex flex-col z-20 relative">
           <div className="p-5 pb-1 space-y-4 relative z-10">
             <div className="flex items-center gap-3">
               <button 
                 onClick={() => navigate('/marketplace')}
-                className="w-7 h-7 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-all group"
+                className="w-7 h-7 flex items-center justify-center bg-surface hover:bg-sectionSurface rounded-full border border-borderCustom transition-all group"
               >
                 <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
               </button>
@@ -147,7 +153,7 @@ const AllStores = () => {
                   className={`px-3 py-1.5 rounded-lg text-[7px] font-black uppercase tracking-[0.2em] transition-all duration-500 whitespace-nowrap snap-start border ${
                     activeFilter === filter 
                       ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                      : 'bg-white/5 text-gray-500 hover:bg-white/10 hover:text-white border-white/5'
+                      : 'bg-surface text-subtext hover:bg-sectionSurface hover:text-textMain border-borderCustom'
                   }`}
                 >
                   {filter}
@@ -161,7 +167,7 @@ const AllStores = () => {
             <AnimatePresence>
               {status === 'loading' ? (
                 Array(3).fill(0).map((_, i) => (
-                  <div key={i} className="h-40 bg-white/5 border border-white/5 rounded-xl animate-pulse"></div>
+                  <div key={i} className="h-40 bg-surface border border-borderCustom rounded-xl animate-pulse"></div>
                 ))
               ) : (
                 stores.map((store, index) => (
@@ -171,20 +177,20 @@ const AllStores = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
                     onClick={() => handleStoreClick(store)}
-                    className={`group relative bg-[#0f172a]/40 backdrop-blur-3xl border rounded-xl overflow-hidden transition-all duration-500 cursor-pointer flex flex-col ${
-                      selectedStoreId === store._id ? 'border-primary ring-1 ring-primary/20 shadow-xl scale-[1.01]' : 'border-white/5 hover:border-white/15'
+                    className={`group relative bg-surface backdrop-blur-3xl border rounded-xl overflow-hidden transition-all duration-500 cursor-pointer flex flex-col ${
+                      selectedStoreId === store._id ? 'border-primary ring-1 ring-primary/20 shadow-xl scale-[1.01]' : 'border-borderCustom hover:border-primary/30'
                     }`}
                   >
-                    <div className="relative h-28 overflow-hidden bg-black">
+                    <div className="relative h-28 overflow-hidden bg-sectionSurface">
                       <img 
                         src={store.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} 
                         alt={store.name} 
-                        className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-[3000ms]"
+                        className="w-full h-full object-cover opacity-70 dark:opacity-50 group-hover:scale-105 transition-transform duration-[3000ms]"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/10 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
                       
                       <div className="absolute top-2 left-2">
-                        <span className="px-2 py-0.5 bg-black/60 border border-white/10 text-green-400 text-[6px] font-black tracking-[0.2em] rounded-full uppercase flex items-center gap-1 backdrop-blur-xl">
+                        <span className="px-2 py-0.5 bg-surface/80 border border-borderCustom text-green-500 text-[6px] font-black tracking-[0.2em] rounded-full uppercase flex items-center gap-1 backdrop-blur-xl">
                           <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
                           Live
                         </span>
@@ -197,7 +203,7 @@ const AllStores = () => {
                           <h3 className="text-lg font-black tracking-tighter truncate group-hover:text-primary transition-colors">{store.name}</h3>
                           <div className="flex items-center gap-1 mt-0.5">
                              <Star size={8} className="text-yellow-500 fill-yellow-500 opacity-80" />
-                             <span className="text-[7px] font-black text-gray-600 uppercase tracking-widest">Partnered</span>
+                             <span className="text-[7px] font-black text-subtext uppercase tracking-widest">Partnered</span>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
@@ -212,12 +218,12 @@ const AllStores = () => {
                         }}
                         className={`w-full py-2.5 rounded-lg font-black text-[8px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 ${
                           selectedStoreId === store._id 
-                            ? 'bg-primary text-white shadow-primary/20' 
-                            : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
+                            ? 'bg-primary text-white' 
+                            : 'bg-sectionSurface hover:bg-surface text-textMain border border-borderCustom'
                         }`}
                       >
                         Enter Space 
-                        <ChevronRight size={10} className="group-hover/btn:translate-x-1 transition-transform" />
+                        <ChevronRight size={10} />
                       </button>
                     </div>
                   </motion.div>
@@ -226,7 +232,7 @@ const AllStores = () => {
             </AnimatePresence>
           </div>
 
-          <div className="p-6 border-t border-white/5 bg-[#020617] flex justify-between items-center text-[9px] font-black uppercase tracking-[0.4em] text-gray-700">
+          <div className="p-6 border-t border-borderCustom bg-background flex justify-between items-center text-[9px] font-black uppercase tracking-[0.4em] text-subtext">
              <div className="flex gap-6">
                 <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span> Active</span>
                 <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-yellow-500"></span> Limited</span>
@@ -236,10 +242,11 @@ const AllStores = () => {
         </aside>
 
         {/* Map */}
-        <section className="flex-1 relative bg-[#020617]">
+        <section className="flex-1 relative bg-background">
           <MapContainer center={mapCenter} zoom={mapZoom} zoomControl={false} className="w-full h-full">
             <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              key={tileUrl}
+              url={tileUrl}
               attribution='&copy; LUXE RETAIL INTELLIGENCE'
             />
             <MapController center={mapCenter} zoom={mapZoom} />
@@ -256,13 +263,13 @@ const AllStores = () => {
             ))}
           </MapContainer>
 
-          {/* Floating UI Elements */}
+          {/* Floating Controls */}
           <div className="absolute top-8 right-8 flex flex-col gap-5 z-[1000]">
-             <div className="flex flex-col bg-[#0f172a]/90 backdrop-blur-2xl border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl">
-                <button onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))} className="p-5 hover:bg-white/5 transition-colors border-b border-white/10 text-gray-400 hover:text-white">
+             <div className="flex flex-col bg-surface/90 backdrop-blur-2xl border border-borderCustom rounded-[2rem] overflow-hidden shadow-2xl">
+                <button onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))} className="p-5 hover:bg-sectionSurface transition-colors border-b border-borderCustom text-subtext hover:text-textMain">
                    <Plus size={20} />
                 </button>
-                <button onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))} className="p-5 hover:bg-white/5 transition-colors text-gray-400 hover:text-white">
+                <button onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))} className="p-5 hover:bg-sectionSurface transition-colors text-subtext hover:text-textMain">
                    <Minus size={20} />
                 </button>
              </div>
@@ -281,18 +288,18 @@ const AllStores = () => {
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .leaflet-container { background: #020617 !important; }
+        .leaflet-container { background: var(--background) !important; }
         .premium-popup .leaflet-popup-content-wrapper {
-          background: rgba(15, 23, 42, 0.9) !important;
+          background: var(--surface) !important;
           backdrop-filter: blur(20px) !important;
-          color: white !important;
-          border: 1px solid rgba(255,255,255,0.1);
+          color: var(--text-main) !important;
+          border: 1px solid var(--border-custom);
           border-radius: 2.5rem;
           padding: 0 !important;
-          box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8) !important;
+          box-shadow: var(--card-shadow) !important;
         }
         .premium-popup .leaflet-popup-content { margin: 0 !important; width: auto !important; }
-        .premium-popup .leaflet-popup-tip { background: rgba(15, 23, 42, 0.9) !important; }
+        .premium-popup .leaflet-popup-tip { background: var(--surface) !important; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         .custom-marker { background: none !important; border: none !important; }

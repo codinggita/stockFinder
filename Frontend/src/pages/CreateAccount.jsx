@@ -10,7 +10,7 @@ import AuthLayout from '../components/AuthLayout';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
 import api from '../services/api';
-import authBg from '../assets/auth_bg.png';
+import registerBg from '../assets/register_bg.png';
 
 const schema = yup.object().shape({
   name: yup.string().required('Required').min(3, 'Too short'),
@@ -71,17 +71,20 @@ const CreateAccount = () => {
     <AuthLayout 
       title="Sign Up" 
       subtitle="Create your identity"
-      image={authBg}
+      image={registerBg}
+      reverse={true}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-        <div className="flex gap-2 mb-2">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="bg-sectionSurface p-1.5 rounded-2xl border border-borderCustom flex gap-1.5 mb-4">
           {['customer', 'retailer'].map((r) => (
             <button
               key={r}
               type="button"
               onClick={() => setRole(r)}
-              className={`flex-1 py-1 rounded-full text-[8px] font-black uppercase tracking-widest transition-all border ${
-                role === r ? 'bg-white text-black border-white' : 'bg-transparent text-gray-600 border-white/5'
+              className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                role === r 
+                  ? 'bg-primary text-white shadow-lg shadow-primary/20 border border-primary/20' 
+                  : 'bg-transparent text-subtext hover:text-textMain'
               }`}
             >
               {r}
@@ -90,36 +93,46 @@ const CreateAccount = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-1">
-          <InputField label="Name" icon={User} error={errors.name} {...register('name')} />
-          <InputField label="Email" icon={Mail} error={errors.email} {...register('email')} />
+          <InputField label="Identity Name" icon={User} error={errors.name} placeholder="Full Name" {...register('name')} />
+          <InputField label="Nexus Email" icon={Mail} error={errors.email} placeholder="nexus@example.com" {...register('email')} />
           
-          <div>
-            <InputField label="Password" type="password" icon={ShieldCheck} error={errors.password} {...register('password')} />
-            <div className="flex justify-between items-center px-1 h-1.5 mb-2">
-              <div className="flex gap-1 flex-1 h-full">
-                {[25, 50, 75, 100].map((t) => (
-                  <div key={t} className={`flex-1 rounded-full ${strength.percent >= t ? strength.color : 'bg-white/5'}`} />
-                ))}
-              </div>
-              <span className="text-[7px] font-black text-gray-600 ml-2">{strength.label}</span>
+          <div className="relative group">
+            <InputField label="Security Key" type="password" icon={ShieldCheck} error={errors.password} placeholder="Minimum 8 characters" {...register('password')} />
+            <div className="flex justify-between items-center px-1 h-[3px] mb-4 gap-1">
+              {[25, 50, 75, 100].map((t) => (
+                <div key={t} className={`flex-1 rounded-full transition-all duration-500 ${strength.percent >= t ? 'bg-accent shadow-[0_0_10px_rgba(198,169,105,0.5)]' : 'bg-borderCustom'}`} />
+              ))}
+            </div>
+            <div className="absolute right-0 top-0 text-[8px] font-black tracking-widest text-accent/80 uppercase">
+              {strength.label && `Security: ${strength.label}`}
             </div>
           </div>
           
-          <InputField label="Confirm" type="password" icon={ShieldCheck} error={errors.confirmPassword} {...register('confirmPassword')} />
+          <InputField label="Verify Protocol" type="password" icon={ShieldCheck} error={errors.confirmPassword} placeholder="Confirm Security Key" {...register('confirmPassword')} />
         </div>
         
-        <div className="flex items-center gap-2">
-          <input id="terms" type="checkbox" className="w-3 h-3 rounded bg-black text-primary" {...register('agreeTerms')} />
-          <label htmlFor="terms" className="text-[7px] text-gray-600 font-bold uppercase">Agree to Protocols</label>
+        <div className="flex items-center gap-3 py-2">
+          <div className="relative flex items-center justify-center">
+            <input 
+              id="terms" 
+              type="checkbox" 
+              className="peer w-4 h-4 rounded-md bg-surface border border-borderCustom text-primary focus:ring-primary/20 transition-all cursor-pointer appearance-none checked:bg-primary checked:border-primary" 
+              {...register('agreeTerms')} 
+            />
+            <div className="absolute pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity">
+              <svg className="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+          </div>
+          <label htmlFor="terms" className="text-[10px] text-subtext font-bold uppercase tracking-widest cursor-pointer hover:text-gray-400 transition-colors">Accept Registry Protocols</label>
         </div>
         
-        <div className="pt-1">
-          <Button type="submit" isLoading={isLoading} disabled={!isValid}>Register &rarr;</Button>
+        <div className="pt-2">
+          <Button type="submit" isLoading={isLoading} disabled={!isValid}>Initialize Profile</Button>
         </div>
         
         <div className="text-center pt-2">
-          <p className="text-[8px] text-gray-600 font-bold uppercase tracking-widest">
-            Member? <Link to="/login" className="text-primary hover:underline">Sign In Now</Link>
+          <p className="text-[10px] text-subtext font-bold uppercase tracking-[0.2em]">
+            Already Synchronized? <Link to="/login" className="text-accent hover:text-accent/80 transition-colors ml-2 underline underline-offset-4 decoration-accent/30">Resume Access</Link>
           </p>
         </div>
       </form>

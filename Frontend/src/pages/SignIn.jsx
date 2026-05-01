@@ -12,7 +12,7 @@ import AuthLayout from '../components/AuthLayout';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
 import api from '../services/api';
-import authBg from '../assets/auth_bg.png';
+import loginBg from '../assets/login_bg.png';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email address').required('Email is required'),
@@ -64,41 +64,39 @@ const SignIn = () => {
     <AuthLayout 
       title="Login" 
       subtitle="Enter secure gateway"
-      image={authBg}
+      image={loginBg}
+      reverse={false}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Role Pill Selection */}
-        <div>
-          <p className="text-[8px] font-black text-gray-700 uppercase tracking-widest mb-2">Role</p>
-          <div className="flex gap-2">
-            {['customer', 'retailer'].map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRole(r)}
-                className={`px-6 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border ${
-                  role === r 
-                    ? 'bg-white text-black border-white' 
-                    : 'bg-transparent text-gray-600 border-white/5'
-                }`}
-              >
-                {r}
-              </button>
-            ))}
-          </div>
+        <div className="bg-sectionSurface p-1.5 rounded-2xl border border-borderCustom flex gap-1.5">
+          {['customer', 'retailer'].map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRole(r)}
+              className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
+                role === r 
+                  ? 'bg-primary text-white shadow-lg shadow-primary/20 border border-primary/20' 
+                  : 'bg-transparent text-subtext hover:text-textMain'
+              }`}
+            >
+              {r}
+            </button>
+          ))}
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-2">
           <InputField
-            label="Email"
-            placeholder="email@example.com"
+            label="Email Identity"
+            placeholder="name@nexus.com"
             type="email"
             icon={Mail}
             error={errors.email}
             {...register('email')}
           />
           <InputField
-            label="Password"
+            label="Security Protocol"
             placeholder="••••••••"
             type="password"
             icon={ShieldCheck}
@@ -109,13 +107,13 @@ const SignIn = () => {
         
         <div className="pt-2">
           <Button type="submit" isLoading={isLoading} disabled={!isValid}>
-            Sign In &rarr;
+            Authorize Access
           </Button>
         </div>
         
-        <div className="text-center pt-4">
-          <p className="text-[9px] text-gray-600 font-bold uppercase tracking-widest">
-            New user? <Link to="/register" className="text-primary hover:underline">Create Account Now</Link>
+        <div className="text-center pt-2">
+          <p className="text-[10px] text-subtext font-bold uppercase tracking-[0.2em]">
+            New Entity? <Link to="/register" className="text-accent hover:text-accent/80 transition-colors ml-2 underline underline-offset-4 decoration-accent/30">Initialize Profile</Link>
           </p>
         </div>
       </form>

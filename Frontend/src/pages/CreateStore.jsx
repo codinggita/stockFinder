@@ -46,16 +46,16 @@ const CreateStore = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white">
+    <div className="min-h-screen bg-background text-textMain">
       <Navbar />
       
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold tracking-tight mb-4">Setup Your Store</h1>
-          <p className="text-gray-400">Join Luxe Retail and start selling to our premium customer base.</p>
+          <p className="text-subtext">Join Luxe Retail and start selling to our premium customer base.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-xl space-y-6">
+        <form onSubmit={handleSubmit} className="bg-surface border border-borderCustom rounded-2xl p-8 backdrop-blur-xl space-y-6 shadow-2xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InputField
               label="Store Name"
