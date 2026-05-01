@@ -11,14 +11,17 @@ import AllProducts from './pages/AllProducts';
 import Cart from './pages/Cart';
 import Negotiation from './pages/Negotiation';
 import RetailerDashboard from './pages/RetailerDashboard';
+import RetailerNegotiations from './pages/RetailerNegotiations';
 import CreateStore from './pages/CreateStore';
 import EditProduct from './pages/EditProduct';
 import CartInitializer from './components/CartInitializer';
 import ScrollToTop from './components/ScrollToTop';
+import ThemeInitializer from './components/ThemeInitializer';
 
 function App() {
   return (
     <BrowserRouter>
+      <ThemeInitializer />
       <ScrollToTop />
       <CartInitializer />
       <Toaster position="top-right" toastOptions={{
@@ -41,6 +44,8 @@ function App() {
         <Route path="/stores" element={<AllStores />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/negotiate/:productId" element={<Negotiation />} />
+        <Route path="/negotiation/:negotiationId" element={<Negotiation />} />
+        <Route path="/dashboard/negotiations" element={<RetailerNegotiations />} />
         <Route path="/" element={<Navigate to="/marketplace" />} />
       </Routes>
     </BrowserRouter>
