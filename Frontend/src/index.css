@@ -1,26 +1,97 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+/* ─── Light Mode (Default) ─── */
+:root {
+  --background: #F2F2F2;
+  --surface: #FFFFFF;
+  --section-surface: #EAEAEA;
+  --border-custom: #D1D5DB;
+  --primary: #4338CA;
+  --accent: #8B735B;
+  --text-main: #1F2937;
+  --subtext: #6B7280;
+  --bg-gradient: linear-gradient(180deg, #F2F2F2 0%, #EAEAEA 100%);
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ─── Dark Mode ─── */
+.dark {
+  --background: #0B0F19;
+  --surface: #111827;
+  --section-surface: #1F2937;
+  --border-custom: #1F2937;
+  --primary: #6366F1;
+  --accent: #C6A969;
+  --text-main: #E5E7EB;
+  --subtext: #9CA3AF;
+  --bg-gradient: radial-gradient(circle at center, #111827 0%, #0B0F19 100%);
+  --card-bg: rgba(17, 24, 39, 0.4);
+  --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
 @layer base {
   body {
-    @apply bg-dark text-white font-sans antialiased overflow-x-hidden;
-    /* Subtle background texture/pattern */
-    background-image: radial-gradient(circle at center, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 1) 100%),
-                      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    @apply text-textMain font-sans antialiased overflow-x-hidden;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* ─── Smooth theme transitions on all elements ─── */
+  *, *::before, *::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+  }
+
+  /* Don't apply transition to animations */
+  .animate-spin, .animate-pulse, .animate-ping,
+  [class*="transition-"], [class*="duration-"] {
+    transition-property: unset;
   }
 }
 
 @layer components {
-  /* Autofill styling override for dark theme */
-  input:-webkit-autofill,
-  input:-webkit-autofill:hover, 
-  input:-webkit-autofill:focus, 
-  input:-webkit-autofill:active{
-      -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
-      -webkit-text-fill-color: white !important;
-      transition: background-color 5000s ease-in-out 0s;
+  /* ─── Autofill: adapts to current theme ─── */
+  :root input:-webkit-autofill,
+  :root input:-webkit-autofill:hover,
+  :root input:-webkit-autofill:focus,
+  :root input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #FFFFFF inset !important;
+    -webkit-text-fill-color: #1F2937 !important;
+    transition: background-color 5000s ease-in-out 0s;
   }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+    -webkit-text-fill-color: #E5E7EB !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* ─── Custom Scrollbar (dark mode) ─── */
+  .dark ::-webkit-scrollbar { width: 4px; height: 4px; }
+  .dark ::-webkit-scrollbar-track { background: transparent; }
+  .dark ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 99px; }
+  .dark ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+  /* ─── Custom Scrollbar (light mode) ─── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
+
+  /* ─── Scrollbar hide utility ─── */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ─── Thin scrollbar utility ─── */
+  .scrollbar-thin { scrollbar-width: thin; }
 }
