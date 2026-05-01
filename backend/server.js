@@ -34,6 +34,12 @@ app.use('/api/negotiations', negotiationRoutes);
 
 const seedData = async () => {
   try {
+    const existingSeededStore = await Store.findById('662a00000000000000000001');
+    if (existingSeededStore) {
+      console.log('Database already seeded. Skipping seedData to preserve user data.');
+      return;
+    }
+
     // FORCE CLEAR to fix the "messy" inconsistent state
     await Store.deleteMany({});
     await Product.deleteMany({});
