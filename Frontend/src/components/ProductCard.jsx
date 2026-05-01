@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../redux/cartSlice';
 import toast from 'react-hot-toast';
 
@@ -25,6 +25,8 @@ const getStockBadge = (status) => {
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useSelector(state => state.auth);
+  const isRetailer = user?.role === 'retailer';
   const badge = getStockBadge(product.status);
   const isSoldOut = product.status === 'OUT_OF_STOCK';
   
@@ -94,7 +96,7 @@ const ProductCard = ({ product }) => {
             <div className="text-white text-xl font-black tracking-tighter">{formattedPrice}</div>
           </div>
           
-          {!isSoldOut && (
+          {!isSoldOut && !isRetailer && (
             <button 
               onClick={(e) => {
                 e.stopPropagation();
@@ -105,6 +107,18 @@ const ProductCard = ({ product }) => {
               title="Add to Cart"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            </button>
+          )}
+          {isRetailer && (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/dashboard/edit-product/${product._id}`);
+              }}
+              className="px-4 h-10 rounded-xl bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase tracking-widest flex items-center justify-center transition-all hover:scale-105 shadow-[0_0_20px_rgba(var(--primary-rgb),0.3)] flex-shrink-0"
+              title="Edit Product"
+            >
+              Edit
             </button>
           )}
         </div>

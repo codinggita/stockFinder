@@ -70,6 +70,7 @@ const storeSlice = createSlice({
   reducers: {
     clearMyStore: (state) => {
       state.myStore = null;
+      state.myStoreStatus = 'idle';
       saveMyStore(null);
     }
   },
