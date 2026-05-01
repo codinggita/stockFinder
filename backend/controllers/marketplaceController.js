@@ -85,11 +85,12 @@ exports.getNearbyStores = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const { category, search, minPrice, maxPrice, status, lat, lng, radius } = req.query;
+    const { category, search, minPrice, maxPrice, status, lat, lng, radius, storeId } = req.query;
     let query = {};
     
     if (category) query.category = category;
     if (search) query.name = { $regex: search, $options: 'i' };
+    if (storeId) query.store = storeId;
     
     if (minPrice || maxPrice) {
       query.price = {};
@@ -97,12 +98,18 @@ exports.getProducts = async (req, res) => {
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
     
-    if (status) {
-      const statusArray = Array.isArray(status) ? status : [status];
+    if (status !== undefined) {
+      if (status === '') {
+        // No availability selected, so return empty list
+        return res.status(200).json({ success: true, products: [] });
+      }
+
+      const statusArray = typeof status === 'string' ? status.split(',') : (Array.isArray(status) ? status : [status]);
       const dbStatusMap = {
         'In Stock': ['IN_STOCK', 'LOW_STOCK'],
         'Pre-order': ['PRE_ORDER'],
-        'Exclusive Access': ['EXCLUSIVE']
+        'Exclusive Access': ['EXCLUSIVE'],
+        'Out of Stock': ['OUT_OF_STOCK']
       };
       
       let targetStatuses = [];

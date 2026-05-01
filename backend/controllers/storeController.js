@@ -63,7 +63,7 @@ exports.addProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Store not found' });
     }
 
-    const { name, category, price, description, status, image, technicalSpecs } = req.body;
+    const { name, category, price, description, status, image, images, technicalSpecs, sizeType, sizes } = req.body;
 
     const product = await Product.create({
       name,
@@ -72,16 +72,64 @@ exports.addProduct = async (req, res) => {
       description,
       status: status || 'IN_STOCK',
       image,
-      images: [image], // Use the single image as the gallery initially
+      images: images && images.length > 0 ? images : (image ? [image] : []),
       store: store._id,
       rating: 5.0,
       reviewsCount: 0,
-      technicalSpecs: technicalSpecs || []
+      technicalSpecs: technicalSpecs || [],
+      sizeType: sizeType || null,
+      sizes: sizes || []
     });
 
     res.status(201).json({ success: true, product });
   } catch (error) {
     console.error('Error adding product:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
+
+// @desc    Update a product in my store
+// @route   PUT /api/stores/my-store/products/:id
+// @access  Private
+exports.updateProduct = async (req, res) => {
+  try {
+    const store = await Store.findOne({ owner: req.user._id });
+    if (!store) {
+      return res.status(404).json({ success: false, message: 'Store not found' });
+    }
+
+    let product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    // Make sure the product belongs to this store
+    if (product.store.toString() !== store._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized to update this product' });
+    }
+
+    const { name, category, price, description, status, image, images, technicalSpecs, sizeType, sizes } = req.body;
+
+    product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        category,
+        price,
+        description,
+        status: status || product.status,
+        image,
+        images: images && images.length > 0 ? images : (image ? [image] : product.images),
+        technicalSpecs: technicalSpecs || product.technicalSpecs,
+        sizeType: sizeType !== undefined ? sizeType : product.sizeType,
+        sizes: sizes !== undefined ? sizes : product.sizes
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({ success: true, product });
+  } catch (error) {
+    console.error('Error updating product:', error);
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
