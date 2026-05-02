@@ -42,6 +42,11 @@ const AllProducts = () => {
     sizes: []
   });
 
+  const ITEMS_PER_PAGE = 6;
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
   const handleFormChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -94,6 +99,7 @@ const AllProducts = () => {
   };
 
   useEffect(() => {
+    setCurrentPage(1);
     fetchFilteredProducts();
   }, [dispatch, availability, maxDistance, priceRange, user, myStore]);
 
@@ -250,8 +256,8 @@ const AllProducts = () => {
           <div className={`grid gap-10 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
             {status === 'loading' ? (
                [1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[3/4] bg-surface rounded-[2.5rem] animate-pulse border border-borderCustom/20" />)
-            ) : products.length > 0 ? (
-              products.map((product) => <ProductCard key={product._id} product={product} viewMode={viewMode} />)
+            ) : displayedProducts.length > 0 ? (
+              displayedProducts.map((product) => <ProductCard key={product._id} product={product} viewMode={viewMode} />)
             ) : (
               <div className="col-span-full py-40 text-center border border-dashed border-borderCustom/20 rounded-[3rem] bg-surface/40">
                 <p className="text-subtext/40 font-black uppercase tracking-[0.5em] text-xs italic mb-8">Manifest Entry Empty</p>
@@ -261,13 +267,37 @@ const AllProducts = () => {
           </div>
 
           {/* Pagination */}
-          {products.length > 0 && (
+          {totalPages > 1 && (
             <div className="pt-16 flex items-center justify-center gap-4">
-              <button className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all disabled:opacity-20" disabled><ChevronLeft size={20} /></button>
-              {[1, 2, 3].map(page => (
-                <button key={page} className={`w-12 h-12 rounded-xl text-[10px] font-black transition-all ${page === 1 ? 'bg-textMain text-background shadow-premium' : 'bg-surface border border-borderCustom/20 text-subtext hover:bg-sectionSurface'}`}>{page.toString().padStart(2, '0')}</button>
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all disabled:opacity-20" 
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft size={20} />
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button 
+                  key={page} 
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-12 h-12 rounded-xl text-[10px] font-black transition-all ${
+                    page === currentPage 
+                      ? 'bg-textMain text-background shadow-premium' 
+                      : 'bg-surface border border-borderCustom/20 text-subtext hover:bg-sectionSurface'
+                  }`}
+                >
+                  {page.toString().padStart(2, '0')}
+                </button>
               ))}
-              <button className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all"><ChevronRight size={20} /></button>
+
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all disabled:opacity-20"
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight size={20} />
+              </button>
             </div>
           )}
         </div>
