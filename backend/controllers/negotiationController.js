@@ -87,17 +87,18 @@ exports.sendMessage = async (req, res) => {
 
 exports.acceptDeal = async (req, res) => {
   try {
+    const { finalPrice } = req.body;
     const negotiation = await Negotiation.findById(req.params.id).populate('store');
     if (!negotiation) return res.status(404).json({ message: 'Negotiation not found' });
 
     negotiation.status = 'ACCEPTED';
-    negotiation.negotiatedPrice = negotiation.currentOffer;
+    negotiation.negotiatedPrice = finalPrice || negotiation.currentOffer;
     await negotiation.save();
 
     const message = await Message.create({
       negotiation: negotiation._id,
       sender: req.user.id,
-      content: 'The deal has been accepted!',
+      content: `The deal has been accepted at ₹${negotiation.negotiatedPrice.toLocaleString()}!`,
       type: 'ACCEPT',
       offerAmount: negotiation.negotiatedPrice
     });
@@ -144,6 +145,19 @@ exports.getAcceptedNegotiations = async (req, res) => {
       status: 'ACCEPTED'
     });
     res.status(200).json(negotiations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.checkProductNegotiation = async (req, res) => {
+  try {
+    const negotiation = await Negotiation.findOne({
+      product: req.params.productId,
+      user: req.user.id,
+      status: 'ACCEPTED'
+    });
+    res.status(200).json({ success: true, negotiation });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

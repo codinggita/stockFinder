@@ -8,11 +8,13 @@ const {
   getAcceptedNegotiations,
   getStoreNegotiations,
   deleteNegotiation,
-  rejectDeal
+  rejectDeal,
+  checkProductNegotiation
 } = require('../controllers/negotiationController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/', protect, startNegotiation);
+router.get('/check/:productId', protect, checkProductNegotiation);
 router.get('/store', protect, getStoreNegotiations);
 router.get('/accepted', protect, getAcceptedNegotiations);
 router.get('/:id', protect, getNegotiationDetails);
