@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowLeft, MapPin, Star, 
-  ChevronRight, Plus, Minus, Crosshair 
+  ArrowLeft, Plus, Minus, Locate, 
+  ArrowUpRight, Target
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -12,83 +12,24 @@ import 'leaflet/dist/leaflet.css';
 import Navbar from '../components/Navbar';
 import { fetchNearbyStores } from '../redux/storeSlice';
 
-// Custom Marker Icon
-const storeIcon = new L.DivIcon({
-  className: 'custom-marker',
-  html: `
-    <div class="relative group">
-      <div class="absolute -inset-4 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/40 transition-all duration-500 animate-pulse"></div>
-      <div class="relative w-8 h-8 bg-surface border-2 border-primary rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.5)]">
-        <div class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,1)]"></div>
-      </div>
-    </div>
-  `,
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-  popupAnchor: [0, -16],
-});
+
 
 const MapController = ({ center, zoom }) => {
   const map = useMap();
   useEffect(() => {
-    map.setView(center, zoom, { animate: true, duration: 1.5, easeLinearity: 0.25 });
+    map.setView(center, zoom, { animate: true, duration: 1 });
   }, [center, zoom, map]);
   return null;
-};
-
-const StoreMarker = ({ store, isSelected, onClick }) => {
-  const markerRef = useRef(null);
-  useEffect(() => {
-    if (isSelected && markerRef.current) markerRef.current.openPopup();
-  }, [isSelected]);
-
-  return (
-    <Marker 
-      ref={markerRef}
-      position={[store.coordinates.coordinates[1], store.coordinates.coordinates[0]]}
-      icon={storeIcon}
-      eventHandlers={{ click: onClick }}
-    >
-      <Popup className="premium-popup" closeButton={false}>
-        <div className="p-5 space-y-4 min-w-[240px]">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
-              <p className="text-[8px] font-black text-primary uppercase tracking-[0.3em]">Official Partner</p>
-            </div>
-            <h4 className="font-black text-lg tracking-tighter leading-none">{store.name}</h4>
-          </div>
-          <p className="text-[10px] text-subtext leading-relaxed font-medium">{store.location || store.fullAddress || 'Gujarat, India'}</p>
-          <div className="pt-3 border-t border-borderCustom flex flex-col gap-3">
-            <div className="flex justify-between items-center text-[10px] font-black">
-              <span className="text-subtext uppercase tracking-widest">Available Now</span>
-              <span className="text-green-500">0.8 KM</span>
-            </div>
-            <button 
-              onClick={() => window.location.href = `/store/${store._id}`}
-              className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary text-[8px] font-black uppercase tracking-widest rounded-lg transition-all"
-            >
-              View Store Details
-            </button>
-          </div>
-        </div>
-      </Popup>
-    </Marker>
-  );
 };
 
 const AllStores = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { items: stores, status } = useSelector((state) => state.stores);
-  const [activeFilter, setActiveFilter] = useState('All Stores');
+  const { items: stores } = useSelector((state) => state.stores);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [mapCenter, setMapCenter] = useState([23.0225, 72.5714]);
   const [mapZoom, setMapZoom] = useState(13);
-  const [selectedStoreId, setSelectedStoreId] = useState(null);
-  const [isDark, setIsDark] = useState(() => document.documentElement.classList.contains('dark'));
-
-  const filters = ['All Stores', 'Flagship', 'Boutique', 'Express'];
+  const reelRef = useRef(null);
 
   useEffect(() => {
     if (stores.length === 0) {
@@ -96,217 +37,194 @@ const AllStores = () => {
     }
   }, [dispatch, stores.length]);
 
-  // Watch for theme changes to swap map tiles
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'));
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (location.state?.selectedStoreId && stores.length > 0) {
-      const store = stores.find(s => s._id === location.state.selectedStoreId);
-      if (store) handleStoreClick(store);
-    }
-  }, [location.state, stores]);
-
-  const handleStoreClick = (store) => {
-    setSelectedStoreId(store._id);
-    if (store.coordinates?.coordinates) {
+  const handleSelect = (index) => {
+    setSelectedIndex(index);
+    const store = stores[index];
+    if (store?.coordinates?.coordinates) {
       setMapCenter([store.coordinates.coordinates[1], store.coordinates.coordinates[0]]);
       setMapZoom(16);
     }
   };
 
-  const tileUrl = isDark
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-
   return (
-    <div className="h-screen bg-background text-textMain font-sans flex flex-col overflow-hidden selection:bg-primary/30">
+    <div className="h-screen bg-black text-white font-sans flex flex-col overflow-hidden">
       <Navbar />
 
-      <div className="flex-1 flex pt-16 overflow-hidden">
-        {/* Sidebar */}
-        <aside className="w-full md:w-[320px] bg-background border-r border-borderCustom flex flex-col z-20 relative">
-          <div className="p-5 pb-1 space-y-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => navigate('/marketplace')}
-                className="w-7 h-7 flex items-center justify-center bg-surface hover:bg-sectionSurface rounded-full border border-borderCustom transition-all group"
+      <div className="flex-1 relative flex flex-col pt-16">
+        
+        {/* Top 65%: The Interactive Map */}
+        <div className="h-[65%] w-full relative z-0 border-b border-white/5 overflow-hidden">
+           <div className="w-full h-full brightness-[0.9] contrast-110">
+              <MapContainer 
+                center={mapCenter} 
+                zoom={mapZoom} 
+                zoomControl={false} 
+                style={{ height: '100%', width: '100%' }}
               >
-                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-              </button>
-              <div className="space-y-0">
-                <p className="text-[7px] font-black text-primary uppercase tracking-[0.3em] opacity-60">Intelligence</p>
-                <h1 className="text-2xl font-black tracking-tighter leading-none">Nearby Outlets</h1>
-              </div>
-            </div>
-
-            <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide snap-x">
-              {filters.map(filter => (
-                <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`px-3 py-1.5 rounded-lg text-[7px] font-black uppercase tracking-[0.2em] transition-all duration-500 whitespace-nowrap snap-start border ${
-                    activeFilter === filter 
-                      ? 'bg-primary text-white border-primary shadow-[0_0_15px_rgba(59,130,246,0.3)]' 
-                      : 'bg-surface text-subtext hover:bg-sectionSurface hover:text-textMain border-borderCustom'
-                  }`}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Cards Area */}
-          <div className="flex-1 overflow-y-auto px-4 pb-10 space-y-3 scrollbar-hide perspective-1000">
-            <AnimatePresence>
-              {status === 'loading' ? (
-                Array(3).fill(0).map((_, i) => (
-                  <div key={i} className="h-40 bg-surface border border-borderCustom rounded-xl animate-pulse"></div>
-                ))
-              ) : (
-                stores.map((store, index) => (
-                  <motion.div
-                    key={store._id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
-                    onClick={() => handleStoreClick(store)}
-                    className={`group relative bg-surface backdrop-blur-3xl border rounded-xl overflow-hidden transition-all duration-500 cursor-pointer flex flex-col ${
-                      selectedStoreId === store._id ? 'border-primary ring-1 ring-primary/20 shadow-xl scale-[1.01]' : 'border-borderCustom hover:border-primary/30'
-                    }`}
-                  >
-                    <div className="relative h-28 overflow-hidden bg-sectionSurface">
-                      <img 
-                        src={store.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} 
-                        alt={store.name} 
-                        className="w-full h-full object-cover opacity-70 dark:opacity-50 group-hover:scale-105 transition-transform duration-[3000ms]"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
-                      
-                      <div className="absolute top-2 left-2">
-                        <span className="px-2 py-0.5 bg-surface/80 border border-borderCustom text-green-500 text-[6px] font-black tracking-[0.2em] rounded-full uppercase flex items-center gap-1 backdrop-blur-xl">
-                          <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span>
-                          Live
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-4 pt-2 space-y-3">
-                      <div className="flex justify-between items-start gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-black tracking-tighter truncate group-hover:text-primary transition-colors">{store.name}</h3>
-                          <div className="flex items-center gap-1 mt-0.5">
-                             <Star size={8} className="text-yellow-500 fill-yellow-500 opacity-80" />
-                             <span className="text-[7px] font-black text-subtext uppercase tracking-widest">Partnered</span>
+                 <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+                 <MapController center={mapCenter} zoom={mapZoom} />
+                 {stores.map((s, i) => s.coordinates?.coordinates && (
+                    <Marker 
+                      key={s._id} 
+                      position={[s.coordinates.coordinates[1], s.coordinates.coordinates[0]]}
+                      ref={(ref) => {
+                        if (i === selectedIndex && ref) {
+                          ref.openPopup();
+                        }
+                      }}
+                      icon={new L.DivIcon({
+                        className: 'custom-marker',
+                        html: `
+                          <div class="relative flex items-center">
+                            <div class="w-4 h-4 bg-accent border-2 border-white rounded-full shadow-[0_0_15px_rgba(212,175,55,0.8)]"></div>
+                            <div class="ml-3 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/20 rounded-full whitespace-nowrap">
+                              <span class="text-[9px] font-black uppercase tracking-widest text-white">${s.name}</span>
+                            </div>
                           </div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <p className="text-base font-black tracking-tighter leading-none text-primary">0.8<span className="text-[8px] ml-0.5">KM</span></p>
-                        </div>
-                      </div>
+                        `,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8],
+                      })}
+                      eventHandlers={{ click: () => handleSelect(i) }}
+                    >
+                       <Popup className="luxe-popup">
+                          <div className="w-[280px] bg-black border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl translate-y-[-10px]">
+                             <div className="h-32 w-full relative">
+                                <img src={s.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} className="w-full h-full object-cover grayscale-[30%]" alt="Store" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                             </div>
+                             <div className="p-5">
+                                <h4 className="text-xl font-black uppercase italic tracking-tighter text-white">{s.name}</h4>
+                                <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+                                   <span className="text-[9px] font-black uppercase text-white/40">Range: 0.8 KM</span>
+                                   <button 
+                                     onClick={(e) => { e.stopPropagation(); navigate(`/store/${s._id}`); }}
+                                     className="px-4 py-1.5 bg-white text-black text-[8px] font-black uppercase tracking-widest rounded-full hover:bg-accent transition-all"
+                                   >
+                                      Enter
+                                   </button>
+                                </div>
+                             </div>
+                          </div>
+                       </Popup>
+                    </Marker>
+                 ))}
+              </MapContainer>
+           </div>
 
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/store/${store._id}`);
-                        }}
-                        className={`w-full py-2.5 rounded-lg font-black text-[8px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 ${
-                          selectedStoreId === store._id 
-                            ? 'bg-primary text-white' 
-                            : 'bg-sectionSurface hover:bg-surface text-textMain border border-borderCustom'
-                        }`}
-                      >
-                        Enter Space 
-                        <ChevronRight size={10} />
-                      </button>
+           {/* Floating Map HUD */}
+           <div className="absolute top-10 left-10 z-20">
+              <button onClick={() => navigate('/marketplace')} className="flex items-center gap-4 px-6 py-3 bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full text-[10px] font-black uppercase tracking-[0.5em] text-accent hover:bg-accent hover:text-white transition-all">
+                 <ArrowLeft size={16} /> Registry Hub
+              </button>
+           </div>
+
+           <div className="absolute top-10 right-10 z-20 flex flex-col gap-4">
+              <div className="flex flex-col bg-black/40 backdrop-blur-3xl border border-white/10 rounded-full overflow-hidden">
+                 <button onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))} className="p-5 hover:text-accent transition-all"><Plus size={20} /></button>
+                 <button onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))} className="p-5 hover:text-accent transition-all border-l border-white/5"><Minus size={20} /></button>
+              </div>
+              <button 
+                onClick={() => { setMapCenter([23.0225, 72.5714]); setMapZoom(13); setSelectedIndex(0); }}
+                className="w-16 h-16 bg-accent rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all text-black group"
+              >
+                 <Locate size={24} />
+              </button>
+           </div>
+        </div>
+
+        {/* Bottom 35%: Cinematic Reel */}
+        <div className="h-[35%] bg-black relative z-10 flex flex-col justify-center overflow-hidden">
+           {/* Decorative Scanner Line */}
+           <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/50 to-transparent animate-pulse"></div>
+           
+           <div 
+             ref={reelRef}
+             className="flex items-center gap-10 overflow-x-auto scrollbar-hide px-[40%] py-10"
+           >
+              {stores.map((s, i) => (
+                 <motion.div
+                   key={s._id}
+                   animate={{
+                     scale: i === selectedIndex ? 1.2 : 0.8,
+                     opacity: i === selectedIndex ? 1 : 0.3,
+                     x: (i - selectedIndex) * 20
+                   }}
+                   transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+                   onClick={() => handleSelect(i)}
+                   className="relative flex-shrink-0 w-[350px] aspect-[16/9] cursor-pointer group"
+                 >
+                    <div className={`w-full h-full rounded-[2.5rem] overflow-hidden border-2 transition-all duration-700 ${i === selectedIndex ? 'border-accent shadow-[0_30px_60px_rgba(212,175,55,0.2)]' : 'border-white/5 hover:border-white/20'}`}>
+                       <img src={s.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-1000" alt="Store" />
+                       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                       
+                       <div className="absolute bottom-8 left-10 right-10">
+                          <div className="flex justify-between items-end">
+                             <div className="space-y-1">
+                                <span className="text-[8px] font-black text-accent uppercase tracking-[0.5em]">Luxe Registry 0{i+1}</span>
+                                <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none">{s.name}</h3>
+                             </div>
+                             {i === selectedIndex && (
+                                <button 
+                                  onClick={(e) => { e.stopPropagation(); navigate(`/store/${s._id}`); }}
+                                  className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center hover:bg-accent hover:text-white transition-all shadow-xl"
+                                >
+                                   <ArrowUpRight size={20} />
+                                </button>
+                             )}
+                          </div>
+                       </div>
                     </div>
-                  </motion.div>
-                ))
-              )}
-            </AnimatePresence>
-          </div>
+                    
+                    {/* Floating Info Tag */}
+                    {i === selectedIndex && (
+                       <motion.div 
+                         initial={{ opacity: 0, y: -20 }}
+                         animate={{ opacity: 1, y: 0 }}
+                         className="absolute -top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/60 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-full whitespace-nowrap"
+                       >
+                          <Target size={12} className="text-accent" />
+                          <span className="text-[9px] font-black uppercase tracking-widest text-white/60 italic">Location Locked: 0.8 KM</span>
+                       </motion.div>
+                    )}
+                 </motion.div>
+              ))}
+           </div>
 
-          <div className="p-6 border-t border-borderCustom bg-background flex justify-between items-center text-[9px] font-black uppercase tracking-[0.4em] text-subtext">
-             <div className="flex gap-6">
-                <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_rgba(59,130,246,0.5)]"></span> Active</span>
-                <span className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-yellow-500"></span> Limited</span>
-             </div>
-             <span>© 2024 Luxe</span>
-          </div>
-        </aside>
-
-        {/* Map */}
-        <section className="flex-1 relative bg-background">
-          <MapContainer center={mapCenter} zoom={mapZoom} zoomControl={false} className="w-full h-full">
-            <TileLayer
-              key={tileUrl}
-              url={tileUrl}
-              attribution='&copy; LUXE RETAIL INTELLIGENCE'
-            />
-            <MapController center={mapCenter} zoom={mapZoom} />
-            
-            {stores.map(store => (
-              store.coordinates?.coordinates && (
-                <StoreMarker 
-                  key={store._id} 
-                  store={store} 
-                  isSelected={selectedStoreId === store._id}
-                  onClick={() => handleStoreClick(store)}
-                />
-              )
-            ))}
-          </MapContainer>
-
-          {/* Floating Controls */}
-          <div className="absolute top-8 right-8 flex flex-col gap-5 z-[1000]">
-             <div className="flex flex-col bg-surface/90 backdrop-blur-2xl border border-borderCustom rounded-[2rem] overflow-hidden shadow-2xl">
-                <button onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))} className="p-5 hover:bg-sectionSurface transition-colors border-b border-borderCustom text-subtext hover:text-textMain">
-                   <Plus size={20} />
-                </button>
-                <button onClick={() => setMapZoom(prev => Math.max(prev - 1, 3))} className="p-5 hover:bg-sectionSurface transition-colors text-subtext hover:text-textMain">
-                   <Minus size={20} />
-                </button>
-             </div>
-             <button 
-               onClick={() => {
-                 setMapCenter([23.0225, 72.5714]);
-                 setMapZoom(13);
-                 setSelectedStoreId(null);
-               }}
-               className="p-5 bg-primary shadow-[0_20px_50px_rgba(59,130,246,0.3)] border border-primary rounded-[2rem] hover:scale-110 transition-all flex items-center justify-center text-white"
-             >
-                <Crosshair size={22} />
-             </button>
-          </div>
-        </section>
+           {/* Navigation Progress */}
+           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
+              {stores.map((_, i) => (
+                 <div key={i} className={`h-1 rounded-full transition-all duration-500 ${i === selectedIndex ? 'w-12 bg-accent' : 'w-4 bg-white/10'}`} />
+              ))}
+           </div>
+        </div>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        .leaflet-container { background: var(--background) !important; }
-        .premium-popup .leaflet-popup-content-wrapper {
-          background: var(--surface) !important;
-          backdrop-filter: blur(20px) !important;
-          color: var(--text-main) !important;
-          border: 1px solid var(--border-custom);
-          border-radius: 2.5rem;
-          padding: 0 !important;
-          box-shadow: var(--card-shadow) !important;
-        }
-        .premium-popup .leaflet-popup-content { margin: 0 !important; width: auto !important; }
-        .premium-popup .leaflet-popup-tip { background: var(--surface) !important; }
+        .leaflet-container { background: #000 !important; }
+        .custom-marker { background: none !important; border: none !important; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-        .custom-marker { background: none !important; border: none !important; }
-        .perspective-1000 { perspective: 1000px; }
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+          background: transparent !important;
+          box-shadow: none !important;
+          color: white !important;
+          padding: 0 !important;
+        }
+        .leaflet-popup-content { margin: 0 !important; width: auto !important; }
+        .leaflet-popup-close-button { display: none !important; }
       `}} />
     </div>
   );
 };
 
 export default AllStores;
+
+
+
+
+
+
+
+
+
