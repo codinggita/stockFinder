@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const marketplaceRoutes = require('./routes/marketplaceRoutes');
