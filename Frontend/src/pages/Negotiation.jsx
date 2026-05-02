@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSocket } from '../context/SocketContext';
+import { markNotificationsRead } from '../redux/notificationSlice';
 import Navbar from '../components/Navbar';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -29,7 +30,15 @@ const Negotiation = () => {
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
   const socket = useSocket();
+  const dispatch = useDispatch();
+  const isChatOpen = useRef(true);
   const emojis = ['😊', '🤝', '💰', '🔥', '✨', '🏷️', '📦', '💯', '👍', '🙌', '🙏', '❤️', '🎉', '🚀', '⭐', '✅'];
+
+  useEffect(() => {
+    isChatOpen.current = true;
+    dispatch(markNotificationsRead());
+    return () => { isChatOpen.current = false; };
+  }, [dispatch]);
 
   const addEmoji = (emoji) => {
     setNewMessage(newMessage + emoji);
@@ -83,16 +92,27 @@ const Negotiation = () => {
           if (prev.some(m => m._id === message._id)) return prev;
           return [...prev, message];
         });
+        
+        // Mark as read if chat is open and we are the receiver
+        const senderId = (message.sender?._id || message.sender)?.toString();
+        if (isChatOpen.current && senderId !== user?._id?.toString()) {
+          dispatch(markNotificationsRead());
+        }
+
         if (message.offerAmount) {
           setNegotiation(prev => ({ ...prev, currentOffer: message.offerAmount }));
         }
         if (message.type === 'ACCEPT') {
           setNegotiation(prev => ({ ...prev, status: 'ACCEPTED', negotiatedPrice: message.offerAmount }));
         }
+        
+        setTimeout(scrollToBottom, 100);
       };
 
       socket.on('receive_message', handleReceiveMessage);
-      return () => { socket.off('receive_message', handleReceiveMessage); };
+      return () => { 
+        socket.off('receive_message', handleReceiveMessage); 
+      };
     }
   }, [socket, negotiation]);
 
@@ -110,6 +130,7 @@ const Negotiation = () => {
       
       setMessages([...messages, res.data]);
       setNewMessage('');
+      scrollToBottom();
       if (customOffer) setOfferAmount('');
       if (customOffer) {
         setNegotiation({ ...negotiation, currentOffer: customOffer });
@@ -429,11 +450,10 @@ const Negotiation = () => {
             </div>
 
             {messages.map((msg, i) => {
-              const senderId = msg.sender?._id || msg.sender;
-              const isCustomer = senderId === (negotiation.user?._id || negotiation.user);
-              // Fixed alignment as requested: Customer Right, Retailer Left
-              const alignRight = isCustomer;
-              const isMe = senderId === user?._id;
+              const senderId = (msg.sender?._id || msg.sender)?.toString();
+              const customerId = (negotiation.user?._id || negotiation.user)?.toString();
+              const alignRight = senderId === customerId;
+              const isMe = senderId === user?._id?.toString();
               
               return (
                 <motion.div 
@@ -446,8 +466,8 @@ const Negotiation = () => {
                   <div className={`max-w-[75%] lg:max-w-[65%] space-y-3`}>
                     <div className={`p-6 lg:p-8 rounded-[2.5rem] border transition-all duration-500 shadow-2xl ${
                       alignRight 
-                        ? 'bg-primary text-white border-primary/20 rounded-tr-none shadow-primary/20' 
-                        : 'premium-glass text-textMain border-white/5 rounded-tl-none shadow-black/40'
+                        ? 'bg-primary text-white border-primary/20 rounded-br-none shadow-primary/20' 
+                        : 'premium-glass text-textMain border-white/5 rounded-bl-none shadow-black/40'
                     }`}>
                       {msg.type === 'PHOTO' ? (
                         <div className="space-y-4">

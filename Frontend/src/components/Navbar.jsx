@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, LogOut, User } from 'lucide-react';
+import { ShoppingCart, LogOut, User, Bell } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
+import { fetchNotifications, markNotificationsRead } from '../redux/notificationSlice';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { clearMyStore } from '../redux/storeSlice';
 import { useSocket } from './../context/SocketContext';
 import ThemeToggle from './ThemeToggle';
+import NotificationDropdown from './NotificationDropdown';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
@@ -14,9 +16,18 @@ const Navbar = () => {
   const location = useLocation();
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  
+  const { items: notifications, unreadCount } = useSelector(state => state.notifications);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
   const socket = useSocket();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchNotifications());
+    }
+  }, [dispatch, user]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -24,6 +35,13 @@ const Navbar = () => {
     dispatch(logout());
     dispatch(clearMyStore());
     navigate('/login');
+  };
+
+  const toggleNotifications = () => {
+    if (!showNotifications) {
+      dispatch(markNotificationsRead());
+    }
+    setShowNotifications(!showNotifications);
   };
 
   const getInitials = (name) => {
@@ -98,6 +116,28 @@ const Navbar = () => {
           <div className="flex items-center gap-5">
             {/* Theme Toggle */}
             <ThemeToggle />
+
+            {/* Notifications */}
+            {user && (
+              <div className="relative">
+                <button
+                  onClick={toggleNotifications}
+                  className={`p-2.5 rounded-xl border border-borderCustom transition-all relative group ${showNotifications ? 'bg-accent/20 border-accent/50 text-accent' : 'text-subtext bg-surface/40 hover:bg-surface/60'}`}
+                >
+                  <Bell size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+                <NotificationDropdown 
+                  isOpen={showNotifications} 
+                  onClose={() => setShowNotifications(false)} 
+                  notifications={notifications}
+                />
+              </div>
+            )}
 
             {user?.role !== 'retailer' && (
               <button
