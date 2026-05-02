@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Store, Phone, MapPin, Star } from 'lucide-react';
+import { ArrowRight, MapPin, Star, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const StoreCard = ({ store }) => {
@@ -13,73 +13,86 @@ const StoreCard = ({ store }) => {
 
   return (
     <motion.div 
-      whileHover={{ y: -10 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
       onClick={handleViewDetails}
-      className="bg-cardBg backdrop-blur-3xl border border-borderCustom rounded-[2.5rem] p-8 shadow-premium transition-all hover:border-accent/40 group cursor-pointer flex flex-col"
+      className="group relative h-[500px] w-full rounded-[1rem] overflow-hidden cursor-pointer bg-black"
     >
-      <div>
-        <div className="flex justify-between items-start mb-3 px-1">
-          <h3 className="text-textMain font-black text-2xl leading-none tracking-tighter group-hover:text-accent transition-colors uppercase">{store.name}</h3>
-          <div className="bg-accent/10 border border-accent/20 text-accent text-[9px] font-black px-3 py-1.5 rounded-lg tracking-widest uppercase shadow-xl">
-            {store.distance || '2.4'} KM
-          </div>
-        </div>
-        <p className="text-subtext text-[10px] mb-8 font-black uppercase tracking-[0.2em] flex items-center gap-2 ml-1">
-          <MapPin size={12} className="text-accent/60" />
-          {store.location}
-        </p>
-        
-        {/* Store Image Container */}
-        <div className="relative h-56 bg-sectionSurface rounded-[2rem] mb-8 flex items-center justify-center overflow-hidden border border-borderCustom group/img shadow-inner">
-            <motion.img 
-              src={storeImage} 
-              alt={store.name} 
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
-              className="w-full h-full object-cover opacity-90 dark:opacity-60 group-hover/img:opacity-100 transition-opacity" 
-            />
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent opacity-100 dark:from-dark/80 transition-opacity"></div>
-            
-            {/* Center Action */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all duration-500 transform scale-90 group-hover/img:scale-100">
-              <div className="px-6 py-2 bg-accent text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-2xl">
-                  Entry Point
-              </div>
-            </div>
-        </div>
+      {/* Cinematic Background Image */}
+      <div className="absolute inset-0 z-0">
+        <motion.img 
+          src={storeImage} 
+          alt={store.name} 
+          className="w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 transition-all duration-500"></div>
       </div>
 
-      <div className="mt-auto px-1">
-        <div className="flex items-center justify-between mb-8">
-           <div className="flex items-center gap-3 text-[9px] uppercase font-black tracking-[0.3em]">
-             <span className={`w-2 h-2 rounded-full ${store.status === 'Closed' ? 'bg-red-500' : 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse'}`}></span>
-             <span className={store.status === 'Closed' ? 'text-red-400' : 'text-emerald-500'}>{store.status || 'Active Now'}</span>
-             <span className="text-borderCustom">/</span>
-             <span className="text-subtext">Updated Real-Time</span>
-           </div>
-           
-           {store.rating && (
-             <div className="flex items-center gap-1.5 text-accent font-black text-[11px] bg-accent/5 px-2 py-1 rounded-md border border-accent/10">
-                <Star size={10} fill="currentColor" />
-                <span>{store.rating}</span>
-             </div>
-           )}
-        </div>
-        
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleViewDetails();
-          }}
-          className="w-full py-4 rounded-2xl border border-borderCustom bg-surface/40 text-[10px] font-black tracking-[0.3em] text-subtext uppercase hover:text-textMain hover:border-accent/50 hover:bg-accent/5 transition-all flex items-center justify-center gap-3 group/btn"
-        >
-          Access Terminal
-          <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform text-accent" />
-        </button>
+      {/* Initial View: Large Title at Bottom */}
+      <div className="absolute bottom-12 left-10 right-10 z-10 transition-transform duration-500 group-hover:translate-y-[-160px]">
+         <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-[1px] bg-accent group-hover:w-20 transition-all duration-700"></div>
+            <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">Luxe Node</span>
+         </div>
+         <h3 className="text-white font-black text-5xl leading-[0.8] tracking-tighter uppercase mb-2">
+           {store.name}
+         </h3>
+         <div className="flex items-center gap-2 text-white/40 text-[10px] font-bold uppercase tracking-widest">
+            <MapPin size={12} className="text-accent/60" />
+            {store.location}
+         </div>
+      </div>
+
+      {/* Hidden View: Revealed Content */}
+      <div className="absolute bottom-12 left-10 right-10 z-20 flex flex-col gap-8 opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-100">
+         
+         <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl">
+               <p className="text-white/40 text-[9px] font-black uppercase tracking-widest mb-1">Coverage</p>
+               <p className="text-white font-black text-lg">{store.distance || '2.4'} KM</p>
+            </div>
+            <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl">
+               <p className="text-white/40 text-[9px] font-black uppercase tracking-widest mb-1">Registry</p>
+               <div className="flex items-center gap-1.5 text-accent font-black">
+                  <Star size={12} fill="currentColor" />
+                  <span className="text-lg">{store.rating || '4.5'}</span>
+               </div>
+            </div>
+         </div>
+
+         <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+               <div className={`w-2 h-2 rounded-full ${store.status === 'Closed' ? 'bg-red-500' : 'bg-emerald-400 shadow-[0_0_15px_#34d399]'}`}></div>
+               <span className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em]">{store.status || 'Active Now'}</span>
+            </div>
+            
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewDetails();
+              }}
+              className="flex items-center gap-4 text-white text-[11px] font-black uppercase tracking-[0.4em] group/btn"
+            >
+              Access Hub
+              <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-black transition-all">
+                 <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+              </div>
+            </button>
+         </div>
+      </div>
+
+      {/* Minimal Corner Tag */}
+      <div className="absolute top-8 right-8 z-20 opacity-40 group-hover:opacity-100 transition-opacity">
+         <Plus size={24} className="text-white group-hover:rotate-90 transition-transform duration-500" />
       </div>
     </motion.div>
   );
 };
 
 export default StoreCard;
+
+
+
+
+
