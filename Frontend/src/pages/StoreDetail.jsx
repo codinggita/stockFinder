@@ -178,7 +178,7 @@ const StoreDetail = () => {
       {/* Registry Footer */}
        <footer className="border-t border-borderCustom/20 bg-background py-24">
           <div className="max-w-[1600px] mx-auto px-12 flex flex-col md:flex-row justify-between items-center gap-12 opacity-30">
-             <p className="text-[10px] font-black uppercase tracking-[0.8em] text-textMain">Luxe_Retail_Protocol • Regional_Division_Gujarat</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.8em] text-textMain">Stock_Finder_Protocol • Regional_Division_Gujarat</p>
              <p className="text-[10px] font-black uppercase tracking-[0.5em] text-textMain">Protocol_Reference: {id.toUpperCase()}</p>
           </div>
        </footer>

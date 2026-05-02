@@ -186,7 +186,7 @@ const Cart = () => {
       {/* Footer Meta */}
       <footer className="mt-20 border-t border-borderCustom/20 py-12">
         <div className="max-w-[1200px] mx-auto px-6 flex justify-between items-center text-[10px] font-black text-subtext/40 uppercase tracking-[0.4em] italic">
-           <span>Luxe_Archive_Terminal_v4.2.1</span>
+           <span>Stock_Archive_Terminal_v4.2.1</span>
            <div className="flex gap-8">
               <span className="hover:text-textMain cursor-pointer transition-colors">Privacy_Log</span>
               <span className="hover:text-textMain cursor-pointer transition-colors">Audit_Support</span>

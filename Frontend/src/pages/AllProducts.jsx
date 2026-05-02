@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import api from '../services/api';
 import InputField from '../components/InputField';
 import Button from '../components/Button';
+import SEO from '../components/SEO';
 
 const AllProducts = () => {
   const dispatch = useDispatch();
@@ -118,6 +119,11 @@ const AllProducts = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-accent/40">
+      <SEO 
+        title="Inventory"
+        description="Manage luxury retail inventory and track live stock. Precision control for high-end fashion and lifestyle assets."
+        url="/products"
+      />
       <Navbar />
       
       <main className="flex-1 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 w-full flex gap-10">
@@ -207,7 +213,7 @@ const AllProducts = () => {
             </div>
 
             <div className="absolute bottom-4 left-0 right-0 px-10 flex justify-between items-center pointer-events-none z-30">
-               <div className="text-[8px] font-black text-subtext/20 uppercase tracking-[0.4em] italic">Reg_Luxe_2026</div>
+               <div className="text-[8px] font-black text-subtext/20 uppercase tracking-[0.4em] italic">Reg_Stock_2026</div>
                <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-accent flex flex-col items-center">
                   <ChevronDown size={14} strokeWidth={3} />
                </motion.div>
@@ -306,7 +312,7 @@ const AllProducts = () => {
       <footer className="border-t border-borderCustom/20 bg-surface/50 py-20 mt-20">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
           <div className="space-y-6">
-            <h2 className="text-2xl font-black text-textMain tracking-[0.3em] uppercase italic">Luxe Retail</h2>
+            <h2 className="text-2xl font-black text-textMain tracking-[0.3em] uppercase italic">STOCK FINDER</h2>
             <p className="text-subtext/60 text-[11px] font-medium uppercase tracking-widest leading-loose italic">The global standard for premium asset discovery and inventory coordination.</p>
           </div>
           {['Platform', 'Resources', 'Corporate'].map(cat => (
@@ -321,7 +327,7 @@ const AllProducts = () => {
           ))}
         </div>
         <div className="max-w-7xl mx-auto px-6 pt-10 border-t border-borderCustom/10 flex flex-col md:flex-row justify-between items-center gap-6">
-           <p className="text-[10px] font-black text-subtext/40 uppercase tracking-[0.4em] italic">© 2026 Luxe Atelier Terminal // All Systems Go</p>
+           <p className="text-[10px] font-black text-subtext/40 uppercase tracking-[0.4em] italic">© 2026 STOCK FINDER Terminal // All Systems Go</p>
            <div className="flex gap-10 text-[10px] font-black text-subtext/40 uppercase tracking-widest italic">
              <a href="#" className="hover:text-textMain transition-colors">Privacy_Log</a>
              <a href="#" className="hover:text-textMain transition-colors">Security_Audit</a>

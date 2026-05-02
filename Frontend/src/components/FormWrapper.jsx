@@ -13,7 +13,7 @@ const FormWrapper = ({ children, title, subtitle }) => {
         {/* Header Outside Card (like Luxe Retail) */}
         <div className="text-center mb-8">
           <h2 className="text-white text-xl font-bold tracking-[0.2em] uppercase mb-1">
-            Luxe Retail
+            STOCK FINDER
           </h2>
           <p className="text-primary/80 text-xs font-semibold uppercase tracking-widest">
             Smart Analytics & Global Sourcing

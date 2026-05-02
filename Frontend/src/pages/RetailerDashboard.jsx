@@ -23,6 +23,7 @@ import { fetchMyStore } from '../redux/storeSlice';
 import CreateStore from './CreateStore';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import SEO from '../components/SEO';
 
 const RetailerDashboard = () => {
   const { user } = useSelector((state) => state.auth);
@@ -90,6 +91,7 @@ const RetailerDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background text-textMain selection:bg-primary/30 pb-32 overflow-x-hidden">
+      <SEO title="Retailer Dashboard" robots="noindex, nofollow" />
       <Navbar />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32">
@@ -158,7 +160,7 @@ const RetailerDashboard = () => {
                     </p>
                   </div>
                   <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-4">
-                    <span className="text-outline text-primary block lg:inline mr-4">LUXE</span>
+                    <span className="text-outline text-primary block lg:inline mr-4">STOCK</span>
                     <span className="italic italic-shadow text-textMain uppercase">{myStore.name}</span>
                   </h1>
                   <p className="text-subtext font-medium text-lg max-w-lg leading-relaxed line-clamp-2">

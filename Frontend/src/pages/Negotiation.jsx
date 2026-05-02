@@ -16,6 +16,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
+import SEO from '../components/SEO';
 
 const Negotiation = () => {
   const { productId, negotiationId } = useParams();
@@ -221,6 +222,7 @@ const Negotiation = () => {
 
   return (
     <div className="min-h-screen bg-background text-textMain font-sans overflow-hidden flex flex-col selection:bg-accent/30">
+      <SEO title="Negotiation" robots="noindex, nofollow" />
       <Navbar />
       
       <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />

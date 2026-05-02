@@ -33,7 +33,7 @@ const StoreCard = ({ store }) => {
       <div className="absolute bottom-12 left-10 right-10 z-10 transition-transform duration-500 group-hover:translate-y-[-160px]">
          <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-[1px] bg-accent group-hover:w-20 transition-all duration-700"></div>
-            <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">Luxe Node</span>
+            <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">STOCK Node</span>
          </div>
          <h3 className="text-white font-black text-5xl leading-[0.8] tracking-tighter uppercase mb-2">
            {store.name}

@@ -6,6 +6,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { MessageSquare, Clock, CheckCircle2, XCircle, Trash2 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const RetailerNegotiations = () => {
   const { user } = useSelector((state) => state.auth);
@@ -74,6 +75,7 @@ const RetailerNegotiations = () => {
 
   return (
     <div className="min-h-screen bg-background text-textMain font-sans selection:bg-primary/30 pb-20">
+      <SEO title="Negotiations" robots="noindex, nofollow" />
       <Navbar />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28">

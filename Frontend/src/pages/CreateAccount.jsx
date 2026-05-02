@@ -11,6 +11,7 @@ import InputField from '../components/InputField';
 import Button from '../components/Button';
 import api from '../services/api';
 import registerBg from '../assets/register_bg.png';
+import SEO from '../components/SEO';
 
 const schema = yup.object().shape({
   name: yup.string().required('Required').min(3, 'Too short'),
@@ -74,6 +75,7 @@ const CreateAccount = () => {
       image={registerBg}
       reverse={true}
     >
+      <SEO title="Register" robots="noindex, nofollow" />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="bg-sectionSurface p-1.5 rounded-2xl border border-borderCustom flex gap-1.5 mb-4">
           {['customer', 'retailer'].map((r) => (
