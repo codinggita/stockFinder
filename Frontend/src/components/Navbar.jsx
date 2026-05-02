@@ -53,16 +53,16 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-sectionSurface/80 backdrop-blur-2xl border-b border-borderCustom">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-3xl border-b border-borderCustom/20 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
           <div className="flex items-center gap-12">
             <h1 
-              className="text-textMain text-xl font-black tracking-[0.3em] uppercase cursor-pointer flex items-center gap-2 group" 
+              className="text-textMain text-xl font-black tracking-[0.4em] uppercase cursor-pointer flex items-center gap-3 group" 
               onClick={() => navigate(user?.role === 'retailer' ? '/dashboard' : '/marketplace')}
             >
-              <div className="w-2 h-8 bg-accent group-hover:scale-y-110 transition-transform" />
+              <div className="w-1.5 h-7 bg-accent group-hover:scale-y-125 transition-transform origin-center" />
               LUXE RETAIL
             </h1>
 
@@ -122,11 +122,11 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={toggleNotifications}
-                  className={`p-2.5 rounded-xl border border-borderCustom transition-all relative group ${showNotifications ? 'bg-accent/20 border-accent/50 text-accent' : 'text-subtext bg-surface/40 hover:bg-surface/60'}`}
+                  className={`p-2.5 rounded-xl border border-borderCustom/40 transition-all relative group ${showNotifications ? 'bg-accent/10 border-accent/60 text-accent' : 'text-subtext bg-surface/40 hover:bg-surface hover:shadow-md'}`}
                 >
-                  <Bell size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
+                  <Bell size={18} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse">
+                    <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-accent text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-lg animate-pulse">
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -142,11 +142,11 @@ const Navbar = () => {
             {user?.role !== 'retailer' && (
               <button
                 onClick={() => navigate('/cart')}
-                className="text-subtext hover:text-textMain transition-all bg-surface/40 p-2.5 rounded-xl border border-borderCustom hover:bg-surface/60 relative group"
+                className="text-subtext hover:text-textMain transition-all bg-surface/40 p-2.5 rounded-xl border border-borderCustom/40 hover:bg-surface hover:shadow-md relative group"
               >
                 <ShoppingCart size={18} strokeWidth={2.5} className="group-hover:scale-110 transition-transform" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)] animate-pulse">
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-textMain text-background text-[9px] font-black rounded-full flex items-center justify-center shadow-lg animate-pulse">
                     {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
@@ -156,7 +156,7 @@ const Navbar = () => {
 
             {/* Account / Profile Button */}
             <button
-              className="ml-1 w-10 h-10 rounded-xl bg-gradient-to-br from-surface to-background border border-borderCustom flex items-center justify-center overflow-hidden group hover:border-accent/50 transition-all shadow-xl"
+              className="ml-1 w-10 h-10 rounded-xl bg-surface border border-borderCustom/40 flex items-center justify-center overflow-hidden group hover:border-accent/50 hover:shadow-premium transition-all"
               onClick={() => !user && navigate('/login')}
               title={user?.name || "Account"}
             >
