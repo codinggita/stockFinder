@@ -7,6 +7,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import { addToCart } from '../redux/cartSlice';
 import toast from 'react-hot-toast';
+import SEO from '../components/SEO';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -61,6 +62,35 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen bg-background text-textMain font-sans selection:bg-accent/40">
       <Navbar />
+      <SEO 
+        title={product.name}
+        description={`${product.name} - ₹${product.price.toLocaleString()} in ${product.category}. ${product.description}`}
+        image={product.image}
+        url={`/product/${id}`}
+        type="product"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.name,
+          "image": product.image,
+          "description": product.description,
+          "brand": {
+            "@type": "Brand",
+            "name": product.store?.name || "STOCK FINDER"
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": `https://stockfinder-dhruva.netlify.app/product/${id}`,
+            "priceCurrency": "INR",
+            "price": product.price,
+            "availability": "https://schema.org/InStock",
+            "seller": {
+              "@type": "Organization",
+              "name": product.store?.name || "STOCK FINDER"
+            }
+          }
+        }}
+      />
 
       <main className="min-h-[calc(100vh-80px)] mt-20 flex relative">
         

@@ -6,6 +6,7 @@ import api from '../services/api';
 import Navbar from '../components/Navbar';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
+import SEO from '../components/SEO';
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -118,6 +119,7 @@ const EditProduct = () => {
 
   return (
     <div className="min-h-screen bg-background text-textMain">
+      <SEO title="Edit Asset" robots="noindex, nofollow" />
       <Navbar />
       
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">

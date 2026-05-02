@@ -63,7 +63,7 @@ const Navbar = () => {
               onClick={() => navigate(user?.role === 'retailer' ? '/dashboard' : '/marketplace')}
             >
               <div className="w-1.5 h-7 bg-accent group-hover:scale-y-125 transition-transform origin-center" />
-              LUXE RETAIL
+              STOCK FINDER
             </h1>
 
             <div className="hidden md:flex space-x-10">

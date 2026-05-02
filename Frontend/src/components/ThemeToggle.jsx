@@ -24,7 +24,7 @@ const ThemeToggle = ({ className = "" }) => {
     <button
       onClick={toggleTheme}
       className={`text-subtext hover:text-textMain transition-all bg-surface/40 p-2.5 rounded-xl border border-borderCustom hover:bg-surface/60 group ${className}`}
-      title={isDark ? "Activate Soft Luxury" : "Activate Luxe Dark"}
+      title={isDark ? "Activate Soft Luxury" : "Activate STOCK FINDER Dark"}
     >
       {isDark ? (
         <Sun size={18} strokeWidth={2.5} className="group-hover:rotate-45 transition-transform" />

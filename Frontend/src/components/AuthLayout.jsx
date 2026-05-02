@@ -27,7 +27,7 @@ const AuthLayout = ({ children, title, subtitle, image, imageText, reverse = fal
             <div className="mb-12">
               <div className="w-16 h-1.5 bg-accent rounded-full mb-6" />
               <h2 className="text-5xl lg:text-7xl font-black tracking-tighter text-textMain uppercase leading-[0.9]">
-                <span className="text-primary italic">Luxe</span><br/>Retail
+                <span className="text-primary italic">Stock</span><br/>Finder
               </h2>
               <p className="text-subtext text-[11px] font-bold uppercase tracking-[0.4em] mt-8 border-l-4 border-accent/40 pl-6 max-w-xs leading-relaxed">
                 {imageText || "The ultimate standard in inventory intelligence and retail management."}
@@ -57,7 +57,7 @@ const AuthLayout = ({ children, title, subtitle, image, imageText, reverse = fal
                 <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
                 Encrypted Session
               </span>
-              <span>© 2026 LUXE RETAIL</span>
+              <span>© 2026 STOCK FINDER</span>
             </div>
           </div>
         </div>

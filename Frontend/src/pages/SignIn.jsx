@@ -13,6 +13,7 @@ import InputField from '../components/InputField';
 import Button from '../components/Button';
 import api from '../services/api';
 import loginBg from '../assets/login_bg.png';
+import SEO from '../components/SEO';
 
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email address').required('Email is required'),
@@ -67,6 +68,7 @@ const SignIn = () => {
       image={loginBg}
       reverse={false}
     >
+      <SEO title="Login" robots="noindex, nofollow" />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Role Pill Selection */}
         <div className="bg-sectionSurface p-1.5 rounded-2xl border border-borderCustom flex gap-1.5">

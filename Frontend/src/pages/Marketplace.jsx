@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
 import Button from '../components/Button';
 import heroBg from '../assets/hero_bg.png';
+import SEO from '../components/SEO';
 
 
 const Marketplace = () => {
@@ -37,6 +38,18 @@ const Marketplace = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-primary/40">
+      <SEO 
+        title="Marketplace"
+        description="Discover premium inventory from verified luxury partners across Gujarat. Search, negotiate, and secure assets with absolute precision."
+        url="/marketplace"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          "name": "STOCK FINDER Marketplace",
+          "description": "Discover premium inventory from verified luxury partners.",
+          "url": "https://stockfinder-dhruva.netlify.app/marketplace"
+        }}
+      />
       <Navbar />
       
       {/* Subtle Retailer Banner */}
@@ -76,7 +89,7 @@ const Marketplace = () => {
             className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-accent/5 border border-accent/20 mb-8"
           >
             <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent/90">Luxe Retail Intelligence</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent/90">STOCK FINDER Intelligence</span>
           </motion.div>
 
           <motion.h1 
@@ -189,7 +202,7 @@ const Marketplace = () => {
           </div>
           
           <div className="flex items-center gap-6">
-             <span className="text-[9px] font-black text-subtext uppercase tracking-[0.4em]">Luxe Retail © 2026</span>
+             <span className="text-[9px] font-black text-subtext uppercase tracking-[0.4em]">STOCK FINDER © 2026</span>
              <div className="w-[1px] h-4 bg-borderCustom" />
              <div className="flex gap-4 text-[9px] font-black uppercase tracking-[0.2em] text-subtext/60">
                <a href="#" className="hover:text-primary">Privacy</a>

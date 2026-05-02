@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import Button from '../components/Button';
 import InputField from '../components/InputField';
+import SEO from '../components/SEO';
 
 const CreateStore = () => {
   const [formData, setFormData] = useState({
@@ -64,6 +65,7 @@ const CreateStore = () => {
 
   return (
     <div className="min-h-screen bg-background text-textMain overflow-hidden">
+      <SEO title="Initialize Store" robots="noindex, nofollow" />
       <Navbar />
       
       <div className="flex flex-col lg:flex-row min-h-screen">
@@ -144,7 +146,7 @@ const CreateStore = () => {
           >
             <motion.div variants={itemVariants} className="mb-10 lg:hidden">
                <h2 className="text-3xl font-black tracking-tight mb-2">Setup Your Store</h2>
-               <p className="text-subtext font-medium">Join Luxe Retail and start selling.</p>
+               <p className="text-subtext font-medium">Join STOCK FINDER and start selling.</p>
             </motion.div>
 
             <motion.form 

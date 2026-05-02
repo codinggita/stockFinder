@@ -16,7 +16,7 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const newSocket = io('http://localhost:5000');
+      const newSocket = io('https://stockfinder-1-5fbt.onrender.com');
       
       newSocket.on('connect', () => {
         console.log('Connected to socket server');

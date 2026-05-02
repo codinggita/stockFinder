@@ -11,6 +11,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import Navbar from '../components/Navbar';
 import { fetchNearbyStores } from '../redux/storeSlice';
+import SEO from '../components/SEO';
 
 
 
@@ -48,6 +49,11 @@ const AllStores = () => {
 
   return (
     <div className="h-screen bg-background text-textMain font-sans flex flex-col overflow-hidden">
+      <SEO 
+        title="Stores"
+        description="Browse verified luxury stores across Gujarat. Locate exclusive retail partners and explore their premium inventory."
+        url="/stores"
+      />
       <Navbar />
 
       <div className="flex-1 relative flex flex-col pt-16">
@@ -87,7 +93,7 @@ const AllStores = () => {
                       })}
                       eventHandlers={{ click: () => handleSelect(i) }}
                     >
-                       <Popup className="luxe-popup">
+                       <Popup className="stock-popup">
                           <div className="w-[280px] bg-surface border border-borderCustom/40 rounded-[2.5rem] overflow-hidden shadow-2xl translate-y-[-10px]">
                              <div className="h-32 w-full relative">
                                 <img src={s.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800'} className="w-full h-full object-cover grayscale-[30%]" alt="Store" />
@@ -161,7 +167,7 @@ const AllStores = () => {
                        <div className="absolute bottom-8 left-10 right-10">
                           <div className="flex justify-between items-end">
                              <div className="space-y-1">
-                                <span className="text-[8px] font-black text-accent uppercase tracking-[0.5em]">Luxe Registry 0{i+1}</span>
+                                <span className="text-[8px] font-black text-accent uppercase tracking-[0.5em]">STOCK Registry 0{i+1}</span>
                                 <h3 className="text-3xl font-black uppercase italic tracking-tighter leading-none">{s.name}</h3>
                              </div>
                              {i === selectedIndex && (
