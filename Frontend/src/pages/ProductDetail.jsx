@@ -83,25 +83,25 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* Technical Navigation */}
-            <div className="space-y-8 pt-8 border-t border-white/5">
-              {[
-                { id: 'specs', label: 'Tech_Matrix', icon: Cpu },
-                { id: 'inventory', label: 'Stock_Registry', icon: Box },
-                { id: 'valuation', label: 'Market_Pulse', icon: Activity },
-              ].map((tab) => (
-                <button 
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center justify-between group transition-all ${activeTab === tab.id ? 'text-accent' : 'text-white/20 hover:text-white'}`}
-                >
-                  <div className="flex items-center gap-4">
-                    <tab.icon size={14} className={activeTab === tab.id ? 'animate-pulse' : ''} />
-                    <span className="text-[11px] font-black uppercase tracking-[0.3em]">{tab.label}</span>
-                  </div>
-                  <div className={`w-1.5 h-1.5 rounded-full ${activeTab === tab.id ? 'bg-accent shadow-[0_0_10px_var(--accent)]' : 'bg-transparent'}`} />
-                </button>
-              ))}
+            {/* Technical Description */}
+            <div className="space-y-4 pt-8 border-t border-white/5">
+               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.5em] block">Asset_Brief</span>
+               <p className="text-[11px] text-white/60 leading-relaxed font-medium">
+                  {product.description || "High-fidelity architectural asset synchronized from the global registry. Optimized for technical performance and aesthetic excellence."}
+               </p>
+            </div>
+
+            {/* Technical Matrix (Always Visible) */}
+            <div className="space-y-6 pt-8 border-t border-white/5">
+              <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.5em] block">Technical_Matrix</span>
+              <div className="grid grid-cols-1 gap-3">
+                {product.technicalSpecs?.map((spec, i) => (
+                   <div key={i} className="bg-white/[0.03] border border-white/5 p-4 rounded-xl flex justify-between items-center group hover:border-accent/30 transition-all">
+                      <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">{spec.label}</span>
+                      <span className="text-[10px] font-black uppercase italic text-textMain">{spec.value}</span>
+                   </div>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -184,32 +184,7 @@ const ProductDetail = () => {
               ))}
             </div>
           </div>
-
-          {/* Tab Content Overlay (Floating Right) */}
-          <div className="absolute top-12 right-12 w-[350px] space-y-6 z-30">
-            <AnimatePresence mode="wait">
-              {activeTab === 'specs' && (
-                <motion.div 
-                  key="specs"
-                  initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-                  className="bg-black/80 border border-white/10 backdrop-blur-3xl p-8 rounded-[2rem] shadow-2xl"
-                >
-                  <span className="text-[9px] font-black text-accent uppercase tracking-[0.5em] block mb-6 italic">//_Technical_Matrix</span>
-                  <div className="space-y-4">
-                    {product.technicalSpecs?.map((spec, i) => (
-                      <div key={i} className="flex justify-between items-end border-b border-white/5 pb-2">
-                        <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em]">{spec.label}</span>
-                        <span className="text-xs font-black uppercase italic">{spec.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
         </div>
-
       </main>
     </div>
   );
