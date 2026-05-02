@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /marketplace
+Allow: /stores
+Allow: /products
+Allow: /product/*
+Allow: /store/*
+
+Disallow: /login
+Disallow: /register
+Disallow: /negotiate/*
+Disallow: /negotiation/*
+Disallow: /dashboard/*
+
+Sitemap: https://luxe-retail.com/sitemap.xml
