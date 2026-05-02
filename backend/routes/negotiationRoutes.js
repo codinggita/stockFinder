@@ -9,11 +9,15 @@ const {
   getStoreNegotiations,
   deleteNegotiation,
   rejectDeal,
-  checkProductNegotiation
+  checkProductNegotiation,
+  getNotifications,
+  markNotificationsAsRead
 } = require('../controllers/negotiationController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/', protect, startNegotiation);
+router.get('/notifications', protect, getNotifications);
+router.patch('/notifications/read', protect, markNotificationsAsRead);
 router.get('/check/:productId', protect, checkProductNegotiation);
 router.get('/store', protect, getStoreNegotiations);
 router.get('/accepted', protect, getAcceptedNegotiations);

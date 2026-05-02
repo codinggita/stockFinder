@@ -10,6 +10,7 @@ const messageSchema = new mongoose.Schema({
     default: 'TEXT' 
   },
   offerAmount: { type: Number },
+  isRead: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

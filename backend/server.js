@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
     console.log(`Socket ${socket.id} joined negotiation ${negotiationId}`);
   });
 
+  socket.on('join_user', (userId) => {
+    socket.join(`user_${userId}`);
+    console.log(`Socket ${socket.id} joined user room ${userId}`);
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

@@ -38,7 +38,8 @@ exports.getNegotiationDetails = async (req, res) => {
     console.log(`[getNegotiationDetails] Fetching negotiation ${req.params.id}`);
     const negotiation = await Negotiation.findById(req.params.id)
       .populate('product')
-      .populate('store');
+      .populate('store')
+      .populate('user', 'name email');
     
     if (!negotiation) return res.status(404).json({ message: 'Negotiation not found' });
 
@@ -69,11 +70,22 @@ exports.sendMessage = async (req, res) => {
       await Negotiation.findByIdAndUpdate(req.params.id, { currentOffer: offerAmount });
     }
 
-    const negotiation = await Negotiation.findById(req.params.id).populate('store');
+    const negotiation = await Negotiation.findById(req.params.id).populate('store product');
     
     if (req.io) {
       console.log(`[sendMessage] Emitting receive_message to room: negotiation_${req.params.id}`);
       req.io.to(`negotiation_${req.params.id}`).emit('receive_message', message);
+
+      const isCustomer = (negotiation.user._id || negotiation.user).toString() === req.user.id;
+      const receiverId = isCustomer ? negotiation.store.owner : (negotiation.user._id || negotiation.user);
+
+      req.io.to(`user_${receiverId}`).emit('new_notification', {
+        title: isCustomer ? `Inbound Offer: ${negotiation.product.name}` : `Retailer Update: ${negotiation.store.name}`,
+        message: content,
+        type: type === 'OFFER' ? 'offer' : 'message',
+        category: negotiation.product.name,
+        link: `/negotiation/${negotiation._id}`
+      });
     } else {
       console.log(`[sendMessage WARNING] req.io is UNDEFINED! Socket events will not be sent.`);
     }
@@ -88,7 +100,7 @@ exports.sendMessage = async (req, res) => {
 exports.acceptDeal = async (req, res) => {
   try {
     const { finalPrice } = req.body;
-    const negotiation = await Negotiation.findById(req.params.id).populate('store');
+    const negotiation = await Negotiation.findById(req.params.id).populate('store product');
     if (!negotiation) return res.status(404).json({ message: 'Negotiation not found' });
 
     negotiation.status = 'ACCEPTED';
@@ -105,6 +117,17 @@ exports.acceptDeal = async (req, res) => {
 
     if (req.io) {
       req.io.to(`negotiation_${req.params.id}`).emit('receive_message', message);
+      
+      const isCustomer = (negotiation.user._id || negotiation.user).toString() === req.user.id;
+      const receiverId = isCustomer ? negotiation.store.owner : (negotiation.user._id || negotiation.user);
+      
+      req.io.to(`user_${receiverId}`).emit('new_notification', {
+        title: `Deal Accepted: ${negotiation.product.name}`,
+        message: `Final Price: ₹${negotiation.negotiatedPrice.toLocaleString()}`,
+        type: 'deal',
+        category: negotiation.product.name,
+        link: `/negotiation/${negotiation._id}`
+      });
     }
 
     res.status(200).json(negotiation);
@@ -115,7 +138,7 @@ exports.acceptDeal = async (req, res) => {
 
 exports.rejectDeal = async (req, res) => {
   try {
-    const negotiation = await Negotiation.findById(req.params.id);
+    const negotiation = await Negotiation.findById(req.params.id).populate('store product');
     if (!negotiation) return res.status(404).json({ message: 'Negotiation not found' });
 
     negotiation.status = 'REJECTED';
@@ -130,6 +153,17 @@ exports.rejectDeal = async (req, res) => {
 
     if (req.io) {
       req.io.to(`negotiation_${req.params.id}`).emit('receive_message', message);
+
+      const isCustomer = (negotiation.user._id || negotiation.user).toString() === req.user.id;
+      const receiverId = isCustomer ? negotiation.store.owner : (negotiation.user._id || negotiation.user);
+      
+      req.io.to(`user_${receiverId}`).emit('new_notification', {
+        title: `Deal Rejected: ${negotiation.product.name}`,
+        message: `The negotiation has been closed.`,
+        type: 'reject',
+        category: negotiation.product.name,
+        link: `/negotiation/${negotiation._id}`
+      });
     }
 
     res.status(200).json(negotiation);
@@ -145,6 +179,55 @@ exports.getAcceptedNegotiations = async (req, res) => {
       status: 'ACCEPTED'
     });
     res.status(200).json(negotiations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getNotifications = async (req, res) => {
+  try {
+    const userNegotiations = await Negotiation.find({
+      $or: [
+        { user: req.user.id },
+        { store: { $in: await Store.find({ owner: req.user.id }).distinct('_id') } }
+      ]
+    });
+    const negIds = userNegotiations.map(n => n._id);
+
+    const unreadMessages = await Message.find({
+      negotiation: { $in: negIds },
+      sender: { $ne: req.user.id },
+      isRead: false
+    }).populate({
+      path: 'negotiation',
+      populate: { path: 'product store' }
+    }).sort('-createdAt');
+
+    res.status(200).json(unreadMessages);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.markNotificationsAsRead = async (req, res) => {
+  try {
+    const userNegotiations = await Negotiation.find({
+      $or: [
+        { user: req.user.id },
+        { store: { $in: await Store.find({ owner: req.user.id }).distinct('_id') } }
+      ]
+    });
+    const negIds = userNegotiations.map(n => n._id);
+
+    await Message.updateMany(
+      {
+        negotiation: { $in: negIds },
+        sender: { $ne: req.user.id },
+        isRead: false
+      },
+      { isRead: true }
+    );
+    res.status(200).json({ success: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
