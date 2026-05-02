@@ -100,7 +100,7 @@ const RetailerDashboard = () => {
             initial={{ opacity: 0, scale: 0.98, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative w-full h-[450px] rounded-[3.5rem] overflow-hidden mb-16 border border-white/10 group shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)]"
+            className="relative w-full h-[450px] rounded-[3.5rem] overflow-hidden mb-16 border border-borderCustom/20 group shadow-premium"
           >
             {/* Background Layers */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-10" />
@@ -112,7 +112,7 @@ const RetailerDashboard = () => {
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 2 }}
-              className="absolute inset-0 w-full h-full object-cover grayscale-[0.3] brightness-[0.5] group-hover:scale-105 transition-transform duration-[3000ms]"
+              className="absolute inset-0 w-full h-full object-cover grayscale-[0.3] brightness-[0.7] dark:brightness-[0.5] group-hover:scale-105 transition-transform duration-[3000ms]"
             />
 
             {/* Scanline Effect */}
@@ -124,11 +124,11 @@ const RetailerDashboard = () => {
             <div className="absolute inset-0 p-8 lg:p-16 z-20 flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div className="flex items-center space-x-4">
-                  <div className="px-4 py-2 rounded-xl bg-background/40 backdrop-blur-md border border-white/10 flex items-center gap-2">
+                  <div className="px-4 py-2 rounded-xl bg-surface/40 backdrop-blur-md border border-borderCustom/20 flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">System Operational</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">System Operational</span>
                   </div>
-                  <div className="px-4 py-2 rounded-xl bg-background/40 backdrop-blur-md border border-white/10 flex items-center gap-2">
+                  <div className="px-4 py-2 rounded-xl bg-surface/40 backdrop-blur-md border border-borderCustom/20 flex items-center gap-2">
                     <ShieldCheck size={14} className="text-accent" />
                     <span className="text-[10px] font-black uppercase tracking-[0.2em] text-textMain/70">Verified Retailer</span>
                   </div>
@@ -159,7 +159,7 @@ const RetailerDashboard = () => {
                   </div>
                   <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-4">
                     <span className="text-outline text-primary block lg:inline mr-4">LUXE</span>
-                    <span className="italic italic-shadow text-white uppercase">{myStore.name}</span>
+                    <span className="italic italic-shadow text-textMain uppercase">{myStore.name}</span>
                   </h1>
                   <p className="text-subtext font-medium text-lg max-w-lg leading-relaxed line-clamp-2">
                     {myStore.description || 'Redefining the boundaries of premium retail through architectural excellence.'}
@@ -172,7 +172,7 @@ const RetailerDashboard = () => {
                     { label: 'Active', value: '12', icon: Package, color: 'text-primary' },
                     { label: 'Protocol', value: '04', icon: MessageSquare, color: 'text-accent' }
                   ].map((stat, i) => (stat && (
-                    <div key={i} className="premium-glass p-6 rounded-[2rem] border border-white/5 min-w-[140px] group/stat hover:border-white/20 transition-all">
+                    <div key={i} className="premium-glass p-6 rounded-[2rem] border border-borderCustom/20 min-w-[140px] group/stat hover:border-borderCustom/40 transition-all">
                       <div className="flex justify-between items-start mb-4">
                         <stat.icon size={18} className={`${stat.color} group-hover/stat:scale-110 transition-transform`} />
                         <Activity size={14} className="text-subtext/30" />
@@ -193,7 +193,7 @@ const RetailerDashboard = () => {
             whileHover={{ y: -8, scale: 1.005 }}
             whileTap={{ scale: 0.995 }}
             onClick={() => navigate('/products')}
-            className="w-full relative overflow-hidden bg-surface border border-white/5 hover:border-primary/40 rounded-[3rem] p-8 lg:p-12 flex items-center justify-between transition-all group shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]"
+            className="w-full relative overflow-hidden bg-surface border border-borderCustom/20 hover:border-primary/40 rounded-[3rem] p-8 lg:p-12 flex items-center justify-between transition-all group shadow-premium"
           >
             {/* Background Glows */}
             <div className="absolute -left-20 -top-20 w-64 h-64 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-all pointer-events-none" />
@@ -201,11 +201,11 @@ const RetailerDashboard = () => {
 
             <div className="flex items-center gap-8 lg:gap-12 relative z-10">
               <div className="relative">
-                <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-[2rem] bg-background border border-white/10 flex items-center justify-center group-hover:border-primary/50 transition-all duration-700 shadow-inner">
+                <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-[2rem] bg-background border border-borderCustom/20 flex items-center justify-center group-hover:border-primary/50 transition-all duration-700 shadow-inner">
                   <PlusCircle size={48} className="text-primary group-hover:scale-110 transition-transform duration-700" />
                   
                   {/* Decorative Elements */}
-                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center border-4 border-surface shadow-xl">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary flex items-center justify-center border-4 border-borderCustom/20 shadow-premium">
                     <Cpu size={14} className="text-white" />
                   </div>
                 </div>
@@ -232,7 +232,7 @@ const RetailerDashboard = () => {
                 <span className="text-[9px] font-black text-subtext uppercase tracking-[0.2em] mb-1">Queue Status</span>
                 <span className="text-xs font-black text-emerald-500">READY</span>
               </div>
-              <div className="w-16 h-16 rounded-[1.5rem] bg-sectionSurface border border-white/10 flex items-center justify-center group-hover:border-accent group-hover:bg-accent group-hover:text-white transition-all shadow-xl">
+              <div className="w-16 h-16 rounded-[1.5rem] bg-sectionSurface border border-borderCustom/20 flex items-center justify-center group-hover:border-accent group-hover:bg-accent group-hover:text-white transition-all shadow-xl">
                   <ArrowRight className="group-hover:translate-x-2 transition-transform" size={28} />
               </div>
             </div>

@@ -65,17 +65,18 @@ const Marketplace = () => {
             alt="Luxury Retail" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/80 to-background"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/60 to-background z-10"></div>
+          <div className="absolute inset-0 bg-accent/5 backdrop-blur-[1px] z-10"></div>
         </div>
 
         <div className="relative z-20 max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/5 border border-accent/10 mb-6"
+            className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-accent/5 border border-accent/20 mb-8"
           >
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-accent/80">Luxe Retail Intelligence</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent/90">Luxe Retail Intelligence</span>
           </motion.div>
 
           <motion.h1 
@@ -90,10 +91,10 @@ const Marketplace = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-subtext text-[11px] max-w-lg mx-auto mb-10 font-medium uppercase tracking-[0.2em] leading-relaxed opacity-80"
+            className="text-subtext text-[12px] max-w-xl mx-auto mb-12 font-medium uppercase tracking-[0.3em] leading-relaxed"
           >
-            Real-time inventory discovery across Gujarat's premier retail nodes. 
-            Search, negotiate, and secure assets instantly.
+            Real-time inventory discovery across Gujarat's premier retail nodes. <br/>
+            Search, negotiate, and secure assets with absolute precision.
           </motion.p>
 
           <div className="max-w-2xl mx-auto">
@@ -107,14 +108,14 @@ const Marketplace = () => {
         
         {/* Stores Section */}
         <section>
-          <div className="flex justify-between items-end mb-12 border-b border-borderCustom pb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-[1px] bg-accent" />
-                <span className="text-[9px] font-black text-accent uppercase tracking-[0.3em]">Network Hubs</span>
+          <div className="flex justify-between items-end mb-16 pb-8 border-b border-borderCustom/20">
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-[1px] bg-accent/40" />
+                <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">Network_Hubs</span>
               </div>
-              <h2 className="text-3xl font-black text-textMain tracking-tighter uppercase italic">
-                {isSearching ? 'Matched Stores' : 'Curated Outlets'}
+              <h2 className="text-5xl font-black text-textMain tracking-tighter uppercase italic leading-none">
+                {isSearching ? 'Matched_Stores' : 'Curated_Outlets'}
               </h2>
             </div>
             {!isSearching && (
@@ -141,14 +142,14 @@ const Marketplace = () => {
 
         {/* Products Section */}
         <section>
-          <div className="flex justify-between items-end mb-12 border-b border-borderCustom pb-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-8 h-[1px] bg-primary" />
-                <span className="text-[9px] font-black text-primary uppercase tracking-[0.3em]">Active Feed</span>
+          <div className="flex justify-between items-end mb-16 pb-8 border-b border-borderCustom">
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-[1px] bg-accent/40" />
+                <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em]">Active_Feed</span>
               </div>
-              <h2 className="text-3xl font-black text-textMain tracking-tighter uppercase italic">
-                {isSearching ? 'Relevant Items' : 'Prime Selection'}
+              <h2 className="text-5xl font-black text-textMain tracking-tighter uppercase italic leading-none">
+                {isSearching ? 'Relevant_Items' : 'Prime_Selection'}
               </h2>
             </div>
             {!isSearching && (
@@ -176,7 +177,7 @@ const Marketplace = () => {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="border-t border-borderCustom bg-surface/30 py-16">
+      <footer className="border-t border-borderCustom/20 bg-surface/50 py-16">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-8 text-[9px] font-black text-subtext uppercase tracking-[0.2em]">
             <div className="flex items-center gap-2">

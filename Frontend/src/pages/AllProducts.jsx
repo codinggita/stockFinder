@@ -111,7 +111,7 @@ const AllProducts = () => {
   const distanceOptions = ['Under 5 KM', 'Under 15 KM', 'Under 30 KM', 'Anywhere'];
 
   return (
-    <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-primary/40">
+    <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-accent/40">
       <Navbar />
       
       <main className="flex-1 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 w-full flex gap-10">
@@ -120,24 +120,22 @@ const AllProducts = () => {
         <aside className="w-80 flex-shrink-0 hidden lg:block relative z-10">
           <div className="sticky top-32 h-[calc(100vh-10rem)] flex flex-col">
             
-            {/* Main HUD Panel (Scrolling Area) */}
-            <div className="flex-1 bg-black/20 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] p-10 pb-20 relative overflow-hidden overflow-y-auto scrollbar-hide">
-              {/* Scanline Effect */}
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent animate-scan shadow-[0_0_15px_rgba(124,58,237,0.5)] z-20"></div>
+            <div className="flex-1 bg-surface shadow-premium border border-borderCustom/20 rounded-[2.5rem] p-10 pb-20 relative overflow-hidden overflow-y-auto scrollbar-hide">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-accent/30 to-transparent animate-scan z-20"></div>
               
               <div className="flex flex-col gap-2 mb-12">
                  <div className="flex items-center gap-3">
-                    <span className="text-[8px] font-black text-primary uppercase tracking-[0.5em]">System_01</span>
-                    <div className="flex-1 h-[1px] bg-white/5" />
+                    <span className="text-[10px] font-black text-accent uppercase tracking-[0.5em] italic">Registry_01</span>
+                    <div className="flex-1 h-[1px] bg-borderCustom/10" />
                  </div>
-                 <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase leading-none">Refine<br/>Registry</h2>
+                  <h2 className="text-3xl font-black text-textMain italic tracking-tighter uppercase leading-none">Refine<br/>Registry</h2>
               </div>
 
               {/* Price Calibration */}
               <div className="space-y-8 mb-16">
                 <div className="flex justify-between items-center">
-                  <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Price_Thresh</p>
-                  <span className="text-xs font-black text-primary italic">₹{priceRange.toLocaleString()}</span>
+                  <p className="text-[10px] font-black text-subtext/60 uppercase tracking-[0.4em]">Price_Calibration</p>
+                  <span className="text-sm font-black text-accent italic">₹{priceRange.toLocaleString()}</span>
                 </div>
                 <div className="relative pt-2">
                    <input 
@@ -147,9 +145,9 @@ const AllProducts = () => {
                      step="5000"
                      value={priceRange}
                      onChange={(e) => setPriceRange(Number(e.target.value))}
-                     className="w-full h-[1px] bg-white/10 appearance-none cursor-pointer accent-primary"
+                     className="w-full h-[1px] bg-sectionSurface appearance-none cursor-pointer accent-accent rounded-full"
                    />
-                   <div className="flex justify-between mt-4 text-[8px] font-black text-white/20 uppercase tracking-widest">
+                   <div className="flex justify-between mt-4 text-[8px] font-black text-subtext/20 uppercase tracking-widest">
                       <span>Min_0</span>
                       <span>Max_150K</span>
                    </div>
@@ -158,21 +156,20 @@ const AllProducts = () => {
 
               {/* Range Targeting */}
               <div className="space-y-6 mb-16">
-                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Spatial_Range</p>
+                <p className="text-[10px] font-black text-subtext/60 uppercase tracking-[0.5em]">Spatial_Targeting</p>
                 <div className="grid grid-cols-1 gap-3">
                   {distanceOptions.map((dist, i) => (
                     <button 
                       key={dist}
                       onClick={() => setMaxDistance(dist)}
-                      className={`relative flex items-center justify-between p-4 rounded-2xl transition-all border ${
+                      className={`relative flex items-center justify-between p-4 rounded-2xl transition-all ${
                         maxDistance === dist 
-                          ? 'bg-primary/10 border-primary/40 text-white translate-x-2' 
-                          : 'bg-white/5 border-white/5 text-white/30 hover:border-white/10'
+                          ? 'bg-textMain text-background translate-x-2 shadow-xl' 
+                          : 'bg-sectionSurface/40 border border-borderCustom/20 text-subtext hover:bg-sectionSurface hover:border-accent/40'
                       }`}
                     >
                        <span className="text-[10px] font-black uppercase tracking-widest">{dist}</span>
-                       <div className={`w-1.5 h-1.5 rounded-full ${maxDistance === dist ? 'bg-primary shadow-[0_0_10px_rgba(124,58,237,1)]' : 'bg-white/10'}`} />
-                       <span className="absolute left-[-15px] text-[7px] font-black opacity-10 group-hover:opacity-30">0{i+1}</span>
+                       <div className={`w-1.5 h-1.5 rounded-full ${maxDistance === dist ? 'bg-accent shadow-[0_0_10px_rgba(194,163,120,1)]' : 'bg-borderCustom/20'}`} />
                     </button>
                   ))}
                 </div>
@@ -180,7 +177,7 @@ const AllProducts = () => {
 
               {/* Availability Switches */}
               <div className="space-y-6">
-                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Asset_State</p>
+                <p className="text-[10px] font-black text-subtext/60 uppercase tracking-[0.5em]">Asset_Lifecycle</p>
                 <div className="flex flex-col gap-4">
                   {['In Stock', 'Out of Stock', 'Pre-order', 'Exclusive Access'].map(item => (
                     <div 
@@ -188,13 +185,13 @@ const AllProducts = () => {
                       onClick={() => toggleAvailability(item)}
                       className="flex items-center justify-between group cursor-pointer"
                     >
-                       <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${availability.includes(item) ? 'text-white' : 'text-white/20'}`}>
+                       <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${availability.includes(item) ? 'text-textMain' : 'text-subtext/40'}`}>
                           {item}
                        </span>
-                       <div className={`w-10 h-5 rounded-full border transition-all relative ${availability.includes(item) ? 'bg-primary/20 border-primary' : 'bg-white/5 border-white/10'}`}>
+                       <div className={`w-10 h-5 rounded-full border transition-all relative ${availability.includes(item) ? 'bg-accent/20 border-accent' : 'bg-sectionSurface border-borderCustom/20'}`}>
                           <motion.div 
                             animate={{ x: availability.includes(item) ? 20 : 0 }}
-                            className={`absolute top-1 left-1 w-2.5 h-2.5 rounded-full ${availability.includes(item) ? 'bg-primary shadow-[0_0_10px_rgba(124,58,237,1)]' : 'bg-white/20'}`}
+                            className={`absolute top-1 left-1 w-2.5 h-2.5 rounded-full ${availability.includes(item) ? 'bg-textMain shadow-[0_0_10px_rgba(45,41,38,0.3)]' : 'bg-subtext/20'}`}
                           />
                        </div>
                     </div>
@@ -203,325 +200,152 @@ const AllProducts = () => {
               </div>
             </div>
 
-            {/* Floating Permanent HUD Decor & Scroll Indicator */}
             <div className="absolute bottom-4 left-0 right-0 px-10 flex justify-between items-center pointer-events-none z-30">
-               <div className="text-[7px] font-black text-white/10 uppercase tracking-[0.5em] italic">
-                  Reg_Luxe_2026
-               </div>
-               <motion.div 
-                 animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
-                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                 className="text-primary flex flex-col items-center gap-1"
-               >
-                  <span className="text-[6px] font-black uppercase tracking-widest">More</span>
+               <div className="text-[8px] font-black text-subtext/20 uppercase tracking-[0.4em] italic">Reg_Luxe_2026</div>
+               <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-accent flex flex-col items-center">
                   <ChevronDown size={14} strokeWidth={3} />
                </motion.div>
             </div>
-
           </div>
         </aside>
 
         {/* Product Listing Area */}
-        <div className="flex-1 space-y-10">
+        <div className="flex-1 space-y-12">
           
-          {/* Header & Controls */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-borderCustom/10">
+            <div className="space-y-4">
               {user?.role === 'retailer' && (
-                <button 
-                  onClick={() => navigate('/dashboard')}
-                  className="flex items-center gap-2 text-subtext hover:text-textMain mb-6 transition-colors group"
-                >
-                  <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to Dashboard</span>
+                <button onClick={() => navigate('/dashboard')} className="flex items-center gap-2 text-accent hover:text-textMain mb-4 transition-colors group">
+                  <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">Back to Terminal</span>
                 </button>
               )}
-              <h1 className="text-5xl font-black text-textMain tracking-tighter mb-4">
-                {user?.role === 'retailer' ? 'My Products' : 'Marketplace'}
+              <h1 className="text-6xl font-black text-textMain tracking-tighter uppercase italic leading-none">
+                {user?.role === 'retailer' ? 'Inventory' : 'Marketplace'}
               </h1>
-              <p className="text-subtext max-w-2xl text-sm font-medium">
+              <p className="text-subtext max-w-xl text-[11px] font-medium uppercase tracking-widest leading-relaxed">
                 {user?.role === 'retailer' 
-                  ? 'Manage your existing inventory and track live stock.' 
-                  : 'Discover premium inventory from verified luxury partners across India.'}
+                  ? 'Manage your authorized stock manifest and active listings.' 
+                  : 'Curated selection of high-fidelity assets from verified luxury outlets.'}
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row items-end gap-4">
+            <div className="flex flex-col sm:flex-row items-end gap-5">
               {user?.role === 'retailer' && (
                 <button 
                   onClick={() => setShowAddModal(true)}
-                  className="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-[0.15em] transition-all flex items-center gap-2 shadow-lg shadow-primary/20"
+                  className="bg-textMain text-background px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all flex items-center gap-3 shadow-premium hover:bg-accent hover:text-white"
                 >
-                  <span className="text-lg leading-none">+</span> Add Product
+                  Add Asset Entry +
                 </button>
               )}
-              <div className="flex bg-surface p-1 rounded-xl border border-borderCustom">
-                <button 
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-sectionSurface text-textMain shadow-lg' : 'text-subtext hover:text-textMain'}`}
-                >
-                  <LayoutGrid size={20} />
-                </button>
-                <button 
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-sectionSurface text-textMain shadow-lg' : 'text-subtext hover:text-textMain'}`}
-                >
-                  <List size={20} />
-                </button>
+              <div className="flex bg-surface p-1 rounded-xl border border-borderCustom/20 shadow-sm">
+                <button onClick={() => setViewMode('grid')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-background text-textMain shadow-md' : 'text-subtext/40 hover:text-textMain'}`}><LayoutGrid size={18} /></button>
+                <button onClick={() => setViewMode('list')} className={`p-2.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-background text-textMain shadow-md' : 'text-subtext/40 hover:text-textMain'}`}><List size={18} /></button>
               </div>
             </div>
           </div>
 
-          {/* Products Grid */}
-          <div className={`grid gap-8 ${
-            viewMode === 'grid' 
-              ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
-              : 'grid-cols-1'
-          }`}>
+          {/* Grid Area */}
+          <div className={`grid gap-10 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
             {status === 'loading' ? (
-               [1, 2, 3, 4, 5, 6].map(i => (
-                 <div key={i} className="aspect-[4/5] bg-surface rounded-3xl animate-pulse border border-borderCustom"></div>
-               ))
+               [1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[3/4] bg-surface rounded-[2.5rem] animate-pulse border border-borderCustom/20" />)
             ) : products.length > 0 ? (
-              products.map((product) => (
-                <ProductCard key={product._id} product={product} viewMode={viewMode} />
-              ))
+              products.map((product) => <ProductCard key={product._id} product={product} viewMode={viewMode} />)
             ) : (
-              <div className="col-span-full py-40 text-center border border-dashed border-borderCustom rounded-[3rem] bg-surface/20">
-                <div className="mb-6 text-6xl opacity-20">🔍</div>
-                <p className="text-subtext font-black uppercase tracking-widest text-sm">No premium items matched your criteria</p>
-                <button 
-                  onClick={() => {
-                    setPriceRange(150000);
-                    setMaxDistance('Anywhere');
-                    setAvailability(user?.role === 'retailer' ? ['In Stock', 'Pre-order', 'Exclusive Access', 'Out of Stock'] : ['In Stock']);
-                    handleApplyFilters();
-                  }}
-                  className="mt-6 text-primary text-[10px] font-black uppercase tracking-widest hover:underline"
-                >
-                  Reset all filters
-                </button>
+              <div className="col-span-full py-40 text-center border border-dashed border-borderCustom/20 rounded-[3rem] bg-surface/40">
+                <p className="text-subtext/40 font-black uppercase tracking-[0.5em] text-xs italic mb-8">Manifest Entry Empty</p>
+                <button onClick={() => { setPriceRange(150000); setMaxDistance('Anywhere'); handleApplyFilters(); }} className="text-accent text-[10px] font-black uppercase tracking-widest hover:underline italic">Reset Protocol</button>
               </div>
             )}
           </div>
 
           {/* Pagination */}
           {products.length > 0 && (
-            <div className="pt-10 flex items-center justify-center gap-3">
-              <button className="w-10 h-10 rounded-xl bg-surface border border-borderCustom flex items-center justify-center text-subtext hover:bg-sectionSurface hover:text-textMain transition-all disabled:opacity-30" disabled>
-                 <ChevronLeft size={20} />
-              </button>
-              
-              {[1, 2, 3, '...', 12].map((page, i) => (
-                <button 
-                  key={i}
-                  className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${
-                    page === 1 
-                      ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                      : 'bg-surface text-subtext hover:bg-sectionSurface hover:text-textMain'
-                  } ${typeof page === 'string' ? 'cursor-default pointer-events-none' : ''}`}
-                >
-                  {page}
-                </button>
+            <div className="pt-16 flex items-center justify-center gap-4">
+              <button className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all disabled:opacity-20" disabled><ChevronLeft size={20} /></button>
+              {[1, 2, 3].map(page => (
+                <button key={page} className={`w-12 h-12 rounded-xl text-[10px] font-black transition-all ${page === 1 ? 'bg-textMain text-background shadow-premium' : 'bg-surface border border-borderCustom/20 text-subtext hover:bg-sectionSurface'}`}>{page.toString().padStart(2, '0')}</button>
               ))}
-
-              <button className="w-10 h-10 rounded-xl bg-surface border border-borderCustom flex items-center justify-center text-subtext hover:bg-sectionSurface hover:text-textMain transition-all">
-                 <ChevronRight size={20} />
-              </button>
+              <button className="w-12 h-12 rounded-xl bg-surface border border-borderCustom/20 flex items-center justify-center text-subtext/40 hover:text-textMain transition-all"><ChevronRight size={20} /></button>
             </div>
           )}
         </div>
       </main>
 
-      <footer className="border-t border-borderCustom bg-background pt-20 pb-10 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-          <div className="col-span-1 md:col-span-1 space-y-6">
-            <h2 className="text-2xl font-black text-textMain tracking-[0.2em]">LUXE RETAIL</h2>
-            <p className="text-subtext text-sm leading-relaxed max-w-xs">The definitive standard for luxury retail operations and high-end stock management.</p>
+      <footer className="border-t border-borderCustom/20 bg-surface/50 py-20 mt-20">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+          <div className="space-y-6">
+            <h2 className="text-2xl font-black text-textMain tracking-[0.3em] uppercase italic">Luxe Retail</h2>
+            <p className="text-subtext/60 text-[11px] font-medium uppercase tracking-widest leading-loose italic">The global standard for premium asset discovery and inventory coordination.</p>
           </div>
-          <div>
-            <h4 className="text-textMain font-bold mb-6 text-sm uppercase tracking-widest">Platform</h4>
-            <ul className="space-y-4 text-subtext text-xs font-bold uppercase tracking-widest">
-              <li><a href="#" className="hover:text-primary transition-colors">Marketplace</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Retail Analytics</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Inventory API</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-textMain font-bold mb-6 text-sm uppercase tracking-widest">Resources</h4>
-            <ul className="space-y-4 text-subtext text-xs font-bold uppercase tracking-widest">
-              <li><a href="#" className="hover:text-primary transition-colors">Brand Guidelines</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Verification Process</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Store Dashboard</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="text-textMain font-bold mb-6 text-sm uppercase tracking-widest">Support</h4>
-            <ul className="space-y-4 text-subtext text-xs font-bold uppercase tracking-widest">
-              <li><a href="#" className="hover:text-primary transition-colors">Concierge Service</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Contact Relations</a></li>
-            </ul>
-          </div>
+          {['Platform', 'Resources', 'Corporate'].map(cat => (
+            <div key={cat}>
+              <h4 className="text-textMain font-black mb-8 text-[10px] uppercase tracking-[0.4em] italic">{cat}</h4>
+              <ul className="space-y-4 text-subtext/60 text-[10px] font-black uppercase tracking-widest">
+                <li><a href="#" className="hover:text-accent transition-colors">Manifest Hub</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Retail Ledger</a></li>
+                <li><a href="#" className="hover:text-accent transition-colors">Sync Protocol</a></li>
+              </ul>
+            </div>
+          ))}
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:row justify-between items-center pt-10 border-t border-borderCustom gap-4">
-           <p className="text-[10px] font-bold text-subtext uppercase tracking-widest">© 2024 Luxe Retail Platform. All Rights Reserved.</p>
-           <div className="flex gap-10 text-[10px] font-bold text-subtext uppercase tracking-widest">
-             <a href="#" className="hover:text-textMain">Terms of Service</a>
-             <a href="#" className="hover:text-textMain">Corporate Identity</a>
+        <div className="max-w-7xl mx-auto px-6 pt-10 border-t border-borderCustom/10 flex flex-col md:flex-row justify-between items-center gap-6">
+           <p className="text-[10px] font-black text-subtext/40 uppercase tracking-[0.4em] italic">© 2026 Luxe Atelier Terminal // All Systems Go</p>
+           <div className="flex gap-10 text-[10px] font-black text-subtext/40 uppercase tracking-widest italic">
+             <a href="#" className="hover:text-textMain transition-colors">Privacy_Log</a>
+             <a href="#" className="hover:text-textMain transition-colors">Security_Audit</a>
            </div>
         </div>
       </footer>
 
-      {/* Add Product Modal */}
+      {/* Theme-Aware Add Product Modal */}
       <AnimatePresence>
         {showAddModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowAddModal(false)}
-              className="absolute inset-0 bg-black/40 backdrop-blur-md"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98, y: 10 }}
-              className="relative w-full max-w-4xl bg-[#0F0F0F] border border-white/5 rounded-[2rem] shadow-[0_40px_80px_rgba(0,0,0,0.8)] overflow-hidden z-10 flex flex-col max-h-[90vh]"
-            >
-              {/* Header */}
-              <div className="flex justify-between items-center p-10 border-b border-white/5">
-                <div className="space-y-1">
-                   <h3 className="text-3xl font-light text-white tracking-tight">New Product Listing</h3>
-                   <p className="text-[10px] font-medium text-white/30 uppercase tracking-[0.3em]">Exhibition Entry // Store Inventory</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowAddModal(false)} className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
+            <motion.div initial={{ opacity: 0, scale: 0.98, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, y: 20 }} className="relative w-full max-w-4xl bg-surface border border-borderCustom/20 rounded-[3rem] shadow-premium overflow-hidden z-10 flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center p-12 border-b border-borderCustom/10 bg-sectionSurface/40">
+                <div className="space-y-2">
+                   <h3 className="text-4xl font-black text-textMain tracking-tighter uppercase italic leading-none">New Asset Entry</h3>
+                   <p className="text-[10px] font-black text-subtext/40 uppercase tracking-[0.4em] italic">Registry // Inventory Command</p>
                 </div>
-                <button 
-                  onClick={() => setShowAddModal(false)}
-                  className="w-12 h-12 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors text-white/40 hover:text-white"
-                >
-                  <X size={20} />
-                </button>
+                <button onClick={() => setShowAddModal(false)} className="w-14 h-14 flex items-center justify-center rounded-2xl bg-background border border-borderCustom/20 text-subtext hover:text-textMain transition-all shadow-md"><X size={24} /></button>
               </div>
-              
-              <div className="p-10 overflow-y-auto custom-scrollbar">
+              <div className="p-12 overflow-y-auto custom-scrollbar bg-background/20">
                 <form onSubmit={handleAddSubmit} className="space-y-16">
-                  
-                  {/* Basic Information */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                     <div className="lg:col-span-1">
-                        <h4 className="text-sm font-semibold text-white mb-2">Product Details</h4>
-                        <p className="text-xs text-white/40 leading-relaxed">Provide the essential identification details for your premium item.</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                     <div className="space-y-4">
+                        <h4 className="text-sm font-black text-textMain uppercase tracking-widest italic">Core Parameters</h4>
+                        <p className="text-[10px] text-subtext leading-relaxed font-medium uppercase tracking-widest">Provide high-fidelity identification for the new inventory line.</p>
+                     </div>
+                     <div className="lg:col-span-2 space-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <InputField label="Asset Name" name="name" placeholder="Signature Series..." icon={Package} value={formData.name} onChange={handleFormChange} required />
+                           <InputField label="Category" name="category" placeholder="Apparel, Gear..." icon={Tag} value={formData.category} onChange={handleFormChange} required />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                           <InputField label="Valuation (₹)" name="price" type="number" placeholder="45000" icon={IndianRupee} value={formData.price} onChange={handleFormChange} required />
+                           <InputField label="Description" name="description" placeholder="Technical specifications..." icon={AlignLeft} value={formData.description} onChange={handleFormChange} required />
+                        </div>
+                     </div>
+                  </div>
+                  <div className="h-[1px] bg-borderCustom/10 w-full" />
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                     <div className="space-y-4">
+                        <h4 className="text-sm font-black text-textMain uppercase tracking-widest italic">Visual Manifest</h4>
+                        <p className="text-[10px] text-subtext leading-relaxed font-medium uppercase tracking-widest">Integrate visual proofing for the registry. Main cover required.</p>
                      </div>
                      <div className="lg:col-span-2 space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                           <InputField label="Product Name" name="name" placeholder="e.g. Signature Leather Tote" icon={Package} value={formData.name} onChange={handleFormChange} required />
-                           <InputField label="Category" name="category" placeholder="e.g. Accessories, Leather" icon={Tag} value={formData.category} onChange={handleFormChange} required />
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                           <InputField label="Price (₹)" name="price" type="number" placeholder="e.g. 45000" icon={IndianRupee} value={formData.price} onChange={handleFormChange} required />
-                           <InputField label="Description" name="description" placeholder="A brief narrative of the item..." icon={AlignLeft} value={formData.description} onChange={handleFormChange} required />
+                        <InputField label="Primary Manifest Photo" name="image1" placeholder="URL" icon={ImageIcon} value={formData.image1} onChange={(e) => setFormData({...formData, image1: e.target.value})} required />
+                        <div className="grid grid-cols-3 gap-4">
+                           {[2,3,4].map(i => <InputField key={i} name={`image${i}`} placeholder={`URL ${i}`} icon={ImageIcon} value={formData[`image${i}`]} onChange={(e) => setFormData({...formData, [`image${i}`]: e.target.value})} />)}
                         </div>
                      </div>
                   </div>
-
-                  <div className="h-[1px] bg-white/5 w-full" />
-
-                  {/* Visual Gallery */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-                     <div className="lg:col-span-1">
-                        <h4 className="text-sm font-semibold text-white mb-2">Visual Gallery</h4>
-                        <p className="text-xs text-white/40 leading-relaxed">Showcase your product with high-resolution imagery. The first image will be your main display.</p>
-                     </div>
-                     <div className="lg:col-span-2 space-y-6">
-                        <InputField label="Primary Cover Image" name="image1" placeholder="https://image-url.com" icon={ImageIcon} value={formData.image1 || ''} onChange={(e) => setFormData({ ...formData, image1: e.target.value })} required />
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Detail 02</label>
-                              <InputField name="image2" placeholder="URL" icon={ImageIcon} value={formData.image2 || ''} onChange={(e) => setFormData({ ...formData, image2: e.target.value })} />
-                           </div>
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Detail 03</label>
-                              <InputField name="image3" placeholder="URL" icon={ImageIcon} value={formData.image3 || ''} onChange={(e) => setFormData({ ...formData, image3: e.target.value })} />
-                           </div>
-                           <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Detail 04</label>
-                              <InputField name="image4" placeholder="URL" icon={ImageIcon} value={formData.image4 || ''} onChange={(e) => setFormData({ ...formData, image4: e.target.value })} />
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-
-                  <div className="h-[1px] bg-white/5 w-full" />
-
-                  {/* Options */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-10">
-                     <div className="lg:col-span-1">
-                        <h4 className="text-sm font-semibold text-white mb-2">Specifications</h4>
-                        <p className="text-xs text-white/40 leading-relaxed">Define the available size options for this particular inventory line.</p>
-                     </div>
-                     <div className="lg:col-span-2 space-y-8">
-                        <div className="space-y-4">
-                           <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Select Size Category</label>
-                           <div className="flex gap-3">
-                             {['No Sizes', 'Clothing', 'Shoes'].map(type => (
-                               <button
-                                 key={type}
-                                 type="button"
-                                 onClick={() => setFormData({ ...formData, sizeType: type === 'No Sizes' ? '' : type, sizes: [] })}
-                                 className={`flex-1 py-4 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all border ${
-                                   (type === 'No Sizes' ? formData.sizeType === '' : formData.sizeType === type)
-                                     ? 'bg-white text-black border-white shadow-xl'
-                                     : 'bg-white/5 border-white/5 text-white/40 hover:border-white/10'
-                                 }`}
-                               >
-                                 {type}
-                               </button>
-                             ))}
-                           </div>
-                        </div>
-
-                        {formData.sizeType && (
-                          <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="space-y-4"
-                          >
-                             <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Available Sizes</label>
-                             <div className="flex flex-wrap gap-3">
-                                {(formData.sizeType === 'Clothing' ? ['XS', 'S', 'M', 'L', 'XL', 'XXL'] : ['6', '7', '8', '9', '10', '11', '12']).map(size => (
-                                  <button
-                                    key={size}
-                                    type="button"
-                                    onClick={() => handleSizeToggle(size)}
-                                    className={`w-14 h-14 rounded-xl text-xs font-bold transition-all border ${
-                                      formData.sizes.includes(size) 
-                                        ? 'bg-white text-black border-white shadow-xl' 
-                                        : 'bg-white/5 border-white/5 text-white/40 hover:border-white/10 hover:bg-white/10'
-                                    }`}
-                                  >
-                                    {size}
-                                  </button>
-                                ))}
-                             </div>
-                          </motion.div>
-                        )}
-                     </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-4 pt-10 border-t border-white/5">
-                    <button 
-                      type="button" 
-                      onClick={() => setShowAddModal(false)}
-                      className="flex-1 px-8 py-5 rounded-full text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white transition-all"
-                    >
-                      Cancel
-                    </button>
-                    <Button type="submit" isLoading={isSubmitting} className="flex-[2] !rounded-full !py-5 !text-xs !font-bold uppercase tracking-[0.2em] shadow-2xl">
-                      Save Product Entry &rarr;
-                    </Button>
+                  <div className="flex gap-6 pt-12 border-t border-borderCustom/10">
+                    <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-8 py-5 rounded-2xl text-[10px] font-black uppercase tracking-widest text-subtext/40 hover:text-textMain transition-all italic">Discard Entry</button>
+                    <Button type="submit" isLoading={isSubmitting} className="flex-[2] !rounded-2xl !py-5 !text-[10px] !font-black uppercase tracking-[0.3em] shadow-premium italic">Save Entry & Sync &rarr;</Button>
                   </div>
                 </form>
               </div>

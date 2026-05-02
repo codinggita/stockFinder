@@ -64,15 +64,15 @@ const StoreDetail = () => {
                    <button onClick={() => navigate('/stores')} className="text-accent hover:scale-110 transition-transform">
                       <ArrowLeft size={28} />
                    </button>
-                   <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/30">Registry_Ref_ID_{id.slice(-6).toUpperCase()}</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.6em] text-subtext/40">Registry_Ref_ID_{id.slice(-6).toUpperCase()}</span>
                 </div>
-                <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase tracking-tighter italic leading-[0.85]">
+                 <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-textMain uppercase tracking-tighter italic leading-[0.85]">
                   {store.name}
                 </h1>
              </div>
 
              <div className="space-y-8 max-w-xl">
-                <p className="text-xl text-white/50 font-medium leading-relaxed italic">
+                 <p className="text-xl text-subtext font-medium leading-relaxed italic">
                    "{store.description || "A master-tier distribution node within the Gujarat luxury network. This facility handles the verification and dispersal of high-value assets with absolute precision."}"
                 </p>
                 <div className="flex items-center gap-4 text-accent font-black uppercase tracking-widest text-[11px] italic">
@@ -84,63 +84,63 @@ const StoreDetail = () => {
 
           {/* Right: The Visual Monolith */}
           <div className="w-full lg:w-[55%] relative group">
-             <div className="relative aspect-[16/10] rounded-[4rem] overflow-hidden border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
-                <motion.img 
-                  initial={{ scale: 1.1, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 1.5 }}
-                  src={storeImage} 
-                  className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-[2s]"
-                  alt={store.name}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
-                
-                {/* HUD Data Overlays */}
-                <div className="absolute top-10 left-10 p-6 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem]">
-                   <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Network_Status</p>
-                   <div className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Live Hub</span>
-                   </div>
-                </div>
+              <div className="relative aspect-[16/10] rounded-[4rem] overflow-hidden border border-borderCustom/20 shadow-premium">
+                 <motion.img 
+                   initial={{ scale: 1.1, opacity: 0 }}
+                   animate={{ scale: 1, opacity: 1 }}
+                   transition={{ duration: 1.5 }}
+                   src={storeImage} 
+                   className="w-full h-full object-cover grayscale brightness-90 dark:brightness-75 group-hover:grayscale-0 transition-all duration-[2s]"
+                   alt={store.name}
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-t from-background dark:from-black via-transparent to-transparent opacity-60" />
+                 
+                 {/* HUD Data Overlays */}
+                 <div className="absolute top-10 left-10 p-6 bg-surface/40 backdrop-blur-2xl border border-borderCustom/20 rounded-[2rem]">
+                    <p className="text-[8px] font-black text-subtext/30 uppercase tracking-widest mb-2">Network_Status</p>
+                    <div className="flex items-center gap-3">
+                       <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                       <span className="text-[10px] font-black uppercase tracking-[0.4em] text-textMain">Live Hub</span>
+                    </div>
+                 </div>
 
-                <div className="absolute bottom-10 right-10 p-6 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem]">
-                   <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Quality_Score</p>
-                   <div className="flex items-center gap-2 text-accent">
-                      <Star size={16} fill="currentColor" />
-                      <span className="text-sm font-black italic">{store.rating || '4.9'}</span>
-                   </div>
-                </div>
-             </div>
+                 <div className="absolute bottom-10 right-10 p-6 bg-surface/40 backdrop-blur-2xl border border-borderCustom/20 rounded-[2rem]">
+                    <p className="text-[8px] font-black text-subtext/30 uppercase tracking-widest mb-2">Quality_Score</p>
+                    <div className="flex items-center gap-2 text-accent">
+                       <Star size={16} fill="currentColor" />
+                       <span className="text-sm font-black italic">{store.rating || '4.9'}</span>
+                    </div>
+                 </div>
+              </div>
           </div>
         </div>
 
         {/* The Intelligence Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-1 mb-48 bg-white/5 border border-white/5 rounded-[3rem] overflow-hidden">
-           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
-              <User size={24} className="text-white/20 mb-6 group-hover:text-accent" />
-              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Lead_Registry</p>
-              <h4 className="text-lg font-black text-white italic">{store.ownerName || 'Verified Partner'}</h4>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-1 mb-48 bg-surface shadow-premium border border-borderCustom/20 rounded-[3rem] overflow-hidden">
+           <div className="p-12 border-r border-borderCustom/20 hover:bg-sectionSurface/40 transition-colors group">
+              <User size={24} className="text-accent/40 mb-6 group-hover:text-accent group-hover:scale-110 transition-all" />
+              <p className="text-[8px] font-black text-subtext/30 uppercase tracking-[0.3em] mb-2">Lead_Registry</p>
+              <h4 className="text-lg font-black text-textMain italic">{store.ownerName || 'Verified Partner'}</h4>
            </div>
-           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
-              <Phone size={24} className="text-white/20 mb-6 group-hover:text-accent" />
-              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Comms_Protocol</p>
-              <h4 className="text-lg font-black text-white italic tracking-widest">{store.ownerPhone || 'Secure_Link'}</h4>
+           <div className="p-12 border-r border-borderCustom/20 hover:bg-sectionSurface/40 transition-colors group">
+              <Phone size={24} className="text-accent/40 mb-6 group-hover:text-accent group-hover:scale-110 transition-all" />
+              <p className="text-[8px] font-black text-subtext/30 uppercase tracking-[0.3em] mb-2">Comms_Protocol</p>
+              <h4 className="text-lg font-black text-textMain italic tracking-widest">{store.ownerPhone || 'Secure_Link'}</h4>
            </div>
-           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
-              <Clock size={24} className="text-white/20 mb-6 group-hover:text-accent" />
-              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Operational_Window</p>
-              <h4 className="text-lg font-black text-white italic">10:00 — 21:30</h4>
+           <div className="p-12 border-r border-borderCustom/20 hover:bg-sectionSurface/40 transition-colors group">
+              <Clock size={24} className="text-accent/40 mb-6 group-hover:text-accent group-hover:scale-110 transition-all" />
+              <p className="text-[8px] font-black text-subtext/30 uppercase tracking-[0.3em] mb-2">Operational_Window</p>
+              <h4 className="text-lg font-black text-textMain italic">10:00 — 21:30</h4>
            </div>
-           <div className="p-12 hover:bg-white/[0.02] transition-colors group relative overflow-hidden">
+           <div className="p-12 hover:bg-sectionSurface/40 transition-colors group relative overflow-hidden">
               <div className="relative z-10">
-                 <MapPin size={24} className="text-white/20 mb-6 group-hover:text-accent" />
-                 <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Spatial_Address</p>
-                 <h4 className="text-xs font-black text-white/60 leading-relaxed italic">{store.fullAddress || "Gujarat Hub, India"}</h4>
+                 <MapPin size={24} className="text-accent/40 mb-6 group-hover:text-accent group-hover:scale-110 transition-all" />
+                 <p className="text-[8px] font-black text-subtext/30 uppercase tracking-[0.3em] mb-2">Spatial_Address</p>
+                 <h4 className="text-xs font-black text-subtext leading-relaxed italic">{store.fullAddress || "Gujarat Hub, India"}</h4>
               </div>
               <button 
                 onClick={() => navigate('/stores', { state: { selectedStoreId: store._id } })}
-                className="absolute bottom-6 right-6 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center hover:bg-accent hover:text-white transition-all"
+                className="absolute bottom-6 right-6 w-12 h-12 bg-textMain text-background rounded-full flex items-center justify-center hover:bg-accent hover:text-white transition-all"
               >
                  <Navigation size={18} />
               </button>
@@ -154,10 +154,10 @@ const StoreDetail = () => {
                  <span className="text-[10px] font-black text-accent uppercase tracking-[0.6em] block">Asset Manifest</span>
                  <h2 className="text-6xl lg:text-7xl font-black uppercase italic tracking-tighter">Live Inventory</h2>
               </div>
-              <div className="flex items-center gap-6 px-10 py-5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase tracking-[0.4em] text-white/30 italic">
-                 <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-                 Currently Displaying {products.length} Assets Online
-              </div>
+               <div className="flex items-center gap-6 px-10 py-5 bg-surface/40 border border-borderCustom/20 rounded-full text-[9px] font-black uppercase tracking-[0.4em] text-subtext/40 italic">
+                  <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                  Currently Displaying {products.length} Assets Online
+               </div>
            </div>
 
            {products.length > 0 ? (
@@ -167,21 +167,21 @@ const StoreDetail = () => {
                    ))}
                </div>
            ) : (
-               <div className="py-40 bg-white/[0.02] rounded-[4rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center">
-                   <ShoppingBag size={64} className="text-white/5 mb-8" />
-                   <p className="text-xs font-black uppercase tracking-[0.8em] text-white/20">Registry manifest offline</p>
-               </div>
+                <div className="py-40 bg-surface/[0.02] rounded-[4rem] border border-dashed border-borderCustom/20 flex flex-col items-center justify-center text-center">
+                   <ShoppingBag size={64} className="text-subtext/5 mb-8" />
+                   <p className="text-xs font-black uppercase tracking-[0.8em] text-subtext/20">Registry manifest offline</p>
+                </div>
            )}
         </div>
       </main>
 
       {/* Registry Footer */}
-      <footer className="border-t border-white/5 bg-black py-24">
-         <div className="max-w-[1600px] mx-auto px-12 flex flex-col md:flex-row justify-between items-center gap-12 opacity-30">
-            <p className="text-[10px] font-black uppercase tracking-[0.8em]">Luxe_Retail_Protocol • Regional_Division_Gujarat</p>
-            <p className="text-[10px] font-black uppercase tracking-[0.5em]">Protocol_Reference: {id.toUpperCase()}</p>
-         </div>
-      </footer>
+       <footer className="border-t border-borderCustom/20 bg-background py-24">
+          <div className="max-w-[1600px] mx-auto px-12 flex flex-col md:flex-row justify-between items-center gap-12 opacity-30">
+             <p className="text-[10px] font-black uppercase tracking-[0.8em] text-textMain">Luxe_Retail_Protocol • Regional_Division_Gujarat</p>
+             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-textMain">Protocol_Reference: {id.toUpperCase()}</p>
+          </div>
+       </footer>
     </div>
   );
 };

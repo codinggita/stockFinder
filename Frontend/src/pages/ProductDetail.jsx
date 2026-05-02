@@ -59,13 +59,13 @@ const ProductDetail = () => {
   if (!product) return <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center font-black">ASSET_NOT_FOUND</div>;
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-accent/40">
+    <div className="min-h-screen bg-background text-textMain font-sans selection:bg-accent/40">
       <Navbar />
 
       <main className="min-h-[calc(100vh-80px)] mt-20 flex relative">
         
         {/* LEFT COMMAND PILLAR (300px) */}
-        <div className="w-[400px] sticky top-20 h-[calc(100vh-80px)] border-r border-white/5 bg-black/40 backdrop-blur-3xl p-12 flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar">
+        <div className="w-[400px] sticky top-20 h-[calc(100vh-80px)] border-r border-borderCustom/20 bg-surface shadow-premium p-12 flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar">
           
           <div className="space-y-16">
             {/* Back Access */}
@@ -73,10 +73,10 @@ const ProductDetail = () => {
               onClick={() => navigate(-1)}
               className="flex items-center gap-4 group opacity-40 hover:opacity-100 transition-all"
             >
-              <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black">
+              <div className="w-8 h-8 rounded-full border border-borderCustom flex items-center justify-center group-hover:bg-textMain group-hover:text-background">
                 <ArrowLeft size={12} />
               </div>
-              <span className="text-[10px] font-black tracking-[0.4em] uppercase">Return_Archive</span>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase text-subtext/60">Return_Archive</span>
             </button>
 
             {/* Asset Identity */}
@@ -93,20 +93,20 @@ const ProductDetail = () => {
             </div>
 
             {/* Technical Description */}
-            <div className="space-y-4 pt-8 border-t border-white/5">
-               <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.5em] block">Asset_Brief</span>
-               <p className="text-[11px] text-white/60 leading-relaxed font-medium">
+            <div className="space-y-4 pt-8 border-t border-borderCustom/20">
+               <span className="text-[9px] font-black text-subtext/40 uppercase tracking-[0.5em] block">Asset_Brief</span>
+               <p className="text-[11px] text-subtext leading-relaxed font-medium">
                   {product.description || "High-fidelity architectural asset synchronized from the global registry. Optimized for technical performance and aesthetic excellence."}
                </p>
             </div>
 
             {/* Technical Matrix (Always Visible) */}
-            <div className="space-y-6 pt-8 border-t border-white/5">
-              <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.5em] block">Technical_Matrix</span>
+            <div className="space-y-6 pt-8 border-t border-borderCustom/20">
+              <span className="text-[9px] font-black text-subtext/40 uppercase tracking-[0.5em] block">Technical_Matrix</span>
               <div className="grid grid-cols-1 gap-3">
                 {product.technicalSpecs?.map((spec, i) => (
-                   <div key={i} className="bg-white/[0.03] border border-white/5 p-4 rounded-xl flex justify-between items-center group hover:border-accent/30 transition-all">
-                      <span className="text-[8px] font-black text-white/20 uppercase tracking-widest">{spec.label}</span>
+                   <div key={i} className="bg-sectionSurface/50 border border-borderCustom/20 p-4 rounded-xl flex justify-between items-center group hover:border-accent/30 transition-all shadow-sm">
+                      <span className="text-[8px] font-black text-subtext/40 uppercase tracking-widest">{spec.label}</span>
                       <span className="text-[10px] font-black uppercase italic text-textMain">{spec.value}</span>
                    </div>
                 ))}
@@ -115,24 +115,24 @@ const ProductDetail = () => {
           </div>
 
           {/* Procurement Footer */}
-          <div className="space-y-8 pt-12 border-t border-white/5">
+          <div className="space-y-8 pt-12 border-t border-borderCustom/20">
             <div className="flex flex-col gap-2">
               {negotiation ? (
                 <div className="flex flex-col">
                   <span className="text-[10px] font-black text-accent uppercase tracking-[0.4em] mb-1 italic">Negotiated_Price_Activated</span>
                   <div className="flex items-center gap-4">
-                    <span className="text-[40px] font-black italic tracking-tighter text-white">₹{negotiation.negotiatedPrice.toLocaleString('en-IN')}</span>
-                    <span className="text-lg font-bold text-white/30 line-through tracking-tighter italic">₹{inventory[0]?.price.toLocaleString('en-IN')}</span>
+                    <span className="text-[40px] font-black italic tracking-tighter text-textMain">₹{negotiation.negotiatedPrice.toLocaleString('en-IN')}</span>
+                    <span className="text-lg font-bold text-subtext/30 line-through tracking-tighter italic">₹{inventory[0]?.price.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               ) : (
-                <span className="text-[40px] font-black italic tracking-tighter text-white">₹{inventory[0]?.price.toLocaleString('en-IN')}</span>
+                <span className="text-[40px] font-black italic tracking-tighter text-textMain">₹{inventory[0]?.price.toLocaleString('en-IN')}</span>
               )}
               
-              <div className="flex items-center gap-6 bg-white/5 p-2 px-4 rounded-xl border border-white/10 w-fit">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="text-white/40 hover:text-white"><Minus size={14} /></button>
-                <span className="text-sm font-black italic">{quantity}</span>
-                <button onClick={() => setQuantity(quantity + 1)} className="text-white/40 hover:text-white"><Plus size={14} /></button>
+              <div className="flex items-center gap-6 bg-sectionSurface/50 p-2 px-4 rounded-xl border border-borderCustom/40 w-fit">
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="text-subtext/40 hover:text-textMain"><Minus size={14} /></button>
+                <span className="text-sm font-black italic text-textMain">{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className="text-subtext/40 hover:text-textMain"><Plus size={14} /></button>
               </div>
             </div>
 
@@ -211,10 +211,10 @@ const ProductDetail = () => {
                   className="group relative flex items-center gap-4"
                 >
                   <div className="flex flex-col items-end">
-                    <span className="text-[7px] font-black text-white/20 uppercase tracking-widest group-hover:text-accent transition-colors">Asset</span>
-                    <span className="text-[9px] font-black text-white/10 group-hover:text-white transition-colors">0{i + 1}</span>
+                    <span className="text-[7px] font-black text-subtext/40 uppercase tracking-widest group-hover:text-accent transition-colors">Asset</span>
+                    <span className="text-[9px] font-black text-subtext/20 group-hover:text-textMain transition-colors">0{i + 1}</span>
                   </div>
-                  <div className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-500 ${activeImage === img ? 'border-accent scale-110 shadow-2xl' : 'border-white/5 opacity-30 hover:opacity-100 hover:scale-105'}`}>
+                  <div className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-500 shadow-premium ${activeImage === img ? 'border-accent scale-110' : 'border-borderCustom/20 opacity-30 hover:opacity-100 hover:scale-105'}`}>
                     <img src={img} className="w-full h-full object-cover" alt="" />
                   </div>
                 </button>
