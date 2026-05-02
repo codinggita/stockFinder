@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../redux/productSlice';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutGrid, List, ChevronLeft, ChevronRight, SlidersHorizontal, ArrowLeft, X, Package, Tag, IndianRupee, Image as ImageIcon, AlignLeft } from 'lucide-react';
+import { LayoutGrid, List, ChevronLeft, ChevronRight, ChevronDown, SlidersHorizontal, ArrowLeft, ArrowRight, X, Package, Tag, IndianRupee, Image as ImageIcon, AlignLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -117,94 +117,107 @@ const AllProducts = () => {
       <main className="flex-1 max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 w-full flex gap-10">
         
         {/* Sidebar Filters */}
-        <aside className="w-80 flex-shrink-0 hidden lg:block">
-          <div className="sticky top-32 space-y-8 max-h-[calc(100vh-10rem)] overflow-y-auto pr-2 scrollbar-thin">
-            <div className="bg-surface/60 backdrop-blur-xl border border-borderCustom rounded-3xl p-8">
-              <div className="flex items-center gap-3 mb-10">
-                 <SlidersHorizontal size={20} className="text-primary" />
-                 <h2 className="text-xl font-bold text-textMain tracking-tight">Refine Search</h2>
+        <aside className="w-80 flex-shrink-0 hidden lg:block relative z-10">
+          <div className="sticky top-32 h-[calc(100vh-10rem)] flex flex-col">
+            
+            {/* Main HUD Panel (Scrolling Area) */}
+            <div className="flex-1 bg-black/20 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] p-10 pb-20 relative overflow-hidden overflow-y-auto scrollbar-hide">
+              {/* Scanline Effect */}
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/30 to-transparent animate-scan shadow-[0_0_15px_rgba(124,58,237,0.5)] z-20"></div>
+              
+              <div className="flex flex-col gap-2 mb-12">
+                 <div className="flex items-center gap-3">
+                    <span className="text-[8px] font-black text-primary uppercase tracking-[0.5em]">System_01</span>
+                    <div className="flex-1 h-[1px] bg-white/5" />
+                 </div>
+                 <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase leading-none">Refine<br/>Registry</h2>
               </div>
 
-              {/* Price Range */}
-              <div className="space-y-6 mb-12">
-                <div className="flex justify-between items-end">
-                  <p className="text-[10px] font-black text-subtext uppercase tracking-widest">Price Range (₹)</p>
+              {/* Price Calibration */}
+              <div className="space-y-8 mb-16">
+                <div className="flex justify-between items-center">
+                  <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Price_Thresh</p>
+                  <span className="text-xs font-black text-primary italic">₹{priceRange.toLocaleString()}</span>
                 </div>
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="150000" 
-                  step="5000"
-                  value={priceRange}
-                  onChange={(e) => setPriceRange(Number(e.target.value))}
-                  className="w-full h-1.5 bg-sectionSurface rounded-lg appearance-none cursor-pointer accent-primary"
-                />
-                <div className="flex justify-between text-[11px] font-bold text-subtext">
-                  <span>₹0</span>
-                  <span className="text-textMain">₹{priceRange.toLocaleString()}+</span>
+                <div className="relative pt-2">
+                   <input 
+                     type="range" 
+                     min="0" 
+                     max="150000" 
+                     step="5000"
+                     value={priceRange}
+                     onChange={(e) => setPriceRange(Number(e.target.value))}
+                     className="w-full h-[1px] bg-white/10 appearance-none cursor-pointer accent-primary"
+                   />
+                   <div className="flex justify-between mt-4 text-[8px] font-black text-white/20 uppercase tracking-widest">
+                      <span>Min_0</span>
+                      <span>Max_150K</span>
+                   </div>
                 </div>
               </div>
 
-              {/* Max Distance */}
-              <div className="space-y-5 mb-12">
-                <p className="text-[10px] font-black text-subtext uppercase tracking-widest">Max Distance (KM)</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {distanceOptions.map(dist => (
+              {/* Range Targeting */}
+              <div className="space-y-6 mb-16">
+                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Spatial_Range</p>
+                <div className="grid grid-cols-1 gap-3">
+                  {distanceOptions.map((dist, i) => (
                     <button 
                       key={dist}
                       onClick={() => setMaxDistance(dist)}
-                      className={`py-3 px-2 rounded-xl text-[10px] font-bold transition-all border ${
+                      className={`relative flex items-center justify-between p-4 rounded-2xl transition-all border ${
                         maxDistance === dist 
-                          ? 'bg-primary/20 border-primary/50 text-textMain' 
-                          : 'bg-sectionSurface border-borderCustom text-subtext hover:border-primary/30'
+                          ? 'bg-primary/10 border-primary/40 text-white translate-x-2' 
+                          : 'bg-white/5 border-white/5 text-white/30 hover:border-white/10'
                       }`}
                     >
-                      {dist}
+                       <span className="text-[10px] font-black uppercase tracking-widest">{dist}</span>
+                       <div className={`w-1.5 h-1.5 rounded-full ${maxDistance === dist ? 'bg-primary shadow-[0_0_10px_rgba(124,58,237,1)]' : 'bg-white/10'}`} />
+                       <span className="absolute left-[-15px] text-[7px] font-black opacity-10 group-hover:opacity-30">0{i+1}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Availability */}
-              <div className="space-y-5 mb-10">
-                <p className="text-[10px] font-black text-subtext uppercase tracking-widest">Availability</p>
-                <div className="space-y-4">
+              {/* Availability Switches */}
+              <div className="space-y-6">
+                <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.4em]">Asset_State</p>
+                <div className="flex flex-col gap-4">
                   {['In Stock', 'Out of Stock', 'Pre-order', 'Exclusive Access'].map(item => (
-                    <label key={item} className="flex items-center gap-3 cursor-pointer group">
-                      <div 
-                        onClick={() => toggleAvailability(item)}
-                        className={`w-5 h-5 rounded-md border flex items-center justify-center transition-all ${
-                          availability.includes(item) 
-                            ? 'bg-primary border-primary' 
-                            : 'bg-surface border-borderCustom group-hover:border-primary/40'
-                        }`}
-                      >
-                        {availability.includes(item) && <span className="text-white text-[10px]">✓</span>}
-                      </div>
-                      <span className={`text-xs font-bold transition-colors ${availability.includes(item) ? 'text-textMain' : 'text-subtext'}`}>
-                        {item}
-                      </span>
-                    </label>
+                    <div 
+                      key={item} 
+                      onClick={() => toggleAvailability(item)}
+                      className="flex items-center justify-between group cursor-pointer"
+                    >
+                       <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${availability.includes(item) ? 'text-white' : 'text-white/20'}`}>
+                          {item}
+                       </span>
+                       <div className={`w-10 h-5 rounded-full border transition-all relative ${availability.includes(item) ? 'bg-primary/20 border-primary' : 'bg-white/5 border-white/10'}`}>
+                          <motion.div 
+                            animate={{ x: availability.includes(item) ? 20 : 0 }}
+                            className={`absolute top-1 left-1 w-2.5 h-2.5 rounded-full ${availability.includes(item) ? 'bg-primary shadow-[0_0_10px_rgba(124,58,237,1)]' : 'bg-white/20'}`}
+                          />
+                       </div>
+                    </div>
                   ))}
                 </div>
               </div>
-
-              <div className="w-full bg-primary/10 border border-primary/20 text-primary py-3 rounded-2xl text-xs font-bold text-center tracking-widest mt-4">
-                Filters Apply Automatically
-              </div>
             </div>
 
-            {/* Join Elite Card */}
-            <div className="bg-gradient-to-br from-primary/10 to-background border border-borderCustom rounded-3xl p-8 relative overflow-hidden group">
-               <div className="relative z-10">
-                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.3em] mb-2">Member Exclusive</p>
-                  <h3 className="text-2xl font-bold text-textMain leading-tight mb-4">Join the Elite</h3>
-                  <div className="w-10 h-10 rounded-full bg-surface flex items-center justify-center border border-borderCustom group-hover:bg-primary transition-all">
-                     <ChevronRight size={18} />
-                  </div>
+            {/* Floating Permanent HUD Decor & Scroll Indicator */}
+            <div className="absolute bottom-4 left-0 right-0 px-10 flex justify-between items-center pointer-events-none z-30">
+               <div className="text-[7px] font-black text-white/10 uppercase tracking-[0.5em] italic">
+                  Reg_Luxe_2026
                </div>
-               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl rounded-full -mr-10 -mt-10"></div>
+               <motion.div 
+                 animate={{ y: [0, 8, 0], opacity: [0.3, 1, 0.3] }}
+                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                 className="text-primary flex flex-col items-center gap-1"
+               >
+                  <span className="text-[6px] font-black uppercase tracking-widest">More</span>
+                  <ChevronDown size={14} strokeWidth={3} />
+               </motion.div>
             </div>
+
           </div>
         </aside>
 
@@ -260,14 +273,18 @@ const AllProducts = () => {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className={`grid gap-8 ${
+            viewMode === 'grid' 
+              ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
+              : 'grid-cols-1'
+          }`}>
             {status === 'loading' ? (
                [1, 2, 3, 4, 5, 6].map(i => (
                  <div key={i} className="aspect-[4/5] bg-surface rounded-3xl animate-pulse border border-borderCustom"></div>
                ))
             ) : products.length > 0 ? (
               products.map((product) => (
-                <ProductCard key={product._id} product={product} />
+                <ProductCard key={product._id} product={product} viewMode={viewMode} />
               ))
             ) : (
               <div className="col-span-full py-40 text-center border border-dashed border-borderCustom rounded-[3rem] bg-surface/20">
