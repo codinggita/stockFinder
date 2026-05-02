@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  startNegotiation, 
-  getNegotiationDetails, 
-  sendMessage, 
+const {
+  startNegotiation,
+  getNegotiationDetails,
+  sendMessage,
   acceptDeal,
   getAcceptedNegotiations,
   getStoreNegotiations,
