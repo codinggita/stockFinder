@@ -133,3 +133,31 @@ exports.updateProduct = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+// @desc    Delete a product from my store
+// @route   DELETE /api/stores/my-store/products/:id
+// @access  Private
+exports.deleteProduct = async (req, res) => {
+  try {
+    const store = await Store.findOne({ owner: req.user._id });
+    if (!store) {
+      return res.status(404).json({ success: false, message: 'Store not found' });
+    }
+
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+
+    // Make sure the product belongs to this store
+    if (product.store.toString() !== store._id.toString()) {
+      return res.status(403).json({ success: false, message: 'Not authorized to delete this product' });
+    }
+
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, message: 'Product removed' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ success: false, message: 'Server Error' });
+  }
+};
