@@ -16,22 +16,44 @@ import {
   Activity,
   Cpu,
   Layers,
-  ChevronRight
+  ChevronRight,
+  Inbox
 } from 'lucide-react';
 import { fetchMyStore } from '../redux/storeSlice';
 import CreateStore from './CreateStore';
+import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const RetailerDashboard = () => {
   const { user } = useSelector((state) => state.auth);
   const { myStore, myStoreStatus } = useSelector((state) => state.stores);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [negotiations, setNegotiations] = React.useState([]);
+  const [negLoading, setNegLoading] = React.useState(true);
 
   useEffect(() => {
     if (user && user.role === 'retailer' && myStoreStatus === 'idle') {
       dispatch(fetchMyStore());
     }
   }, [user, myStoreStatus, dispatch]);
+
+  useEffect(() => {
+    const fetchNegotiations = async () => {
+      try {
+        const res = await api.get('/negotiations/store');
+        setNegotiations(res.data);
+      } catch (err) {
+        console.error('Failed to load negotiations');
+      } finally {
+        setNegLoading(false);
+      }
+    };
+
+    if (user && user.role === 'retailer') {
+      fetchNegotiations();
+    }
+  }, [user]);
 
   if (myStoreStatus === 'loading') {
     return (
@@ -347,56 +369,112 @@ const RetailerDashboard = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="bg-surface border border-white/5 rounded-[3.5rem] p-10 shadow-2xl"
+          className="bg-surface border border-white/5 rounded-[3.5rem] p-10 shadow-2xl relative overflow-hidden"
         >
-          <div className="flex justify-between items-center mb-12">
+          {/* Background Grid Accent */}
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
+          <div className="flex justify-between items-center mb-12 relative z-10">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                 <div className="w-8 h-[1px] bg-accent" />
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Active Protocol</h3>
+                 <div className="w-8 h-[1px] bg-accent shadow-[0_0_10px_rgba(198,169,105,0.5)]" />
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-accent text-glow">Active Protocol</h3>
               </div>
               <h3 className="text-3xl font-black uppercase tracking-tighter">Live Negotiations</h3>
             </div>
-            <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 shadow-lg shadow-accent/10">
+            <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center border border-accent/20 shadow-lg shadow-accent/10 group-hover:border-accent/50 transition-colors">
               <MessageSquare className="text-accent" size={24} />
             </div>
           </div>
           
-          <div className="space-y-6">
-             {[1, 2].map((item) => (
-                <div key={item} className="flex flex-col md:flex-row items-center justify-between p-8 bg-sectionSurface/50 rounded-[2.5rem] border border-white/5 hover:border-accent/40 transition-all duration-500 group/item hover:bg-sectionSurface">
-                  <div className="flex items-center gap-8 w-full md:w-auto mb-6 md:mb-0">
-                    <div className="w-24 h-24 rounded-3xl bg-background shrink-0 overflow-hidden border border-white/10 group-hover/item:border-accent/30 transition-all relative">
-                       <img src={`https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80&sig=${item}`} alt="Product" className="w-full h-full object-cover grayscale-[0.4] group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-700" />
-                       <div className="absolute inset-0 bg-gradient-to-t from-background/40 to-transparent" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Activity size={10} className="text-accent animate-pulse" />
-                        <span className="text-[8px] font-black uppercase tracking-widest text-accent">Active Thread</span>
-                      </div>
-                      <h4 className="font-black text-xl uppercase tracking-tighter group-hover/item:text-accent transition-colors">Premium Artifact {item}</h4>
-                      <div className="flex items-center gap-3 mt-3">
-                         <span className="text-[9px] text-subtext font-black uppercase tracking-widest">Protocol Value:</span>
-                         <span className="text-white font-black text-xl italic">₹12,500</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-4 w-full md:w-auto">
-                    <button className="flex-1 md:flex-none px-12 py-5 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-[0_15px_30px_-5px_rgba(16,185,129,0.4)]">
-                      Authorize
-                    </button>
-                    <button className="flex-1 md:flex-none px-12 py-5 bg-surface text-textMain rounded-2xl text-[10px] font-black uppercase tracking-widest border border-white/10 hover:border-accent transition-all group/btn">
-                      Counter <ChevronRight size={14} className="inline ml-1 group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
-                  </div>
+          <div className="space-y-6 relative z-10">
+             {negLoading ? (
+                <div className="py-20 flex flex-col items-center justify-center space-y-4">
+                   <div className="w-10 h-10 border-2 border-accent/20 border-t-accent rounded-full animate-spin" />
+                   <p className="text-[10px] font-black uppercase tracking-[0.3em] text-subtext/60">Scanning Registry...</p>
                 </div>
-             ))}
+             ) : negotiations.length === 0 ? (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="py-16 flex flex-col items-center justify-center space-y-6 bg-white/[0.01] rounded-[2.5rem] border border-dashed border-white/10"
+                >
+                   <div className="w-20 h-20 rounded-full bg-surface border border-white/5 flex items-center justify-center">
+                      <Inbox className="text-subtext/20" size={32} />
+                   </div>
+                   <div className="text-center">
+                      <h4 className="text-sm font-black uppercase tracking-widest text-textMain/40 mb-2">Registry Empty</h4>
+                      <p className="text-[10px] text-subtext/40 font-medium tracking-wide">Waiting for incoming transmission protocols.</p>
+                   </div>
+                </motion.div>
+             ) : (
+               <>
+                 {negotiations.slice(0, 2).map((neg) => (
+                    <motion.div 
+                      key={neg._id} 
+                      whileHover={{ x: 10 }}
+                      onClick={() => navigate(`/negotiation/${neg._id}`)}
+                      className="flex flex-col md:flex-row items-center justify-between p-8 premium-glass rounded-[2.5rem] border border-white/5 hover:border-accent/40 transition-all duration-500 group/item hover:bg-white/[0.02] shadow-xl cursor-pointer"
+                    >
+                      <div className="flex items-center gap-8 w-full md:w-auto mb-6 md:mb-0">
+                        <div className="relative">
+                          <div className="w-28 h-28 rounded-3xl bg-background shrink-0 overflow-hidden border border-white/10 group-hover/item:border-accent/30 transition-all duration-700">
+                             <img src={neg.product?.image} alt={neg.product?.name} className="w-full h-full object-contain grayscale-[0.6] group-hover/item:grayscale-0 group-hover/item:scale-110 transition-all duration-1000" />
+                             <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+                          </div>
+                          {/* Live Indicator Overlay */}
+                          <div className="absolute -top-2 -left-2 px-2 py-1 bg-accent rounded-lg text-[8px] font-black uppercase tracking-widest text-background shadow-xl">
+                            {neg.status}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-accent/10 border border-accent/20 rounded-full">
+                              <Activity size={10} className="text-accent animate-pulse" />
+                              <span className="text-[8px] font-black uppercase tracking-widest text-accent">Active Thread</span>
+                            </div>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-subtext/40 italic">
+                               {neg.status === 'PENDING' ? 'Phase 02 // Decision' : 'Status Synchronized'}
+                            </span>
+                          </div>
+                          
+                          <h4 className="font-black text-2xl uppercase tracking-tighter group-hover/item:text-accent transition-colors mb-4 line-clamp-1">{neg.product?.name}</h4>
+                          
+                          <div className="flex items-center gap-4">
+                             <div className="px-4 py-2 bg-white/5 rounded-xl border border-white/5">
+                                <p className="text-[8px] text-subtext font-black uppercase tracking-[0.2em] mb-1">Protocol Value</p>
+                                <p className="text-white font-black text-2xl italic tracking-tighter">₹{neg.currentOffer?.toLocaleString()}</p>
+                             </div>
+                             <div className="w-px h-10 bg-white/5" />
+                             <div>
+                                <p className="text-[8px] text-subtext font-black uppercase tracking-[0.2em] mb-1">Client Identity</p>
+                                <p className="text-[10px] font-black uppercase text-textMain/60">{neg.user?.name}</p>
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4 w-full md:w-auto">
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); navigate(`/negotiation/${neg._id}`); }}
+                          className="flex-1 md:flex-none px-12 py-5 bg-emerald-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-[0_20px_40px_-10px_rgba(16,185,129,0.5)] border border-emerald-400/50 relative overflow-hidden group/confirm"
+                        >
+                          <span className="relative z-10">Review Protocol</span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/confirm:translate-x-full transition-transform duration-1000" />
+                        </button>
+                      </div>
+                    </motion.div>
+                 ))}
+               </>
+             )}
              
              <button 
                onClick={() => navigate('/dashboard/negotiations')}
-               className="mt-10 w-full py-6 text-[10px] font-black text-subtext uppercase tracking-[0.5em] border border-white/5 rounded-[2rem] hover:bg-surface hover:text-textMain hover:border-white/20 transition-all group">
-               Access Full Negotiation Registry <ArrowRight size={14} className="inline ml-2 group-hover:translate-x-2 transition-transform" />
+               className="mt-10 w-full py-6 text-[10px] font-black text-subtext uppercase tracking-[0.6em] border border-white/5 rounded-[2.5rem] hover:bg-white/[0.02] hover:text-textMain hover:border-accent/40 transition-all group relative overflow-hidden shadow-inner">
+               <span className="relative z-10">Access Full Negotiation Registry</span>
+               <ArrowRight size={14} className="inline ml-3 group-hover:translate-x-3 transition-transform relative z-10 text-accent" />
+               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-[2000ms]" />
              </button>
           </div>
         </motion.div>
