@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../redux/cartSlice';
 import toast from 'react-hot-toast';
-import { ShoppingBag, Edit3, ArrowRight } from 'lucide-react';
+import { Plus, ShoppingBag, Edit3 } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -21,80 +21,87 @@ const ProductCard = ({ product }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       onClick={() => navigate(`/product/${product._id}`)}
-      className="group relative h-[450px] w-full bg-[#080808] overflow-hidden cursor-pointer"
+      className="group relative aspect-[3/4] w-full bg-black overflow-hidden cursor-pointer rounded-2xl"
     >
-      {/* Product Silhouette / Image */}
+      {/* Cinematic Background Image */}
       <div className="absolute inset-0 z-0">
         <motion.img 
           src={product.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800'} 
           alt={product.name} 
-          className="w-full h-full object-contain p-8 opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+          className="w-full h-full object-cover transition-all duration-[1s] group-hover:scale-110 group-hover:blur-[2px]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60"></div>
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-all duration-500"></div>
       </div>
 
-      {/* Floating Info (Initial) */}
-      <div className="absolute top-8 left-8 right-8 z-10 flex justify-between items-start">
-         <div className="bg-white/5 backdrop-blur-md px-4 py-2 border border-white/10 rounded-full">
-            <span className="text-white font-black text-sm tracking-tight">{formattedPrice}</span>
-         </div>
-         <div className="w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-            <ArrowRight size={18} className="text-white" />
-         </div>
-      </div>
-
-      {/* Title & Revealed Actions */}
-      <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
-         <div className="mb-4 transition-transform duration-500 group-hover:translate-y-[-60px]">
-            <h3 className="text-white font-black text-3xl leading-none uppercase tracking-tighter mb-1">
-              {product.name}
-            </h3>
-            <span className="text-accent text-[9px] font-black uppercase tracking-[0.4em]">
-              {product.store?.name || 'Stock Intelligence'}
-            </span>
-         </div>
-
-         {/* Hidden Actions */}
-         <div className="absolute bottom-8 left-8 right-8 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-            {!isSoldOut && !isRetailer && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(addToCart({ ...product, quantity: 1 }));
-                  toast.success(`${product.name} acquired`);
-                }}
-                className="w-full h-12 bg-white text-black font-black text-[10px] uppercase tracking-[0.4em] rounded-sm hover:bg-accent hover:text-white transition-all"
-              >
-                Acquire Asset
-              </button>
-            )}
-            {isRetailer && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/dashboard/edit-product/${product._id}`);
-                }}
-                className="w-full h-12 bg-white/10 border border-white/10 text-white font-black text-[10px] uppercase tracking-[0.4em] rounded-sm hover:bg-white hover:text-black transition-all"
-              >
-                Modify Configuration
-              </button>
-            )}
+      {/* Large Outlined Title (Centered) */}
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-8 pointer-events-none">
+         <h3 className="text-outline text-5xl md:text-6xl font-black uppercase text-center leading-[0.8] tracking-tighter break-words max-w-full drop-shadow-2xl">
+           {product.name}
+         </h3>
+         <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 flex flex-col items-center">
+            <span className="text-accent text-[10px] font-black uppercase tracking-[0.6em] mb-2">{product.store?.name || 'Stock Intelligence'}</span>
+            <div className="w-12 h-[1px] bg-accent/40" />
          </div>
       </div>
 
-      {/* Subtle Grid Pattern (Unique Detail) */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      {/* Top Left: Price Tag */}
+      <div className="absolute top-6 left-6 z-20">
+         <div className="px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-sm">
+            <span className="text-white font-black text-xs tracking-tighter">{formattedPrice}</span>
+         </div>
+      </div>
 
-      {/* Sold Out State */}
+      {/* Bottom Actions: Revealed on Hover */}
+      <div className="absolute bottom-8 left-8 right-8 z-20 flex items-center justify-between opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+         {!isSoldOut && !isRetailer && (
+           <button 
+             onClick={(e) => {
+               e.stopPropagation();
+               dispatch(addToCart({ ...product, quantity: 1 }));
+               toast.success(`${product.name} secured`);
+             }}
+             className="flex items-center gap-3 text-white text-[10px] font-black uppercase tracking-[0.4em] group/btn"
+           >
+             Secure
+             <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-black transition-all">
+                <Plus size={18} />
+             </div>
+           </button>
+         )}
+         
+         {isRetailer && (
+           <button 
+             onClick={(e) => {
+               e.stopPropagation();
+               navigate(`/dashboard/edit-product/${product._id}`);
+             }}
+             className="flex items-center gap-3 text-white text-[10px] font-black uppercase tracking-[0.4em] group/btn"
+           >
+             Modify
+             <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center group-hover/btn:bg-accent group-hover/btn:border-accent transition-all">
+                <Edit3 size={16} />
+             </div>
+           </button>
+         )}
+
+         <div className="text-white/40 group-hover:text-white transition-colors">
+            <ShoppingBag size={20} strokeWidth={1.5} />
+         </div>
+      </div>
+
+      {/* Unique Detail: Serial Number Badge */}
+      <div className="absolute top-6 right-6 z-20 opacity-20 group-hover:opacity-40 transition-opacity">
+         <span className="text-[7px] font-black text-white vertical-text tracking-[0.5em]">SN-2026-LX</span>
+      </div>
+
+      {/* Sold Out Overlay */}
       {isSoldOut && (
-        <div className="absolute inset-0 z-30 bg-black/60 backdrop-blur-[4px] flex items-center justify-center">
-           <div className="border border-white/10 px-6 py-2 bg-black/80">
-              <span className="text-white/20 text-[10px] font-black uppercase tracking-[0.6em]">Offline</span>
-           </div>
+        <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-[4px] flex items-center justify-center">
+           <span className="text-white/20 text-[10px] font-black uppercase tracking-[1em] -rotate-12">Archived</span>
         </div>
       )}
     </motion.div>
@@ -102,6 +109,10 @@ const ProductCard = ({ product }) => {
 };
 
 export default ProductCard;
+
+
+
+
 
 
 

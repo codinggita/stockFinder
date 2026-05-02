@@ -158,4 +158,39 @@
   .reveal-up-delay-2 {
     transition-delay: 200ms;
   }
+
+  /* ─── The Scanned Asset Utilities ─── */
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(400%); }
+  }
+
+  .animate-scanline {
+    animation: scanline 3s linear infinite;
+  }
+
+  .data-flicker {
+    animation: flicker 0.5s infinite alternate;
+  }
+
+  @keyframes flicker {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+  }
+
+  /* ─── Gallery Monolith Utilities ─── */
+  .text-outline {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    color: transparent;
+    transition: all 0.5s ease;
+  }
+
+  .group:hover .text-outline {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 1);
+    color: white;
+  }
+
+  .soft-blur {
+    backdrop-filter: blur(8px) saturate(180%);
+  }
 }
