@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*', // In production, restrict to frontend URL
+    origin: ['https://stockfinder-dhruva.netlify.app', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PATCH']
   }
 });
@@ -58,7 +58,10 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/retailbridg
   .catch(err => console.error('MongoDB connection error:', err));
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['https://stockfinder-dhruva.netlify.app', 'http://localhost:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
