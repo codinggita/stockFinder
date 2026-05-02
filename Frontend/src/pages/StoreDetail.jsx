@@ -52,195 +52,135 @@ const StoreDetail = () => {
     <div className="min-h-screen bg-background text-textMain font-sans selection:bg-primary/40">
       <Navbar />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-        {/* Back Button */}
-        <button 
-          onClick={() => navigate('/stores')}
-          className="flex items-center gap-2 text-subtext hover:text-textMain mb-10 transition-colors group"
-        >
-          <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return to All Stores</span>
-        </button>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <main className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-32 pb-40">
+        
+        {/* Header Architectural Section */}
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-32 mb-40">
           
-          {/* Left Column: Visuals & Map */}
-          <div className="lg:col-span-7 space-y-12">
-            
-            {/* Store Hero Image */}
-            <div className="relative aspect-[16/9] rounded-[3rem] overflow-hidden bg-surface border border-borderCustom group shadow-2xl">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/10 blur-[120px]"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80"></div>
+          {/* Left: The Narrative Hub */}
+          <div className="w-full lg:w-[45%] flex flex-col justify-end space-y-12">
+             <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                   <button onClick={() => navigate('/stores')} className="text-accent hover:scale-110 transition-transform">
+                      <ArrowLeft size={28} />
+                   </button>
+                   <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/30">Registry_Ref_ID_{id.slice(-6).toUpperCase()}</span>
                 </div>
+                <h1 className="text-7xl md:text-8xl lg:text-9xl font-black text-white uppercase tracking-tighter italic leading-[0.85]">
+                  {store.name}
+                </h1>
+             </div>
 
-                <motion.img 
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 1 }}
-                  src={storeImage} 
-                  alt={store.name}
-                  className="relative z-10 w-full h-full object-cover"
-                />
-
-                {/* Status Badge */}
-                <div className="absolute top-8 left-8 z-20 flex items-center gap-3 bg-background/60 backdrop-blur-md border border-borderCustom px-5 py-2.5 rounded-2xl">
-                   <span className={`w-2.5 h-2.5 rounded-full ${store.status === 'Closed' ? 'bg-red-500' : 'bg-green-500'} shadow-[0_0_15px_rgba(34,197,94,0.5)]`}></span>
-                   <span className="text-[10px] font-black uppercase tracking-widest">{store.status || 'Open Now'}</span>
-                </div>
-            </div>
-
-            {/* Store Description & Highlights */}
-            <div className="space-y-8">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-8 bg-primary rounded-full"></div>
-                    <h2 className="text-3xl font-black tracking-tight">About the Store</h2>
-                </div>
-                <p className="text-subtext text-base leading-relaxed font-medium max-w-3xl">
-                    {store.description || "Experience retail excellence in the heart of Gujarat. Our store offers a curated selection of premium products backed by expert service and authentic craftsmanship."}
+             <div className="space-y-8 max-w-xl">
+                <p className="text-xl text-white/50 font-medium leading-relaxed italic">
+                   "{store.description || "A master-tier distribution node within the Gujarat luxury network. This facility handles the verification and dispersal of high-value assets with absolute precision."}"
                 </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-                    <div className="p-8 bg-surface/60 backdrop-blur-sm border border-borderCustom rounded-[2.5rem] flex items-start gap-5 hover:border-primary/30 transition-all group">
-                        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <ShieldCheck size={28} />
-                        </div>
-                        <div>
-                            <h4 className="text-textMain font-bold text-sm mb-1">Authentic Gear</h4>
-                            <p className="text-subtext text-xs font-medium">100% verified original stock directly from manufacturers.</p>
-                        </div>
-                    </div>
-                    <div className="p-8 bg-surface/60 backdrop-blur-sm border border-borderCustom rounded-[2.5rem] flex items-start gap-5 hover:border-green-500/30 transition-all group">
-                        <div className="w-14 h-14 bg-green-500/10 rounded-2xl flex items-center justify-center text-green-500 group-hover:scale-110 transition-transform">
-                            <ShoppingBag size={28} />
-                        </div>
-                        <div>
-                            <h4 className="text-textMain font-bold text-sm mb-1">In-Store Pickup</h4>
-                            <p className="text-subtext text-xs font-medium">Reserve online and collect within 30 minutes at the outlet.</p>
-                        </div>
-                    </div>
+                <div className="flex items-center gap-4 text-accent font-black uppercase tracking-widest text-[11px] italic">
+                   <MapPin size={18} />
+                   {store.location}
                 </div>
-            </div>
+             </div>
           </div>
 
-          {/* Right Column: Information & Actions */}
-          <div className="lg:col-span-5 space-y-10">
-            
-            {/* Header Info */}
-            <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black text-primary tracking-[0.25em] uppercase">{store.category || 'Retail Outlet'}</span>
-                    <div className="flex items-center gap-2">
-                        <div className="flex text-yellow-500">
-                            {[1, 2, 3, 4, 5].map(i => <Star key={i} size={12} fill={i <= Math.round(store.rating || 4) ? "currentColor" : "none"} className={i <= Math.round(store.rating || 4) ? "" : "text-subtext"} />)}
-                        </div>
-                        <span className="text-[10px] text-subtext font-bold">({store.reviewsCount || 0} Reviews)</span>
-                    </div>
-                </div>
-                <h1 className="text-6xl font-black tracking-tighter leading-[0.95]">{store.name}</h1>
-                <div className="flex items-center gap-2.5 text-subtext font-medium">
-                    <MapPin size={18} className="text-primary" />
-                    <span className="text-sm">{store.location}</span>
-                </div>
-            </div>
-
-            {/* Detailed Info Card */}
-            <div className="bg-surface/60 backdrop-blur-xl border border-borderCustom rounded-[3rem] p-10 space-y-10 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[50px] -mr-16 -mt-16 rounded-full"></div>
+          {/* Right: The Visual Monolith */}
+          <div className="w-full lg:w-[55%] relative group">
+             <div className="relative aspect-[16/10] rounded-[4rem] overflow-hidden border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.5)]">
+                <motion.img 
+                  initial={{ scale: 1.1, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 1.5 }}
+                  src={storeImage} 
+                  className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 transition-all duration-[2s]"
+                  alt={store.name}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                 
-                <div className="space-y-8">
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-subtext border-b border-borderCustom pb-4">Store Intelligence</h3>
-                    
-                    {/* Owner Info */}
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-sectionSurface border border-borderCustom rounded-2xl flex items-center justify-center text-subtext shadow-inner">
-                            <User size={24} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black text-subtext uppercase tracking-widest mb-1">Store Owner</p>
-                            <h4 className="text-textMain font-bold text-lg">{store.ownerName || 'Verified Partner'}</h4>
-                        </div>
-                    </div>
-
-                    {/* Phone Info */}
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-sectionSurface border border-borderCustom rounded-2xl flex items-center justify-center text-primary shadow-inner">
-                            <Phone size={24} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black text-subtext uppercase tracking-widest mb-1">Direct Contact</p>
-                            <h4 className="text-textMain font-bold text-lg tracking-wider">{store.ownerPhone || '+91 99000 00000'}</h4>
-                        </div>
-                    </div>
-
-                    {/* Address Info */}
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-sectionSurface border border-borderCustom rounded-2xl flex items-center justify-center text-subtext shadow-inner">
-                            <MapPin size={24} />
-                        </div>
-                        <div className="flex-1">
-                            <p className="text-[10px] font-black text-subtext uppercase tracking-widest mb-1">Full Address</p>
-                            <h4 className="text-subtext font-medium text-sm leading-relaxed">{store.fullAddress || "Gujarat, India"}</h4>
-                        </div>
-                    </div>
-
-                    {/* Operating Hours */}
-                    <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 bg-sectionSurface border border-borderCustom rounded-2xl flex items-center justify-center text-yellow-500 shadow-inner">
-                            <Clock size={24} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-black text-subtext uppercase tracking-widest mb-1">Operational Hours</p>
-                            <h4 className="text-textMain font-bold text-sm">10:00 AM — 09:30 PM</h4>
-                        </div>
-                    </div>
+                {/* HUD Data Overlays */}
+                <div className="absolute top-10 left-10 p-6 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem]">
+                   <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Network_Status</p>
+                   <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Live Hub</span>
+                   </div>
                 </div>
 
-                <div className="pt-6">
-                    <button 
-                      onClick={() => navigate('/stores', { state: { selectedStoreId: store._id } })}
-                      className="w-full bg-primary hover:bg-primary/90 text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.25em] shadow-lg shadow-primary/20 flex items-center justify-center gap-3 transition-all transform hover:scale-[1.02]"
-                    >
-                        <Navigation size={18} />
-                        Get Directions
-                    </button>
+                <div className="absolute bottom-10 right-10 p-6 bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[2rem]">
+                   <p className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-2">Quality_Score</p>
+                   <div className="flex items-center gap-2 text-accent">
+                      <Star size={16} fill="currentColor" />
+                      <span className="text-sm font-black italic">{store.rating || '4.9'}</span>
+                   </div>
                 </div>
-            </div>
-
+             </div>
           </div>
+        </div>
+
+        {/* The Intelligence Bar */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-1 mb-48 bg-white/5 border border-white/5 rounded-[3rem] overflow-hidden">
+           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
+              <User size={24} className="text-white/20 mb-6 group-hover:text-accent" />
+              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Lead_Registry</p>
+              <h4 className="text-lg font-black text-white italic">{store.ownerName || 'Verified Partner'}</h4>
+           </div>
+           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
+              <Phone size={24} className="text-white/20 mb-6 group-hover:text-accent" />
+              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Comms_Protocol</p>
+              <h4 className="text-lg font-black text-white italic tracking-widest">{store.ownerPhone || 'Secure_Link'}</h4>
+           </div>
+           <div className="p-12 border-r border-white/5 hover:bg-white/[0.02] transition-colors group">
+              <Clock size={24} className="text-white/20 mb-6 group-hover:text-accent" />
+              <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Operational_Window</p>
+              <h4 className="text-lg font-black text-white italic">10:00 — 21:30</h4>
+           </div>
+           <div className="p-12 hover:bg-white/[0.02] transition-colors group relative overflow-hidden">
+              <div className="relative z-10">
+                 <MapPin size={24} className="text-white/20 mb-6 group-hover:text-accent" />
+                 <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">Spatial_Address</p>
+                 <h4 className="text-xs font-black text-white/60 leading-relaxed italic">{store.fullAddress || "Gujarat Hub, India"}</h4>
+              </div>
+              <button 
+                onClick={() => navigate('/stores', { state: { selectedStoreId: store._id } })}
+                className="absolute bottom-6 right-6 w-12 h-12 bg-white text-black rounded-full flex items-center justify-center hover:bg-accent hover:text-white transition-all"
+              >
+                 <Navigation size={18} />
+              </button>
+           </div>
         </div>
 
         {/* Live Inventory Section */}
-        <div className="mt-32 space-y-12">
-            <div className="flex justify-between items-end">
-                <div className="space-y-2">
-                    <h2 className="text-4xl font-black tracking-tight">Live Inventory</h2>
-                    <p className="text-subtext text-sm font-medium">Real-time stock availability at this location</p>
-                </div>
-                <div className="flex items-center gap-3 bg-surface border border-borderCustom px-4 py-2 rounded-xl">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-subtext">Live Sync Active</span>
-                </div>
-            </div>
+        <div className="space-y-20">
+           <div className="flex flex-col md:flex-row justify-between items-end gap-10">
+              <div className="space-y-4">
+                 <span className="text-[10px] font-black text-accent uppercase tracking-[0.6em] block">Asset Manifest</span>
+                 <h2 className="text-6xl lg:text-7xl font-black uppercase italic tracking-tighter">Live Inventory</h2>
+              </div>
+              <div className="flex items-center gap-6 px-10 py-5 bg-white/5 border border-white/10 rounded-full text-[9px] font-black uppercase tracking-[0.4em] text-white/30 italic">
+                 <div className="w-1.5 h-1.5 rounded-full bg-accent" />
+                 Currently Displaying {products.length} Assets Online
+              </div>
+           </div>
 
-            {products.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {products.map((product) => (
-                        <ProductCard key={product._id} product={product} />
-                    ))}
-                </div>
-            ) : (
-                <div className="py-20 bg-surface rounded-[3rem] border border-dashed border-borderCustom flex flex-col items-center justify-center text-center space-y-4">
-                    <ShoppingBag size={48} className="text-subtext" />
-                    <p className="text-subtext font-bold uppercase tracking-widest">No products currently listed for this store.</p>
-                </div>
-            )}
+           {products.length > 0 ? (
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
+                   {products.map((product) => (
+                       <ProductCard key={product._id} product={product} />
+                   ))}
+               </div>
+           ) : (
+               <div className="py-40 bg-white/[0.02] rounded-[4rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center">
+                   <ShoppingBag size={64} className="text-white/5 mb-8" />
+                   <p className="text-xs font-black uppercase tracking-[0.8em] text-white/20">Registry manifest offline</p>
+               </div>
+           )}
         </div>
       </main>
 
-      {/* Footer Branding */}
-      <footer className="border-t border-borderCustom bg-background py-12 text-center">
-         <p className="text-[10px] font-black text-subtext uppercase tracking-[0.5em]">RETAILBRIDGE INTELLIGENCE SYSTEM • GUJARAT DIVISION</p>
+      {/* Registry Footer */}
+      <footer className="border-t border-white/5 bg-black py-24">
+         <div className="max-w-[1600px] mx-auto px-12 flex flex-col md:flex-row justify-between items-center gap-12 opacity-30">
+            <p className="text-[10px] font-black uppercase tracking-[0.8em]">Luxe_Retail_Protocol • Regional_Division_Gujarat</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.5em]">Protocol_Reference: {id.toUpperCase()}</p>
+         </div>
       </footer>
     </div>
   );
