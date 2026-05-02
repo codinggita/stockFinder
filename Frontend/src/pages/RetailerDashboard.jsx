@@ -228,15 +228,22 @@ const RetailerDashboard = () => {
           <motion.div variants={itemVariants} className="bg-surface border border-white/5 rounded-[3.5rem] p-10 shadow-2xl relative overflow-hidden group/chart">
             <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-[80px] rounded-full group-hover/chart:bg-primary/10 transition-all" />
             
+            {/* Background Grid */}
+            <div className="absolute inset-0 p-10 flex flex-col justify-between opacity-[0.03] pointer-events-none">
+               {[...Array(5)].map((_, i) => (
+                 <div key={i} className="w-full h-px bg-white" />
+               ))}
+            </div>
+
             <div className="flex justify-between items-center mb-12 relative z-10">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                   <div className="w-8 h-[1px] bg-primary" />
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Velocity</h3>
+                   <div className="w-8 h-[1px] bg-primary shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-primary text-glow">Velocity</h3>
                 </div>
                 <h3 className="text-3xl font-black uppercase tracking-tighter">Monthly Volume</h3>
               </div>
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/10">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/10 group-hover/chart:border-primary/50 transition-colors">
                 <BarChart3 className="text-primary" size={24} />
               </div>
             </div>
@@ -247,36 +254,54 @@ const RetailerDashboard = () => {
                   <motion.div 
                     initial={{ height: 0 }}
                     animate={{ height: `${height}%` }}
-                    transition={{ duration: 1, delay: 0.5 + (i * 0.1), ease: "circOut" }}
-                    className="w-full bg-primary/20 rounded-2xl transition-all duration-500 group-hover:bg-primary group-hover:shadow-[0_0_40px_rgba(99,102,241,0.4)] relative"
+                    transition={{ duration: 1.2, delay: 0.5 + (i * 0.1), ease: [0.22, 1, 0.36, 1] }}
+                    className="w-full bg-gradient-to-t from-primary/10 to-primary/30 rounded-2xl transition-all duration-500 group-hover:from-primary/40 group-hover:to-primary/60 group-hover:shadow-[0_0_50px_rgba(99,102,241,0.3)] relative overflow-hidden border border-white/5 group-hover:border-white/20"
                   >
-                    {/* Inner detail */}
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[2px] h-[30%] bg-white/20 rounded-full" />
+                    {/* Gloss Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* Top Glow Edge */}
+                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary group-hover:bg-white shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
                   </motion.div>
-                  <div className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 premium-glass text-white text-[10px] font-black py-2 px-4 rounded-xl pointer-events-none whitespace-nowrap shadow-2xl z-20 border border-white/10">
-                    {height * 12} UNITS
+                  
+                  {/* Floating Label */}
+                  <div className="absolute bottom-[calc(100%+20px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-none z-20">
+                    <div className="premium-glass text-white text-[10px] font-black py-2.5 px-4 rounded-xl shadow-2xl border border-white/10 whitespace-nowrap flex flex-col items-center">
+                       <span className="text-primary mb-1">{height * 12}</span>
+                       <span className="text-[8px] opacity-40 uppercase tracking-widest">Units</span>
+                    </div>
+                    {/* Tooltip Arrow */}
+                    <div className="w-3 h-3 bg-[#111] border-b border-r border-white/10 rotate-45 mx-auto -mt-1.5 backdrop-blur-xl" />
                   </div>
                 </div>
               ))}
             </div>
-            <div className="flex justify-between mt-10 text-[9px] font-black text-subtext uppercase tracking-[0.4em] px-2">
-              <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+            <div className="flex justify-between mt-10 text-[9px] font-black text-subtext uppercase tracking-[0.4em] px-2 relative z-10">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                <span key={day} className="hover:text-primary transition-colors cursor-default">{day}</span>
+              ))}
             </div>
           </motion.div>
 
           {/* Yearly Sales Chart */}
           <motion.div variants={itemVariants} className="bg-surface border border-white/5 rounded-[3.5rem] p-10 shadow-2xl relative overflow-hidden group/chart">
             <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/5 blur-[80px] rounded-full group-hover/chart:bg-emerald-500/10 transition-all" />
+            
+            {/* Background Architectural Grid */}
+            <div className="absolute inset-0 p-10 flex flex-col justify-between opacity-[0.03] pointer-events-none">
+               {[...Array(8)].map((_, i) => (
+                 <div key={i} className="w-full h-px bg-white" />
+               ))}
+            </div>
 
             <div className="flex justify-between items-center mb-12 relative z-10">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                   <div className="w-8 h-[1px] bg-emerald-500" />
-                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500">Revenue</h3>
+                   <div className="w-8 h-[1px] bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                   <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500 text-glow">Revenue</h3>
                 </div>
                 <h3 className="text-3xl font-black uppercase tracking-tighter">Annual Projection</h3>
               </div>
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-lg shadow-emerald-500/10">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-lg shadow-emerald-500/10 group-hover/chart:border-emerald-500/50 transition-colors">
                 <TrendingUp className="text-emerald-500" size={24} />
               </div>
             </div>
@@ -284,24 +309,34 @@ const RetailerDashboard = () => {
             <div className="h-64 flex items-end justify-between gap-3 relative z-10 px-4">
                {[20, 35, 25, 45, 60, 50, 75, 90, 80, 100].map((height, i) => (
                   <div key={i} className="flex-1 flex flex-col justify-end h-full relative group">
-                    <div className="absolute bottom-[calc(100%+12px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-emerald-500 text-white text-[10px] font-black py-2 px-4 rounded-xl pointer-events-none whitespace-nowrap shadow-2xl z-30">
-                      ₹{height}K
+                    <div className="absolute bottom-[calc(100%+20px)] left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-none z-30">
+                       <div className="bg-emerald-500 text-white text-[10px] font-black py-2.5 px-4 rounded-xl shadow-2xl whitespace-nowrap flex flex-col items-center">
+                          <span>₹{height}K</span>
+                          <span className="text-[8px] opacity-60 uppercase tracking-widest mt-0.5">Projected</span>
+                       </div>
+                       <div className="w-3 h-3 bg-emerald-500 rotate-45 mx-auto -mt-1.5" />
                     </div>
+
                     <div className="w-full flex justify-center h-full items-end">
                       <motion.div 
                         initial={{ height: 0 }}
                         animate={{ height: `${height}%` }}
-                        transition={{ duration: 1, delay: 0.7 + (i * 0.1), ease: "circOut" }}
-                        className="w-2 rounded-full bg-emerald-500/20 relative group-hover:bg-emerald-400 transition-all duration-500"
+                        transition={{ duration: 1.5, delay: 0.7 + (i * 0.1), ease: [0.22, 1, 0.36, 1] }}
+                        className="w-2.5 rounded-full bg-emerald-500/20 relative group-hover:bg-emerald-500 transition-all duration-500 group-hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]"
                       >
-                         <div className="absolute top-0 -left-1.5 w-5 h-5 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_30px_rgba(52,211,153,1)] border-4 border-emerald-500 z-10 scale-0 group-hover:scale-100"></div>
+                         <div className="absolute top-0 -left-1.5 w-5.5 h-5.5 bg-emerald-300 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_40px_rgba(52,211,153,1)] border-4 border-emerald-500 z-10 scale-0 group-hover:scale-100 group-hover:-translate-y-1"></div>
+                         
+                         {/* Flowing Data Effect */}
+                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
                       </motion.div>
                     </div>
                   </div>
                ))}
             </div>
-            <div className="flex justify-between mt-10 text-[9px] font-black text-subtext uppercase tracking-[0.4em] px-2">
-              <span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span>
+            <div className="flex justify-between mt-10 text-[9px] font-black text-subtext uppercase tracking-[0.5em] px-2 relative z-10">
+              {['Q1', 'Q2', 'Q3', 'Q4'].map(q => (
+                <span key={q} className="hover:text-emerald-500 transition-colors cursor-default">{q}</span>
+              ))}
             </div>
           </motion.div>
         </motion.div>
