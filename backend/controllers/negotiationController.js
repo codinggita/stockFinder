@@ -11,25 +11,20 @@ exports.startNegotiation = async (req, res) => {
     const product = await Product.findById(productId).populate('store');
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    let negotiation = await Negotiation.findOne({
-      product: productId,
-      user: req.user._id,
-      status: 'PENDING'
-    }).sort({ createdAt: -1 });
-
-    if (!negotiation) {
-      console.log(`[startNegotiation] No existing PENDING negotiation found. Creating new one.`);
-      negotiation = await Negotiation.create({
-        product: productId,
-        user: req.user._id,
-        store: product.store._id,
-        initialPrice: product.price,
-        currentOffer: product.price
-      });
-      // Removed automatic initial message based on user request
-    } else {
-      console.log(`[startNegotiation] Found existing negotiation: ${negotiation._id}`);
-    }
+    // Atomic check and create to prevent duplicates
+    let negotiation = await Negotiation.findOneAndUpdate(
+      { product: productId, user: req.user._id, status: 'PENDING' },
+      {
+        $setOnInsert: {
+          product: productId,
+          user: req.user._id,
+          store: product.store._id,
+          initialPrice: product.price,
+          currentOffer: product.price
+        }
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     res.status(200).json(negotiation);
   } catch (err) {
@@ -105,6 +100,31 @@ exports.acceptDeal = async (req, res) => {
       content: 'The deal has been accepted!',
       type: 'ACCEPT',
       offerAmount: negotiation.negotiatedPrice
+    });
+
+    if (req.io) {
+      req.io.to(`negotiation_${req.params.id}`).emit('receive_message', message);
+    }
+
+    res.status(200).json(negotiation);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.rejectDeal = async (req, res) => {
+  try {
+    const negotiation = await Negotiation.findById(req.params.id);
+    if (!negotiation) return res.status(404).json({ message: 'Negotiation not found' });
+
+    negotiation.status = 'REJECTED';
+    await negotiation.save();
+
+    const message = await Message.create({
+      negotiation: negotiation._id,
+      sender: req.user.id,
+      content: 'The negotiation has been closed without a deal.',
+      type: 'REJECT'
     });
 
     if (req.io) {
