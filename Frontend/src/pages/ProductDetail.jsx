@@ -92,10 +92,10 @@ const ProductDetail = () => {
         }}
       />
 
-      <main className="min-h-[calc(100vh-80px)] mt-20 flex relative">
+      <main className="min-h-[calc(100vh-80px)] mt-20 flex flex-col lg:flex-row relative">
         
-        {/* LEFT COMMAND PILLAR (300px) */}
-        <div className="w-[400px] sticky top-20 h-[calc(100vh-80px)] border-r border-borderCustom/20 bg-surface shadow-premium p-12 flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar">
+        {/* LEFT COMMAND PILLAR */}
+        <div className="w-full lg:w-[400px] lg:sticky lg:top-20 lg:h-[calc(100vh-80px)] border-b lg:border-b-0 lg:border-r border-borderCustom/20 bg-surface shadow-premium p-6 lg:p-12 flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar">
           
           <div className="space-y-16">
             {/* Back Access */}
@@ -205,7 +205,7 @@ const ProductDetail = () => {
         </div>
 
         {/* MAIN EXHIBITION STAGE */}
-        <div className="flex-1 relative flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)] overflow-hidden">
+        <div className="flex-1 relative flex items-center justify-center bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_70%)] overflow-hidden min-h-[50vh] lg:min-h-0 py-20 lg:py-0">
           
           {/* Background Text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02] select-none">

@@ -60,14 +60,23 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-mongoose.connect(process.env.MONGO_URI)
+const mongoUri = process.env.MONGO_URI;
+mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
   .then(async () => {
-    console.log('MongoDB Connected');
+    console.log('MongoDB Connected to Atlas');
     await seedData();
   })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);
+  .catch(async err => {
+    console.warn('MongoDB Atlas connection failed. Falling back to local MongoDB...', err.message);
+    const localUri = 'mongodb://127.0.0.1:27017/stockFinder';
+    try {
+      await mongoose.connect(localUri, { serverSelectionTimeoutMS: 5000 });
+      console.log('MongoDB Connected to Local');
+      await seedData();
+    } catch (localErr) {
+      console.error('Local MongoDB connection error:', localErr);
+      process.exit(1);
+    }
   });
 
 // Middleware

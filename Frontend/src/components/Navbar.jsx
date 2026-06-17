@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, LogOut, User, Bell } from 'lucide-react';
+import { ShoppingCart, LogOut, User, Bell, Menu, X } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { fetchNotifications, markNotificationsRead } from '../redux/notificationSlice';
@@ -19,6 +19,7 @@ const Navbar = () => {
   
   const { items: notifications, unreadCount } = useSelector(state => state.notifications);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
   const socket = useSocket();
@@ -174,16 +175,48 @@ const Navbar = () => {
             {user && (
               <button
                 onClick={handleLogout}
-                className="ml-2 text-subtext hover:text-red-400 transition-colors"
+                className="ml-2 text-subtext hover:text-red-400 transition-colors hidden md:block"
                 title="Logout"
               >
                 <LogOut size={18} />
               </button>
             )}
+
+            {/* Mobile Menu Toggle */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="ml-2 p-2 rounded-xl text-subtext bg-surface/40 hover:bg-surface border border-borderCustom/40 md:hidden transition-all"
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
 
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 top-16 bg-background/95 backdrop-blur-3xl z-40 border-t border-borderCustom/20 flex flex-col items-center justify-center space-y-8 animate-in fade-in slide-in-from-top-4 duration-300">
+          {user?.role === 'retailer' ? (
+            <>
+              <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/dashboard') ? 'text-accent' : 'text-subtext'}`}>Dashboard</Link>
+              <Link to="/dashboard/negotiations" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/dashboard/negotiations') ? 'text-accent' : 'text-subtext'}`}>Negotiations</Link>
+              <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/products') ? 'text-accent' : 'text-subtext'}`}>Add Product</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/marketplace" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/marketplace') ? 'text-accent' : 'text-subtext'}`}>Marketplace</Link>
+              <Link to="/stores" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/stores') ? 'text-accent' : 'text-subtext'}`}>Stores</Link>
+              <Link to="/products" onClick={() => setIsMobileMenuOpen(false)} className={`text-2xl font-black uppercase tracking-[0.2em] ${isActive('/products') ? 'text-accent' : 'text-subtext'}`}>Inventory</Link>
+            </>
+          )}
+          {user && (
+            <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }} className="text-xl font-black uppercase tracking-[0.2em] text-red-400 mt-8 flex items-center gap-2">
+              <LogOut size={20} /> Logout
+            </button>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

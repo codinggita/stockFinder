@@ -95,6 +95,7 @@ const SignIn = () => {
             type="email"
             icon={Mail}
             error={errors.email}
+            autoComplete="username"
             {...register('email')}
           />
           <InputField
