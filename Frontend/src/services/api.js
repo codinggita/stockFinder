@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:5000/api' : 'https://stockfinder-1-5fbt.onrender.com/api',
+  baseURL: import.meta.env.VITE_API_URL || (import.meta.env.MODE === 'development' ? 'http://localhost:5000/api' : 'https://stockfinder-1-5fbt.onrender.com/api'),
   headers: {
     'Content-Type': 'application/json',
   },

@@ -16,7 +16,8 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      const newSocket = io('https://stockfinder-1-5fbt.onrender.com');
+      const socketUrl = import.meta.env.VITE_SOCKET_URL || (import.meta.env.MODE === 'development' ? 'http://localhost:5000' : 'https://stockfinder-1-5fbt.onrender.com');
+      const newSocket = io(socketUrl);
       
       newSocket.on('connect', () => {
         console.log('Connected to socket server');

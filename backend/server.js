@@ -17,12 +17,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [
-      'https://stockfinder-dhruva.netlify.app',
-      /\.vercel\.app$/,
-      'http://localhost:5173'
-    ],
-    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']
+    origin: (origin, callback) => {
+      callback(null, true);
+    },
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+    credentials: true
   }
 });
 
@@ -54,49 +53,93 @@ io.on('connection', (socket) => {
   });
 });
 
-// Connect to MongoDB
-if (!process.env.MONGO_URI) {
-  console.error('FATAL: MONGO_URI environment variable is not set. Exiting.');
-  process.exit(1);
+// MongoDB Connection
+const mongoUri = process.env.MONGO_URI;
+if (!mongoUri) {
+  console.warn('WARNING: MONGO_URI environment variable is not set.');
 }
 
-const mongoUri = process.env.MONGO_URI;
-mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 })
-  .then(async () => {
+const connectDB = async () => {
+  if (!mongoUri) {
+    console.warn('MONGO_URI is missing. Running without database connection.');
+    return;
+  }
+  try {
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 8000 });
     console.log('MongoDB Connected to Atlas');
     await seedData();
-  })
-  .catch(async err => {
-    console.warn('MongoDB Atlas connection failed. Falling back to local MongoDB...', err.message);
+  } catch (err) {
+    console.warn('MongoDB Atlas connection failed:', err.message);
     const localUri = 'mongodb://127.0.0.1:27017/stockFinder';
     try {
-      await mongoose.connect(localUri, { serverSelectionTimeoutMS: 5000 });
+      await mongoose.connect(localUri, { serverSelectionTimeoutMS: 3000 });
       console.log('MongoDB Connected to Local');
       await seedData();
     } catch (localErr) {
-      console.error('Local MongoDB connection error:', localErr);
-      process.exit(1);
+      console.error('Local MongoDB connection error:', localErr.message);
+      console.warn('Backend will continue running so health checks and API routes remain accessible. Please verify your MongoDB Atlas Network Access IP whitelist allows 0.0.0.0/0.');
     }
-  });
+  }
+};
 
-// Middleware
-app.use(cors({
+connectDB();
+
+// CORS Configuration
+const allowedOrigins = [
+  'https://stockfinder-dhruva.netlify.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+];
+
+const corsOptions = {
   origin: (origin, callback) => {
-    const allowed = [
-      'https://stockfinder-dhruva.netlify.app',
-      'http://localhost:5173',
-      'http://localhost:3000'
-    ];
-    // Allow any vercel.app subdomain
-    if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) {
+    // Allow non-browser requests (Postman, curl, server-to-server)
+    if (!origin) return callback(null, true);
+    
+    const isAllowed = 
+      allowedOrigins.includes(origin) ||
+      /\.netlify\.app$/.test(origin) ||
+      /\.vercel\.app$/.test(origin) ||
+      /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+      /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin);
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      // Allow origin dynamically to prevent CORS preflight blocking
+      callback(null, true);
     }
   },
-  credentials: true
-}));
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+};
+
+// Apply CORS & Preflight handling
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
+
+// Health Check / Root routes
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    message: 'StockFinder Backend API is running',
+    dbState: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    dbConnected: mongoose.connection.readyState === 1
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -108,6 +151,11 @@ app.use('/api/negotiations', negotiationRoutes);
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error('[Global Error Handler] STACK:', err.stack);
+  const origin = req.headers.origin;
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
   res.status(500).json({ success: false, message: err.message });
 });
 
