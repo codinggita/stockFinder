@@ -95,6 +95,7 @@ const SignIn = () => {
             type="email"
             icon={Mail}
             error={errors.email}
+            autoComplete="username"
             {...register('email')}
           />
           <InputField
@@ -103,6 +104,7 @@ const SignIn = () => {
             type="password"
             icon={ShieldCheck}
             error={errors.password}
+            autoComplete="current-password"
             {...register('password')}
           />
         </div>

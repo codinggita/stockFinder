@@ -43,7 +43,11 @@ exports.createMyStore = async (req, res) => {
       status: 'Open Now',
       isOpen: true,
       rating: 5.0,
-      reviewsCount: 0
+      reviewsCount: 0,
+      coordinates: {
+        type: 'Point',
+        coordinates: [72.5244, 23.0396] // Default to prevent 2dsphere index error
+      }
     });
 
     res.status(201).json({ success: true, store });

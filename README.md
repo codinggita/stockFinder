@@ -4,6 +4,7 @@
 ### ⟦ Real-Time Local Inventory • Smart Price Negotiation ⟧
 
 </div>
+<img width="1913" height="992" alt="image" src="https://github.com/user-attachments/assets/7a4ba9eb-f9a1-4216-85f1-ce02d95e679c" />
 
 <br/>
 

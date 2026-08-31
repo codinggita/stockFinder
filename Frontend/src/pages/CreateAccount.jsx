@@ -95,11 +95,11 @@ const CreateAccount = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-1">
-          <InputField label="Identity Name" icon={User} error={errors.name} placeholder="Full Name" {...register('name')} />
-          <InputField label="Nexus Email" icon={Mail} error={errors.email} placeholder="nexus@example.com" {...register('email')} />
+          <InputField label="Identity Name" icon={User} error={errors.name} placeholder="Full Name" autoComplete="name" {...register('name')} />
+          <InputField label="Nexus Email" icon={Mail} error={errors.email} placeholder="nexus@example.com" autoComplete="email" {...register('email')} />
           
           <div className="relative group">
-            <InputField label="Security Key" type="password" icon={ShieldCheck} error={errors.password} placeholder="Minimum 8 characters" {...register('password')} />
+            <InputField label="Security Key" type="password" icon={ShieldCheck} error={errors.password} placeholder="Minimum 8 characters" autoComplete="new-password" {...register('password')} />
             <div className="flex justify-between items-center px-1 h-[3px] mb-4 gap-1">
               {[25, 50, 75, 100].map((t) => (
                 <div key={t} className={`flex-1 rounded-full transition-all duration-500 ${strength.percent >= t ? 'bg-accent shadow-[0_0_10px_rgba(198,169,105,0.5)]' : 'bg-borderCustom'}`} />
@@ -110,7 +110,7 @@ const CreateAccount = () => {
             </div>
           </div>
           
-          <InputField label="Verify Protocol" type="password" icon={ShieldCheck} error={errors.confirmPassword} placeholder="Confirm Security Key" {...register('confirmPassword')} />
+          <InputField label="Verify Protocol" type="password" icon={ShieldCheck} error={errors.confirmPassword} placeholder="Confirm Security Key" autoComplete="new-password" {...register('confirmPassword')} />
         </div>
         
         <div className="flex items-center gap-3 py-2">

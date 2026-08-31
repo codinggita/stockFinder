@@ -1,0 +1,6 @@
+{
+  "name": "stockfinder-frontend",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

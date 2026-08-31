@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const storeSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  location: { type: String, required: true }, // Short location (e.g. Navrangpura, Ahmedabad)
-  fullAddress: { type: String }, // Full address
+  location: { type: String, required: true },
+  fullAddress: { type: String },
   coordinates: {
     type: { type: String, default: 'Point' },
-    coordinates: { type: [Number], index: '2dsphere' } // [lng, lat]
+    coordinates: { type: [Number] }  // [lng, lat]
   },
   isOpen: { type: Boolean, default: true },
   status: { type: String, enum: ['Open Now', 'Closing Soon', 'Closed'], default: 'Open Now' },
@@ -20,5 +20,8 @@ const storeSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
+
+// 2dsphere index must be on the GeoJSON parent field, not the coordinates array
+storeSchema.index({ coordinates: '2dsphere' });
 
 module.exports = mongoose.model('Store', storeSchema);
